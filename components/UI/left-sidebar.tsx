@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   CursorArrowRaysIcon,
   ChatBubbleBottomCenterTextIcon,
@@ -34,6 +34,22 @@ export const LeftSidebar: React.FC = () => {
     addElement, 
     setCanvasSize 
   } = useCanvasStore();
+
+  const [toolsUploadKey, setToolsUploadKey] = useState(0);
+  const [assetsUploadKey, setAssetsUploadKey] = useState(0);
+  const [isUploadingTools, setIsUploadingTools] = useState(false);
+  const [isUploadingAssets, setIsUploadingAssets] = useState(false);
+  
+  const toolsFileInputRef = useRef<HTMLInputElement>(null);
+  const assetsFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleToolsUploadClick = () => {
+    toolsFileInputRef.current?.click();
+  };
+
+  const handleAssetsUploadClick = () => {
+    assetsFileInputRef.current?.click();
+  };
 
   const handleToolSelect = (selectedTool: Tool) => {
     setTool(selectedTool);
@@ -117,9 +133,41 @@ export const LeftSidebar: React.FC = () => {
     addElement(shapeElement);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, source: 'tools' | 'assets') => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    // Set loading state
+    if (source === 'tools') {
+      setIsUploadingTools(true);
+    } else {
+      setIsUploadingAssets(true);
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file.');
+      event.target.value = '';
+      if (source === 'tools') {
+        setIsUploadingTools(false);
+      } else {
+        setIsUploadingAssets(false);
+      }
+      return;
+    }
+
+    // Validate file size (10MB limit)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      alert('File size must be less than 10MB.');
+      event.target.value = '';
+      if (source === 'tools') {
+        setIsUploadingTools(false);
+      } else {
+        setIsUploadingAssets(false);
+      }
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
@@ -146,8 +194,29 @@ export const LeftSidebar: React.FC = () => {
         };
         
         addElement(imageElement);
+        
+        // Reset the input value and update key to allow re-uploading the same file
+        event.target.value = '';
+        if (source === 'tools') {
+          setToolsUploadKey(prev => prev + 1);
+          setIsUploadingTools(false);
+        } else {
+          setAssetsUploadKey(prev => prev + 1);
+          setIsUploadingAssets(false);
+        }
       }
     };
+
+    reader.onerror = () => {
+      alert('Failed to read the image file. Please try again.');
+      event.target.value = '';
+      if (source === 'tools') {
+        setIsUploadingTools(false);
+      } else {
+        setIsUploadingAssets(false);
+      }
+    };
+
     reader.readAsDataURL(file);
   };
 
@@ -201,18 +270,40 @@ export const LeftSidebar: React.FC = () => {
             {tool === 'image' && (
               <div>
                 <Label className="text-sm font-semibold text-gray-900 mb-3 block">Add Image</Label>
-                <label className="block">
+                <div className="block">
                   <input
+                    ref={toolsFileInputRef}
+                    key={toolsUploadKey}
                     type="file"
                     accept="image/*"
-                    onChange={handleImageUpload}
+                    onChange={(e) => handleImageUpload(e, 'tools')}
                     className="hidden"
+                    aria-label="Upload image file"
+                    aria-describedby="tools-upload-description"
                   />
-                  <Button variant="outline" className="w-full h-20 flex-col border-2 border-dashed border-gray-300 hover:border-gray-400">
-                    <PhotoIcon className="w-7 h-7 mb-2.5 text-gray-400" />
-                    <span className="text-sm text-gray-600">Click to upload image</span>
+                  <Button 
+                    variant="outline" 
+                    className="w-full h-20 flex-col border-2 border-dashed border-gray-300 hover:border-gray-400"
+                    disabled={isUploadingTools}
+                    onClick={handleToolsUploadClick}
+                    aria-describedby="tools-upload-description"
+                  >
+                    {isUploadingTools ? (
+                      <>
+                        <div className="w-7 h-7 mb-2.5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+                        <span className="text-sm text-gray-600">Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <PhotoIcon className="w-7 h-7 mb-2.5 text-gray-400" aria-hidden="true" />
+                        <span className="text-sm text-gray-600">Click to upload image</span>
+                      </>
+                    )}
                   </Button>
-                </label>
+                  <div id="tools-upload-description" className="sr-only">
+                    Select an image file to upload. Supported formats: JPG, PNG, GIF, WebP, SVG. Maximum file size: 10MB.
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -297,18 +388,40 @@ export const LeftSidebar: React.FC = () => {
               
               <div>
                 <Label className="text-sm font-semibold text-gray-900 mb-3 block">Upload your own image</Label>
-                <label className="block">
+                <div className="block">
                   <input
+                    ref={assetsFileInputRef}
+                    key={assetsUploadKey}
                     type="file"
                     accept="image/*"
-                    onChange={handleImageUpload}
+                    onChange={(e) => handleImageUpload(e, 'assets')}
                     className="hidden"
+                    aria-label="Upload image file"
+                    aria-describedby="assets-upload-description"
                   />
-                  <Button variant="outline" className="w-full h-20 flex-col border-2 border-dashed border-gray-300 hover:border-gray-400">
-                    <PhotoIcon className="w-7 h-7 mb-2.5 text-gray-400" />
-                    <span className="text-sm text-gray-600">Click to upload image</span>
+                  <Button 
+                    variant="outline" 
+                    className="w-full h-20 flex-col border-2 border-dashed border-gray-300 hover:border-gray-400"
+                    disabled={isUploadingAssets}
+                    onClick={handleAssetsUploadClick}
+                    aria-describedby="assets-upload-description"
+                  >
+                    {isUploadingAssets ? (
+                      <>
+                        <div className="w-7 h-7 mb-2.5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+                        <span className="text-sm text-gray-600">Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <PhotoIcon className="w-7 h-7 mb-2.5 text-gray-400" aria-hidden="true" />
+                        <span className="text-sm text-gray-600">Click to upload image</span>
+                      </>
+                    )}
                   </Button>
-                </label>
+                  <div id="assets-upload-description" className="sr-only">
+                    Select an image file to upload. Supported formats: JPG, PNG, GIF, WebP, SVG. Maximum file size: 10MB.
+                  </div>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
