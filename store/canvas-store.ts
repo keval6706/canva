@@ -124,14 +124,14 @@ export const useCanvasStore = create<CanvasStore>()(
         _elements[_index] = { ..._elements[_index], ...updates } as CanvasElement;
 
         // If element is being hidden, remove it from selection
-        let newSelectedIds = state.selectedIds;
+        let selectedIds = state.selectedIds;
         if (updates.visible === false && state.selectedIds.includes(id)) {
-          newSelectedIds = state.selectedIds.filter(selectedId => selectedId !== id);
+          selectedIds = state.selectedIds.filter(selectedId => selectedId !== id);
         }
 
         return {
           elements: _elements,
-          selectedIds: newSelectedIds,
+          selectedIds: selectedIds,
           history: {
             ...state.history,
             present: _elements,
@@ -145,11 +145,11 @@ export const useCanvasStore = create<CanvasStore>()(
     deleteElement: (id) => {
       set((state) => {
         const _elements = state.elements.filter(el => el.id !== id);
-        const newSelectedIds = state.selectedIds.filter(selectedId => selectedId !== id);
+        const selectedIds = state.selectedIds.filter(selectedId => selectedId !== id);
 
         return {
           elements: _elements,
-          selectedIds: newSelectedIds,
+          selectedIds: selectedIds,
           history: {
             ...state.history,
             present: _elements,
@@ -163,11 +163,11 @@ export const useCanvasStore = create<CanvasStore>()(
     deleteElements: (ids) => {
       set((state) => {
         const _elements = state.elements.filter(el => !ids.includes(el.id));
-        const newSelectedIds = state.selectedIds.filter(selectedId => !ids.includes(selectedId));
+        const selectedIds = state.selectedIds.filter(selectedId => !ids.includes(selectedId));
 
         return {
           elements: _elements,
-          selectedIds: newSelectedIds,
+          selectedIds: selectedIds,
           history: {
             ...state.history,
             present: _elements,
