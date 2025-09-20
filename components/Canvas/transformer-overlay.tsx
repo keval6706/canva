@@ -33,9 +33,6 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
       // Find the group node for this element by traversing the stage
       const elementNode = stage.findOne(`#element-${id}`);
       if (elementNode) {
-        // Ensure the node has correct initial scale (should be 1)
-        elementNode.scaleX(1);
-        elementNode.scaleY(1);
         selectedNodes.push(elementNode);
       }
     });
@@ -121,10 +118,11 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
         },
       });
 
-      // Reset the node scale to 1 to keep the visual representation clean
-      // but DON'T reset position/rotation as they're now stored in the element
-      node.scaleX(1);
-      node.scaleY(1);
+      // Reset the node position/rotation to match stored values, but keep scale as-is
+      // since the element renderer will handle the visual scaling
+      node.x(finalX);
+      node.y(finalY);
+      node.rotation(finalRotation);
     });
 
     // Force transformer to update
