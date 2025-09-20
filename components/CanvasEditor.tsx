@@ -15,17 +15,17 @@ interface CanvasEditorProps {
 export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [viewportSize, setViewportSize] = useState({ width: 800, height: 600 });
-  
-  const { 
-    copyElements, 
-    cutElements, 
-    pasteElements, 
-    deleteElements, 
+
+  const {
+    copyElements,
+    cutElements,
+    pasteElements,
+    deleteElements,
     selectAll,
     undo,
     redo,
     selectedIds,
-    duplicateElements
+    duplicateElements,
   } = useCanvasStore();
 
   // Stable viewport sizing
@@ -34,11 +34,13 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
       if (canvasContainerRef.current) {
         const { clientWidth, clientHeight } = canvasContainerRef.current;
         // Only update if the change is significant (more than 20px) to prevent constant re-renders
-        if (Math.abs(clientWidth - viewportSize.width) > 20 || 
-            Math.abs(clientHeight - viewportSize.height) > 20) {
+        if (
+          Math.abs(clientWidth - viewportSize.width) > 20 ||
+          Math.abs(clientHeight - viewportSize.height) > 20
+        ) {
           setViewportSize({
             width: Math.max(clientWidth, 400), // Minimum viewport size
-            height: Math.max(clientHeight, 300)
+            height: Math.max(clientHeight, 300),
           });
         }
       }
@@ -68,10 +70,22 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't interfere with input fields
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        e.target instanceof HTMLSelectElement
+      ) {
+        return;
+      }
+
       const isCtrlOrCmd = e.ctrlKey || e.metaKey;
-      
-      // Prevent default browser shortcuts
-      if (isCtrlOrCmd && ['z', 'y', 'c', 'v', 'x', 'a', 'd'].includes(e.key.toLowerCase())) {
+
+      // Prevent default browser shortcuts only when not in input fields
+      if (
+        isCtrlOrCmd &&
+        ['z', 'y', 'c', 'v', 'x', 'a', 'd'].includes(e.key.toLowerCase())
+      ) {
         e.preventDefault();
       }
 
@@ -124,7 +138,17 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [copyElements, cutElements, pasteElements, deleteElements, selectAll, undo, redo, selectedIds, duplicateElements]);
+  }, [
+    copyElements,
+    cutElements,
+    pasteElements,
+    deleteElements,
+    selectAll,
+    undo,
+    redo,
+    selectedIds,
+    duplicateElements,
+  ]);
 
   return (
     <div className={`flex flex-col h-screen bg-gray-50 ${className}`}>
@@ -132,32 +156,32 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <Toolbar />
       </div>
-      
+
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden gap-0.5">
         {/* Left Sidebar */}
         <div className="bg-white rounded-md shadow-sm border border-gray-200">
           <LeftSidebar />
         </div>
-        
+
         {/* Canvas Area */}
-        <div 
+        <div
           ref={canvasContainerRef}
           className="flex-1 flex items-center justify-center bg-gray-100 rounded-md overflow-hidden shadow-inner border border-gray-200"
         >
-          <Canvas 
+          <Canvas
             width={viewportSize.width}
             height={viewportSize.height}
             className="border border-gray-300 shadow-lg rounded"
           />
         </div>
-        
+
         {/* Right Sidebar */}
         <div className="bg-white rounded-md shadow-sm border border-gray-200">
           <RightSidebar />
         </div>
       </div>
-      
+
       {/* Bottom Bar */}
       <div className="bg-white border-t border-gray-200 shadow-sm">
         <BottomBar />
