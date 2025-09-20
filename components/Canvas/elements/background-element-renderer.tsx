@@ -8,7 +8,6 @@ import { useCanvasStore } from '../../../store/canvas-store';
 
 interface BackgroundElementRendererProps {
   element: BackgroundElement;
-  isSelected: boolean;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 }
 

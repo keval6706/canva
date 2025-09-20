@@ -16,13 +16,11 @@ import { useCanvasStore } from '../../../store/canvas-store';
 
 interface ShapeElementRendererProps {
   element: ShapeElement;
-  isSelected: boolean;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 }
 
 export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
   element,
-  isSelected,
   onSelect,
 }) => {
   const groupRef = useRef<Konva.Group>(null);

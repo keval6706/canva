@@ -8,13 +8,11 @@ import { useCanvasStore } from '../../../store/canvas-store';
 
 interface TextElementRendererProps {
   element: TextElement;
-  isSelected: boolean;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 }
 
 export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
   element,
-  isSelected,
   onSelect,
 }) => {
   const textRef = useRef<Konva.Text>(null);

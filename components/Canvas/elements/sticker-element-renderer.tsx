@@ -8,13 +8,11 @@ import { useCanvasStore } from '../../../store/canvas-store';
 
 interface StickerElementRendererProps {
   element: StickerElement;
-  isSelected: boolean;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 }
 
 export const StickerElementRenderer: React.FC<StickerElementRendererProps> = ({
   element,
-  isSelected,
   onSelect,
 }) => {
   const imageRef = useRef<Konva.Image>(null);

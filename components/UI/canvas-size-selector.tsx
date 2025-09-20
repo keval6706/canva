@@ -11,7 +11,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from './dialog';
 import { Input } from './input';
 import { Label } from './label';
@@ -211,9 +210,8 @@ export const CanvasSizeSelector: React.FC<CanvasSizeSelectorProps> = ({
             className="space-y-4"
           >
             <div className="grid grid-cols-2 gap-4">
-              <form.Field
-                name="width"
-                children={(field) => (
+              <form.Field name="width">
+                {(field) => (
                   <div className="space-y-2">
                     <Label htmlFor={field.name}>Width (px)</Label>
                     <Input
@@ -236,11 +234,10 @@ export const CanvasSizeSelector: React.FC<CanvasSizeSelectorProps> = ({
                     )}
                   </div>
                 )}
-              />
+              </form.Field>
 
-              <form.Field
-                name="height"
-                children={(field) => (
+              <form.Field name="height">
+                {(field) => (
                   <div className="space-y-2">
                     <Label htmlFor={field.name}>Height (px)</Label>
                     <Input
@@ -263,7 +260,7 @@ export const CanvasSizeSelector: React.FC<CanvasSizeSelectorProps> = ({
                     )}
                   </div>
                 )}
-              />
+              </form.Field>
             </div>
 
             <DialogFooter>
@@ -276,12 +273,13 @@ export const CanvasSizeSelector: React.FC<CanvasSizeSelectorProps> = ({
               </Button>
               <form.Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
-                children={([canSubmit, isSubmitting]) => (
+              >
+                {([canSubmit, isSubmitting]) => (
                   <Button type="submit" disabled={!canSubmit}>
                     {isSubmitting ? 'Setting...' : 'Set Size'}
                   </Button>
                 )}
-              />
+              </form.Subscribe>
             </DialogFooter>
           </form>
         </DialogContent>

@@ -22,13 +22,11 @@ import { GroupElementRenderer } from './elements/group-element-renderer';
 
 interface CanvasElementRendererProps {
   element: CanvasElement;
-  isSelected: boolean;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 }
 
 export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
   element,
-  isSelected,
   onSelect,
 }) => {
   switch (element.type) {
@@ -36,7 +34,6 @@ export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
       return (
         <TextElementRenderer
           element={element as TextElement}
-          isSelected={isSelected}
           onSelect={onSelect}
         />
       );
@@ -44,7 +41,6 @@ export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
       return (
         <ImageElementRenderer
           element={element as ImageElement}
-          isSelected={isSelected}
           onSelect={onSelect}
         />
       );
@@ -52,7 +48,6 @@ export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
       return (
         <ShapeElementRenderer
           element={element as ShapeElement}
-          isSelected={isSelected}
           onSelect={onSelect}
         />
       );
@@ -60,7 +55,6 @@ export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
       return (
         <BackgroundElementRenderer
           element={element as BackgroundElement}
-          isSelected={isSelected}
           onSelect={onSelect}
         />
       );
@@ -68,7 +62,6 @@ export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
       return (
         <StickerElementRenderer
           element={element as StickerElement}
-          isSelected={isSelected}
           onSelect={onSelect}
         />
       );
@@ -76,7 +69,6 @@ export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
       return (
         <DrawingElementRenderer
           element={element as DrawingElement}
-          isSelected={isSelected}
           onSelect={onSelect}
         />
       );
@@ -84,7 +76,6 @@ export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
       return (
         <GroupElementRenderer
           element={element as GroupElement}
-          isSelected={isSelected}
           onSelect={onSelect}
         />
       );

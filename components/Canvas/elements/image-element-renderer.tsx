@@ -8,13 +8,11 @@ import { useCanvasStore } from '../../../store/canvas-store';
 
 interface ImageElementRendererProps {
   element: ImageElement;
-  isSelected: boolean;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 }
 
 export const ImageElementRenderer: React.FC<ImageElementRendererProps> = ({
   element,
-  isSelected,
   onSelect,
 }) => {
   const imageRef = useRef<Konva.Image>(null);

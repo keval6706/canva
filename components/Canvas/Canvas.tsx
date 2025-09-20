@@ -36,27 +36,14 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     selectElements,
     clearSelection,
     addElement,
-    groupElements,
-    ungroupElements,
-    undo,
-    redo,
-    copyElements,
-    cutElements,
-    pasteElements,
-    duplicateElements,
-    deleteElements,
-    selectAll,
   } = useCanvasStore();
 
   // Handle stage drag (panning)
-  const handleStageDragStart = useCallback(
-    (_e: Konva.KonvaEventObject<DragEvent>) => {
-      if (tool !== 'pan' && tool !== 'select') return;
+  const handleStageDragStart = useCallback(() => {
+    if (tool !== 'pan' && tool !== 'select') return;
 
-      setIsDragging(true);
-    },
-    [tool]
-  );
+    setIsDragging(true);
+  }, [tool]);
 
   const handleStageDragMove = useCallback(
     (e: Konva.KonvaEventObject<DragEvent>) => {
@@ -299,7 +286,6 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
             <CanvasElementRenderer
               key={element.id}
               element={element}
-              isSelected={selectedIds.includes(element.id)}
               onSelect={(e: Konva.KonvaEventObject<MouseEvent>) =>
                 handleElementClick(element.id, e)
               }

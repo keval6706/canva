@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Line, Group } from 'react-konva';
 import Konva from 'konva';
 import { DrawingElement } from '../../../types/canvas';
@@ -8,13 +8,11 @@ import { useCanvasStore } from '../../../store/canvas-store';
 
 interface DrawingElementRendererProps {
   element: DrawingElement;
-  isSelected: boolean;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 }
 
 export const DrawingElementRenderer: React.FC<DrawingElementRendererProps> = ({
   element,
-  isSelected,
   onSelect,
 }) => {
   const groupRef = useRef<Konva.Group>(null);

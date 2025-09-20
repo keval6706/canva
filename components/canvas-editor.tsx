@@ -6,7 +6,6 @@ import { Toolbar } from './ui/toolbar';
 import { LeftSidebar } from './ui/left-sidebar';
 import { RightSidebar } from './ui/right-sidebar';
 import { BottomBar } from './ui/bottom-bar';
-import { ExportModal } from './ui/export-modal';
 import { useCanvasStore } from '../store/canvas-store';
 
 interface CanvasEditorProps {
@@ -31,18 +30,22 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
 
   // Stable viewport sizing
   useEffect(() => {
+    const viewportSizeRef = { current: viewportSize };
+
     const updateViewportSize = () => {
       if (canvasContainerRef.current) {
         const { clientWidth, clientHeight } = canvasContainerRef.current;
         // Only update if the change is significant (more than 20px) to prevent constant re-renders
         if (
-          Math.abs(clientWidth - viewportSize.width) > 20 ||
-          Math.abs(clientHeight - viewportSize.height) > 20
+          Math.abs(clientWidth - viewportSizeRef.current.width) > 20 ||
+          Math.abs(clientHeight - viewportSizeRef.current.height) > 20
         ) {
-          setViewportSize({
+          const newSize = {
             width: Math.max(clientWidth, 400), // Minimum viewport size
             height: Math.max(clientHeight, 300),
-          });
+          };
+          viewportSizeRef.current = newSize;
+          setViewportSize(newSize);
         }
       }
     };
@@ -66,7 +69,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
       clearTimeout(timeoutId);
       resizeObserver.disconnect();
     };
-  }, []); // Remove viewportSize from deps to prevent loops
+  }, [setViewportSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Keyboard shortcuts
   useEffect(() => {

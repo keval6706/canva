@@ -9,13 +9,11 @@ import { useCanvasStore } from '../../../store/canvas-store';
 
 interface GroupElementRendererProps {
   element: GroupElement;
-  isSelected: boolean;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 }
 
 export const GroupElementRenderer: React.FC<GroupElementRendererProps> = ({
   element,
-  isSelected,
   onSelect,
 }) => {
   const { elements, updateElement } = useCanvasStore();
@@ -56,7 +54,6 @@ export const GroupElementRenderer: React.FC<GroupElementRendererProps> = ({
         <CanvasElementRenderer
           key={childElement.id}
           element={childElement}
-          isSelected={false} // Child elements are not individually selectable when in a group
           onSelect={(e: Konva.KonvaEventObject<MouseEvent>) => {
             // Prevent the child element from being selected individually
             e.cancelBubble = true;
