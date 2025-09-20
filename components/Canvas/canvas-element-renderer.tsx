@@ -3,11 +3,11 @@
 import React from 'react';
 import Konva from 'konva';
 import { CanvasElement, TextElement, ImageElement, ShapeElement, BackgroundElement, StickerElement } from '../../types/canvas';
-import { TextElementRenderer } from './elements/TextElementRenderer';
-import { ImageElementRenderer } from './elements/ImageElementRenderer';
-import { ShapeElementRenderer } from './elements/ShapeElementRenderer';
-import { BackgroundElementRenderer } from './elements/BackgroundElementRenderer';
-import { StickerElementRenderer } from './elements/StickerElementRenderer';
+import { TextElementRenderer } from './elements/text-element-renderer';
+import { ImageElementRenderer } from './elements/image-element-renderer';
+import { ShapeElementRenderer } from './elements/shape-element-renderer';
+import { BackgroundElementRenderer } from './elements/background-element-renderer';
+import { StickerElementRenderer } from './elements/sticker-element-renderer';
 
 interface CanvasElementRendererProps {
   element: CanvasElement;

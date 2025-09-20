@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Text, Group } from 'react-konva';
 import Konva from 'konva';
 import { TextElement } from '../../../types/canvas';
-import { useCanvasStore } from '../../../store/canvasStore';
+import { useCanvasStore } from '../../../store/canvas-store';
 
 interface TextElementRendererProps {
   element: TextElement;

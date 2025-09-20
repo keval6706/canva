@@ -11,9 +11,9 @@ import {
   EyeIcon,
   EyeSlashIcon
 } from '@heroicons/react/24/outline';
-import { useCanvasStore } from '../../store/canvasStore';
-import { ExportModal } from './ExportModal';
-import { CanvasSizeSelector } from './CanvasSizeSelector';
+import { useCanvasStore } from '../../store/canvas-store';
+import { ExportModal } from './export-modal';
+import { CanvasSizeSelector } from './canvas-size-selector';
 import { ExportOptions } from '../../types/canvas';
 import { Button } from './button';
 
@@ -97,13 +97,15 @@ export const Toolbar: React.FC = () => {
             <MagnifyingGlassMinusIcon className="w-5 h-5" />
           </Button>
           
-          <button
+          <Button
             onClick={handleZoomReset}
-            className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200 min-w-[60px]"
+            variant="outline"
+            size="sm"
+            className="min-w-[60px]"
             title="Reset Zoom"
           >
             {Math.round(zoom * 100)}%
-          </button>
+          </Button>
           
           <Button
             onClick={handleZoomIn}

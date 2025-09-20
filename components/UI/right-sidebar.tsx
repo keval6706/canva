@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { LayersPanel } from './LayersPanel';
-import { PropertiesPanel } from './PropertiesPanel';
+import { LayersPanel } from './layers-panel';
+import { PropertiesPanel } from './properties-panel';
 
 export const RightSidebar: React.FC = () => {
   return (

@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Image as KonvaImage, Group } from 'react-konva';
 import Konva from 'konva';
 import { StickerElement } from '../../../types/canvas';
-import { useCanvasStore } from '../../../store/canvasStore';
+import { useCanvasStore } from '../../../store/canvas-store';
 
 interface StickerElementRendererProps {
   element: StickerElement;

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useCanvasStore } from '../../store/canvasStore';
+import { useCanvasStore } from '../../store/canvas-store';
 import { Button } from './button';
 
 interface CanvasSize {

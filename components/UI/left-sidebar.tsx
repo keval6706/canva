@@ -7,9 +7,9 @@ import {
   PhotoIcon,
   Square3Stack3DIcon
 } from '@heroicons/react/24/outline';
-import { useCanvasStore } from '../../store/canvasStore';
+import { useCanvasStore } from '../../store/canvas-store';
 import { Tool, CanvasElement, Template } from '../../types/canvas';
-import { sampleTemplates, sampleStickers, sampleImages } from '../../data/sampleAssets';
+import { sampleTemplates, sampleStickers, sampleImages } from '../../data/sample-assets';
 import { Button } from './button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { Label } from './label';

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Group, Line } from 'react-konva';
-import { useCanvasStore } from '../../store/canvasStore';
+import { useCanvasStore } from '../../store/canvas-store';
 
 interface GuidesOverlayProps {
   selectedIds: string[];

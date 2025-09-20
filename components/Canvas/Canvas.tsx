@@ -3,11 +3,11 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Stage, Layer, Rect } from 'react-konva';
 import Konva from 'konva';
-import { useCanvasStore } from '../../store/canvasStore';
-import { CanvasElementRenderer } from './CanvasElementRenderer';
-import { TransformerOverlay } from './TransformerOverlay';
-import { GridOverlay } from './GridOverlay';
-import { GuidesOverlay } from './GuidesOverlay';
+import { useCanvasStore } from '../../store/canvas-store';
+import { CanvasElementRenderer } from './canvas-element-renderer';
+import { TransformerOverlay } from './transformer-overlay';
+import { GridOverlay } from './grid-overlay';
+import { GuidesOverlay } from './guides-overlay';
 
 interface CanvasProps {
   width: number;

@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Transformer } from 'react-konva';
 import Konva from 'konva';
-import { useCanvasStore } from '../../store/canvasStore';
+import { useCanvasStore } from '../../store/canvas-store';
 
 interface TransformerOverlayProps {
   selectedIds: string[];

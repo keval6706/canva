@@ -4,7 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import { Group, Rect, Circle, RegularPolygon, Line, Arrow, Star } from 'react-konva';
 import Konva from 'konva';
 import { ShapeElement } from '../../../types/canvas';
-import { useCanvasStore } from '../../../store/canvasStore';
+import { useCanvasStore } from '../../../store/canvas-store';
 
 interface ShapeElementRendererProps {
   element: ShapeElement;

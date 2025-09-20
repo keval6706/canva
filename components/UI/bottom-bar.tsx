@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useCanvasStore } from '../../store/canvasStore';
+import { useCanvasStore } from '../../store/canvas-store';
 
 export const BottomBar: React.FC = () => {
   const { width, height, zoom, selectedIds, elements } = useCanvasStore();

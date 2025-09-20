@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Group, Rect } from 'react-konva';
-import { useCanvasStore } from '../../store/canvasStore';
-import { getCombinedBounds } from '../../utils/elementBounds';
+import { useCanvasStore } from '../../store/canvas-store';
+import { getCombinedBounds } from '../../utils/element-bounds';
 
 interface SelectionBoxProps {
   selectedIds: string[];

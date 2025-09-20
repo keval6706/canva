@@ -9,7 +9,7 @@ import {
   TrashIcon,
   DocumentDuplicateIcon
 } from '@heroicons/react/24/outline';
-import { useCanvasStore } from '../../store/canvasStore';
+import { useCanvasStore } from '../../store/canvas-store';
 import { CanvasElement } from '../../types/canvas';
 import { Button } from './button';
 

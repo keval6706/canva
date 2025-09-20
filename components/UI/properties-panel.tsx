@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useCanvasStore } from '../../store/canvasStore';
+import { useCanvasStore } from '../../store/canvas-store';
 import { TextElement, ImageElement, ShapeElement, CanvasElement } from '../../types/canvas';
 import { Input } from './input';
 import { Label } from './label';
@@ -224,10 +224,8 @@ export const PropertiesPanel: React.FC = () => {
           <h4 className="text-xs font-medium text-gray-700">Filters</h4>
           
           <div>
-            <label className="block text-xs text-gray-600 mb-1">
-              Brightness: {imageElement.filters.brightness || 0}
-            </label>
-            <input
+            <Label>Brightness: {imageElement.filters.brightness || 0}</Label>
+            <Input
               type="range"
               min="-1"
               max="1"
@@ -244,10 +242,8 @@ export const PropertiesPanel: React.FC = () => {
           </div>
           
           <div>
-            <label className="block text-xs text-gray-600 mb-1">
-              Contrast: {imageElement.filters.contrast || 0}
-            </label>
-            <input
+            <Label>Contrast: {imageElement.filters.contrast || 0}</Label>
+            <Input
               type="range"
               min="-1"
               max="1"

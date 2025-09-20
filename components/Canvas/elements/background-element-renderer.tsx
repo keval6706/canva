@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Rect, Group, Image as KonvaImage } from 'react-konva';
 import Konva from 'konva';
 import { BackgroundElement } from '../../../types/canvas';
-import { useCanvasStore } from '../../../store/canvasStore';
+import { useCanvasStore } from '../../../store/canvas-store';
 
 interface BackgroundElementRendererProps {
   element: BackgroundElement;
