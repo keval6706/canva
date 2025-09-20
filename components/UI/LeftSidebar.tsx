@@ -5,14 +5,14 @@ import {
   CursorArrowRaysIcon,
   ChatBubbleBottomCenterTextIcon,
   PhotoIcon,
-  Square3Stack3DIcon,
-  SparklesIcon,
-  DocumentDuplicateIcon,
-  ArrowUpTrayIcon
+  Square3Stack3DIcon
 } from '@heroicons/react/24/outline';
 import { useCanvasStore } from '../../store/canvasStore';
 import { Tool, CanvasElement, Template } from '../../types/canvas';
 import { sampleTemplates, sampleStickers, sampleImages } from '../../data/sampleAssets';
+import { Button } from './button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
+import { Label } from './label';
 
 interface ToolItem {
   id: Tool;
@@ -27,12 +27,6 @@ const tools: ToolItem[] = [
   { id: 'rectangle', name: 'Shapes', icon: Square3Stack3DIcon },
 ];
 
-const assetTabs = [
-  { id: 'templates', name: 'Templates', icon: DocumentDuplicateIcon },
-  { id: 'stickers', name: 'Stickers', icon: SparklesIcon },
-  { id: 'uploads', name: 'Uploads', icon: ArrowUpTrayIcon },
-];
-
 export const LeftSidebar: React.FC = () => {
     const { 
     tool,
@@ -40,8 +34,6 @@ export const LeftSidebar: React.FC = () => {
     addElement, 
     setCanvasSize 
   } = useCanvasStore();
-  const [activeTab, setActiveTab] = useState<string>('tools');
-  const [activeAssetTab, setActiveAssetTab] = useState<string>('templates');
 
   const handleToolSelect = (selectedTool: Tool) => {
     setTool(selectedTool);
@@ -161,209 +153,163 @@ export const LeftSidebar: React.FC = () => {
 
   return (
     <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-      {/* Tab Navigation */}
-      <div className="flex border-b border-gray-200">
-        <button
-          onClick={() => setActiveTab('tools')}
-          className={`flex-1 px-4 py-3 text-sm font-medium ${
-            activeTab === 'tools'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Tools
-        </button>
-        <button
-          onClick={() => setActiveTab('assets')}
-          className={`flex-1 px-4 py-3 text-sm font-medium ${
-            activeTab === 'assets'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Assets
-        </button>
-      </div>
+      <Tabs defaultValue="tools" className="flex flex-col h-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="tools">Tools</TabsTrigger>
+          <TabsTrigger value="assets">Assets</TabsTrigger>
+        </TabsList>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto">
-        {activeTab === 'tools' && (
-          <div className="p-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">Tools</h3>
-            <div className="space-y-2">
-              {tools.map((toolItem) => (
-                <button
-                  key={toolItem.id}
-                  onClick={() => handleToolSelect(toolItem.id)}
-                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left ${
-                    tool === toolItem.id
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <toolItem.icon className="w-5 h-5" />
-                  <span>{toolItem.name}</span>
-                </button>
-              ))}
+        <TabsContent value="tools" className="flex-1 overflow-y-auto p-4">
+          <div className="space-y-4">
+            <div>
+              <Label className="text-sm font-medium">Tools</Label>
+              <div className="space-y-2 mt-2">
+                {tools.map((toolItem) => (
+                  <Button
+                    key={toolItem.id}
+                    onClick={() => handleToolSelect(toolItem.id)}
+                    variant={tool === toolItem.id ? "default" : "ghost"}
+                    className="w-full justify-start"
+                  >
+                    <toolItem.icon className="w-5 h-5 mr-2" />
+                    {toolItem.name}
+                  </Button>
+                ))}
+              </div>
             </div>
 
             {tool === 'rectangle' && (
-              <div className="mt-6">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Shapes</h3>
-                <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-sm font-medium">Shapes</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
                   {['rectangle', 'circle', 'triangle', 'star'].map((shape) => (
-                    <button
+                    <Button
                       key={shape}
                       onClick={() => handleAddShape(shape)}
-                      className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center justify-center"
+                      variant="outline"
+                      className="h-12"
                     >
-                      <div className="text-xs text-center">
-                        {shape.charAt(0).toUpperCase() + shape.slice(1)}
-                      </div>
-                    </button>
+                      {shape.charAt(0).toUpperCase() + shape.slice(1)}
+                    </Button>
                   ))}
                 </div>
               </div>
             )}
 
             {tool === 'image' && (
-              <div className="mt-6">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Add Image</h3>
-                <label className="block">
+              <div>
+                <Label className="text-sm font-medium">Add Image</Label>
+                <label className="block mt-2">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
                     className="hidden"
                   />
-                  <div className="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 cursor-pointer text-center">
-                    <PhotoIcon className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                    <div className="text-sm text-gray-600">
-                      Click to upload image
-                    </div>
-                  </div>
+                  <Button variant="outline" className="w-full h-20 flex-col">
+                    <PhotoIcon className="w-8 h-8 mb-2" />
+                    Click to upload image
+                  </Button>
                 </label>
               </div>
             )}
           </div>
-        )}
+        </TabsContent>
 
-        {activeTab === 'assets' && (
-          <div className="p-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">Asset Library</h3>
-            
-            {/* Asset tab navigation */}
-            <div className="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
-              {assetTabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveAssetTab(tab.id)}
-                  className={`flex-1 px-3 py-2 text-xs font-medium rounded-md transition-colors ${
-                    activeAssetTab === tab.id
-                      ? 'bg-white text-gray-900 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  {tab.name}
-                </button>
-              ))}
-            </div>
+        <TabsContent value="assets" className="flex-1 overflow-y-auto p-4">
+          <Tabs defaultValue="templates" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="templates">Templates</TabsTrigger>
+              <TabsTrigger value="stickers">Stickers</TabsTrigger>
+              <TabsTrigger value="uploads">Uploads</TabsTrigger>
+            </TabsList>
 
-            {/* Templates */}
-            {activeAssetTab === 'templates' && (
-              <div className="space-y-3">
-                <div className="text-xs text-gray-600 mb-2">Choose a template to get started</div>
+            <TabsContent value="templates" className="mt-4">
+              <Label className="text-sm text-muted-foreground">Choose a template to get started</Label>
+              <div className="space-y-3 mt-2">
                 {sampleTemplates.map((template) => (
                   <div
                     key={template.id}
                     onClick={() => handleTemplateSelect(template)}
-                    className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer"
+                    className="border rounded-lg p-3 hover:bg-accent cursor-pointer"
                   >
                     <div className="flex items-center space-x-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={template.thumbnail}
                         alt={template.name}
                         className="w-12 h-12 rounded border"
                       />
                       <div>
-                        <div className="font-medium text-sm text-gray-900">{template.name}</div>
-                        <div className="text-xs text-gray-500">{template.category}</div>
-                        <div className="text-xs text-gray-400">{template.width} × {template.height}</div>
+                        <div className="font-medium text-sm">{template.name}</div>
+                        <div className="text-xs text-muted-foreground">{template.category}</div>
+                        <div className="text-xs text-muted-foreground">{template.width} × {template.height}</div>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-            )}
+            </TabsContent>
 
-            {/* Stickers */}
-            {activeAssetTab === 'stickers' && (
-              <div className="space-y-3">
-                <div className="text-xs text-gray-600 mb-2">Click to add stickers</div>
-                <div className="grid grid-cols-4 gap-2">
-                  {sampleStickers.map((sticker) => (
-                    <div
-                      key={sticker.id}
-                      onClick={() => handleStickerSelect(sticker)}
-                      className="aspect-square border border-gray-200 rounded-lg p-2 hover:bg-gray-50 cursor-pointer flex items-center justify-center"
-                      title={sticker.name}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={sticker.src}
-                        alt={sticker.name}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Uploads */}
-            {activeAssetTab === 'uploads' && (
-              <div className="space-y-3">
-                <div className="text-xs text-gray-600 mb-2">Sample images</div>
-                <div className="grid grid-cols-2 gap-2">
-                  {sampleImages.map((image) => (
-                    <div
-                      key={image.id}
-                      onClick={() => handleAssetImageSelect(image)}
-                      className="aspect-square border border-gray-200 rounded-lg p-2 hover:bg-gray-50 cursor-pointer"
-                      title={image.name}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={image.src}
-                        alt={image.name}
-                        className="w-full h-full object-cover rounded"
-                      />
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="mt-4">
-                  <label className="block">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
+            <TabsContent value="stickers" className="mt-4">
+              <Label className="text-sm text-muted-foreground">Click to add stickers</Label>
+              <div className="grid grid-cols-4 gap-2 mt-2">
+                {sampleStickers.map((sticker) => (
+                  <Button
+                    key={sticker.id}
+                    onClick={() => handleStickerSelect(sticker)}
+                    variant="outline"
+                    className="aspect-square p-2"
+                    title={sticker.name}
+                  >
+                    <img
+                      src={sticker.src}
+                      alt={sticker.name}
+                      className="w-full h-full object-contain"
                     />
-                    <div className="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 cursor-pointer text-center">
-                      <PhotoIcon className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                      <div className="text-sm text-gray-600">
-                        Upload your own image
-                      </div>
-                    </div>
-                  </label>
-                </div>
+                  </Button>
+                ))}
               </div>
-            )}
-          </div>
-        )}
-      </div>
+            </TabsContent>
+
+            <TabsContent value="uploads" className="mt-4">
+              <Label className="text-sm text-muted-foreground">Sample images</Label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {sampleImages.map((image) => (
+                  <Button
+                    key={image.id}
+                    onClick={() => handleAssetImageSelect(image)}
+                    variant="outline"
+                    className="aspect-square p-2"
+                    title={image.name}
+                  >
+                    <img
+                      src={image.src}
+                      alt={image.name}
+                      className="w-full h-full object-cover rounded"
+                    />
+                  </Button>
+                ))}
+              </div>
+              
+              <div className="mt-4">
+                <Label className="text-sm text-muted-foreground">Upload your own image</Label>
+                <label className="block mt-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <Button variant="outline" className="w-full h-20 flex-col">
+                    <PhotoIcon className="w-8 h-8 mb-2" />
+                    Click to upload image
+                  </Button>
+                </label>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

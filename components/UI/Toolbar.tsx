@@ -15,6 +15,7 @@ import { useCanvasStore } from '../../store/canvasStore';
 import { ExportModal } from './ExportModal';
 import { CanvasSizeSelector } from './CanvasSizeSelector';
 import { ExportOptions } from '../../types/canvas';
+import { Button } from './button';
 
 export const Toolbar: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
@@ -61,27 +62,25 @@ export const Toolbar: React.FC = () => {
     <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between">
       {/* Left Section - History */}
       <div className="flex items-center space-x-2">
-        <button
+        <Button
           onClick={undo}
           disabled={!canUndo}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            !canUndo ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700'
-          }`}
+          variant="ghost"
+          size="sm"
           title="Undo (Ctrl+Z)"
         >
           <ArrowUturnLeftIcon className="w-5 h-5" />
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={redo}
           disabled={!canRedo}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            !canRedo ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700'
-          }`}
+          variant="ghost"
+          size="sm"
           title="Redo (Ctrl+Y)"
         >
           <ArrowUturnRightIcon className="w-5 h-5" />
-        </button>
+        </Button>
       </div>
 
       {/* Center Section - Canvas Size & Zoom Controls */}
@@ -89,13 +88,14 @@ export const Toolbar: React.FC = () => {
         <CanvasSizeSelector />
         
         <div className="flex items-center space-x-2">
-          <button
+          <Button
             onClick={handleZoomOut}
-            className="p-2 rounded hover:bg-gray-100 text-gray-700"
+            variant="ghost"
+            size="sm"
             title="Zoom Out"
           >
             <MagnifyingGlassMinusIcon className="w-5 h-5" />
-          </button>
+          </Button>
           
           <button
             onClick={handleZoomReset}
@@ -105,43 +105,41 @@ export const Toolbar: React.FC = () => {
             {Math.round(zoom * 100)}%
           </button>
           
-          <button
+          <Button
             onClick={handleZoomIn}
-            className="p-2 rounded hover:bg-gray-100 text-gray-700"
+            variant="ghost"
+            size="sm"
             title="Zoom In"
           >
             <MagnifyingGlassPlusIcon className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Right Section - View Options & Export */}
       <div className="flex items-center space-x-2">
-        <button
+        <Button
           onClick={toggleGrid}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            grid.enabled ? 'bg-blue-100 text-blue-700' : 'text-gray-700'
-          }`}
+          variant={grid.enabled ? "default" : "ghost"}
+          size="sm"
           title="Toggle Grid"
         >
           <Squares2X2Icon className="w-5 h-5" />
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={toggleRulers}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            rulers.enabled ? 'bg-blue-100 text-blue-700' : 'text-gray-700'
-          }`}
+          variant={rulers.enabled ? "default" : "ghost"}
+          size="sm"
           title="Toggle Rulers"
         >
           <Squares2X2Icon className="w-5 h-5" />
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={toggleGuides}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            guides.enabled ? 'bg-blue-100 text-blue-700' : 'text-gray-700'
-          }`}
+          variant={guides.enabled ? "default" : "ghost"}
+          size="sm"
           title="Toggle Guides"
         >
           {guides.enabled ? (
@@ -149,18 +147,17 @@ export const Toolbar: React.FC = () => {
           ) : (
             <EyeSlashIcon className="w-5 h-5" />
           )}
-        </button>
+        </Button>
 
         <div className="w-px h-6 bg-gray-300 mx-2" />
         
-        <button
+        <Button
           onClick={handleExport}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center space-x-2"
           title="Export"
         >
           <DocumentArrowDownIcon className="w-4 h-4" />
-          <span>Export</span>
-        </button>
+          Export
+        </Button>
       </div>
 
       <ExportModal

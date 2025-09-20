@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useCanvasStore } from '../../store/canvasStore';
 import { CanvasElement } from '../../types/canvas';
+import { Button } from './button';
 
 export const LayersPanel: React.FC = () => {
   const { 
@@ -115,57 +116,61 @@ export const LayersPanel: React.FC = () => {
                 
                 {/* Actions */}
                 <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleVisibility(element.id, element.visible);
                     }}
-                    className="p-1 hover:bg-gray-200 rounded"
+                    variant="ghost"
+                    size="sm"
                     title={element.visible ? 'Hide' : 'Show'}
                   >
                     {element.visible ? (
-                      <EyeIcon className="w-4 h-4 text-gray-600" />
+                      <EyeIcon className="w-4 h-4" />
                     ) : (
-                      <EyeSlashIcon className="w-4 h-4 text-gray-400" />
+                      <EyeSlashIcon className="w-4 h-4" />
                     )}
-                  </button>
+                  </Button>
                   
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleLock(element.id, element.locked);
                     }}
-                    className="p-1 hover:bg-gray-200 rounded"
+                    variant="ghost"
+                    size="sm"
                     title={element.locked ? 'Unlock' : 'Lock'}
                   >
                     {element.locked ? (
-                      <LockClosedIcon className="w-4 h-4 text-gray-600" />
+                      <LockClosedIcon className="w-4 h-4" />
                     ) : (
-                      <LockOpenIcon className="w-4 h-4 text-gray-400" />
+                      <LockOpenIcon className="w-4 h-4" />
                     )}
-                  </button>
+                  </Button>
                   
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       duplicateElement(element.id);
                     }}
-                    className="p-1 hover:bg-gray-200 rounded"
+                    variant="ghost"
+                    size="sm"
                     title="Duplicate"
                   >
-                    <DocumentDuplicateIcon className="w-4 h-4 text-gray-600" />
-                  </button>
+                    <DocumentDuplicateIcon className="w-4 h-4" />
+                  </Button>
                   
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       deleteElement(element.id);
                     }}
-                    className="p-1 hover:bg-red-100 rounded"
+                    variant="ghost"
+                    size="sm"
                     title="Delete"
                   >
-                    <TrashIcon className="w-4 h-4 text-red-600" />
-                  </button>
+                    <TrashIcon className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             ))}
@@ -177,18 +182,22 @@ export const LayersPanel: React.FC = () => {
       {selectedIds.length > 0 && (
         <div className="p-4 border-t border-gray-200">
           <div className="flex space-x-2">
-            <button
+            <Button
               onClick={() => selectedIds.forEach(id => moveElementUp(id))}
-              className="flex-1 px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+              variant="outline"
+              size="sm"
+              className="flex-1"
             >
               Bring Forward
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => selectedIds.forEach(id => moveElementDown(id))}
-              className="flex-1 px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+              variant="outline"
+              size="sm"
+              className="flex-1"
             >
               Send Backward
-            </button>
+            </Button>
           </div>
         </div>
       )}

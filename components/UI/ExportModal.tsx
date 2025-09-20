@@ -3,6 +3,23 @@
 import React, { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ExportOptions } from '../../types/canvas';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from './dialog';
+import { Button } from './button';
+import { Input } from './input';
+import { Label } from './label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './select';
+import { Checkbox } from './checkbox';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -31,43 +48,37 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-96 p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Export Canvas</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <XMarkIcon className="w-5 h-5" />
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Export Canvas</DialogTitle>
+        </DialogHeader>
 
         <div className="space-y-4">
           {/* Format Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Format
-            </label>
-            <select
+            <Label htmlFor="format">Format</Label>
+            <Select
               value={options.format}
-              onChange={(e) => setOptions({ ...options, format: e.target.value as 'png' | 'jpg' | 'pdf' | 'svg' })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onValueChange={(value) => setOptions({ ...options, format: value as 'png' | 'jpg' | 'pdf' | 'svg' })}
             >
-              <option value="png">PNG</option>
-              <option value="jpg">JPG</option>
-              <option value="pdf">PDF</option>
-              <option value="svg">SVG</option>
-            </select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select format" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="png">PNG</SelectItem>
+                <SelectItem value="jpg">JPG</SelectItem>
+                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="svg">SVG</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Quality */}
           {(options.format === 'png' || options.format === 'jpg') && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Quality: {Math.round(options.quality * 100)}%
-              </label>
-              <input
+              <Label>Quality: {Math.round(options.quality * 100)}%</Label>
+              <Input
                 type="range"
                 min="0.1"
                 max="1"
@@ -81,10 +92,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
           {/* Scale */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Scale: {options.scale}x
-            </label>
-            <input
+            <Label>Scale: {options.scale}x</Label>
+            <Input
               type="range"
               min="0.5"
               max="3"
@@ -97,44 +106,41 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
           {/* Options */}
           <div className="space-y-2">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="transparent"
                 checked={options.transparentBackground}
-                onChange={(e) => setOptions({ ...options, transparentBackground: e.target.checked })}
-                className="mr-2"
+                onCheckedChange={(checked) => setOptions({ ...options, transparentBackground: checked as boolean })}
               />
-              <span className="text-sm text-gray-700">Transparent background</span>
-            </label>
+              <Label htmlFor="transparent">Transparent background</Label>
+            </div>
 
-            <label className="flex items-center">
-              <input
-                type="checkbox"
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="selected-only"
                 checked={options.selectedOnly}
-                onChange={(e) => setOptions({ ...options, selectedOnly: e.target.checked })}
-                className="mr-2"
+                onCheckedChange={(checked) => setOptions({ ...options, selectedOnly: checked as boolean })}
               />
-              <span className="text-sm text-gray-700">Selected elements only</span>
-            </label>
+              <Label htmlFor="selected-only">Selected elements only</Label>
+            </div>
           </div>
 
           {/* Actions */}
           <div className="flex space-x-3 pt-4">
-            <button
+            <Button
               onClick={onClose}
-              className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              variant="outline"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleExport}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Export
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };

@@ -101,13 +101,13 @@ export const useCanvasStore = create<CanvasStore>()(
       } as CanvasElement;
 
       set((state) => {
-        const newElements = [...state.elements, element];
+        const _elements = [...state.elements, element];
         return {
-          elements: newElements,
+          elements: _elements,
           selectedIds: [element.id],
           history: {
             ...state.history,
-            present: newElements,
+            present: _elements,
             past: [...state.history.past, state.elements],
             future: []
           }
@@ -117,17 +117,17 @@ export const useCanvasStore = create<CanvasStore>()(
 
     updateElement: (id, updates) => {
       set((state) => {
-        const elementIndex = state.elements.findIndex(el => el.id === id);
-        if (elementIndex === -1) return state;
+        const _index = state.elements.findIndex(el => el.id === id);
+        if (_index === -1) return state;
 
-        const newElements = [...state.elements];
-        newElements[elementIndex] = { ...newElements[elementIndex], ...updates } as CanvasElement;
+        const _elements = [...state.elements];
+        _elements[_index] = { ..._elements[_index], ...updates } as CanvasElement;
 
         return {
-          elements: newElements,
+          elements: _elements,
           history: {
             ...state.history,
-            present: newElements,
+            present: _elements,
             past: [...state.history.past, state.elements],
             future: []
           }
@@ -137,15 +137,15 @@ export const useCanvasStore = create<CanvasStore>()(
 
     deleteElement: (id) => {
       set((state) => {
-        const newElements = state.elements.filter(el => el.id !== id);
+        const _elements = state.elements.filter(el => el.id !== id);
         const newSelectedIds = state.selectedIds.filter(selectedId => selectedId !== id);
 
         return {
-          elements: newElements,
+          elements: _elements,
           selectedIds: newSelectedIds,
           history: {
             ...state.history,
-            present: newElements,
+            present: _elements,
             past: [...state.history.past, state.elements],
             future: []
           }
@@ -155,15 +155,15 @@ export const useCanvasStore = create<CanvasStore>()(
 
     deleteElements: (ids) => {
       set((state) => {
-        const newElements = state.elements.filter(el => !ids.includes(el.id));
+        const _elements = state.elements.filter(el => !ids.includes(el.id));
         const newSelectedIds = state.selectedIds.filter(selectedId => !ids.includes(selectedId));
 
         return {
-          elements: newElements,
+          elements: _elements,
           selectedIds: newSelectedIds,
           history: {
             ...state.history,
-            present: newElements,
+            present: _elements,
             past: [...state.history.past, state.elements],
             future: []
           }
@@ -188,13 +188,13 @@ export const useCanvasStore = create<CanvasStore>()(
       };
 
       set((state) => {
-        const newElements = [...state.elements, duplicated];
+        const _elements = [...state.elements, duplicated];
         return {
-          elements: newElements,
+          elements: _elements,
           selectedIds: [duplicated.id],
           history: {
             ...state.history,
-            present: newElements,
+            present: _elements,
             past: [...state.history.past, state.elements],
             future: []
           }
@@ -219,13 +219,13 @@ export const useCanvasStore = create<CanvasStore>()(
       }));
 
       set((state) => {
-        const newElements = [...state.elements, ...duplicated];
+        const _elements = [...state.elements, ...duplicated];
         return {
-          elements: newElements,
+          elements: _elements,
           selectedIds: duplicated.map(el => el.id),
           history: {
             ...state.history,
-            present: newElements,
+            present: _elements,
             past: [...state.history.past, state.elements],
             future: []
           }
@@ -256,13 +256,13 @@ export const useCanvasStore = create<CanvasStore>()(
         const element = state.elements.find(el => el.id === id);
         if (!element) return state;
 
-        const newElements = state.elements.map(el => {
+        const _elements = state.elements.map(el => {
           if (el.id === id) return { ...el, zIndex: el.zIndex + 1 };
           if (el.zIndex === element.zIndex + 1) return { ...el, zIndex: el.zIndex - 1 };
           return el;
         });
 
-        return { elements: newElements };
+        return { elements: _elements };
       });
     },
 
@@ -271,13 +271,13 @@ export const useCanvasStore = create<CanvasStore>()(
         const element = state.elements.find(el => el.id === id);
         if (!element || element.zIndex === 0) return state;
 
-        const newElements = state.elements.map(el => {
+        const _elements = state.elements.map(el => {
           if (el.id === id) return { ...el, zIndex: el.zIndex - 1 };
           if (el.zIndex === element.zIndex - 1) return { ...el, zIndex: el.zIndex + 1 };
           return el;
         });
 
-        return { elements: newElements };
+        return { elements: _elements };
       });
     },
 
@@ -290,10 +290,10 @@ export const useCanvasStore = create<CanvasStore>()(
       get().updateElement(id, { zIndex: 0 });
       // Adjust other elements
       set((state) => {
-        const newElements = state.elements.map(el => 
+        const _elements = state.elements.map(el => 
           el.id !== id ? { ...el, zIndex: el.zIndex + 1 } : el
         );
-        return { elements: newElements };
+        return { elements: _elements };
       });
     },
 
@@ -301,19 +301,19 @@ export const useCanvasStore = create<CanvasStore>()(
     groupElements: (ids) => {
       const groupId = uuidv4();
       set((state) => {
-        const newElements = state.elements.map(el => 
+        const _elements = state.elements.map(el => 
           ids.includes(el.id) ? { ...el, groupId } : el
         );
-        return { elements: newElements };
+        return { elements: _elements };
       });
     },
 
     ungroupElements: (groupId) => {
       set((state) => {
-        const newElements = state.elements.map(el => 
+        const _elements = state.elements.map(el => 
           el.groupId === groupId ? { ...el, groupId: undefined } : el
         );
-        return { elements: newElements };
+        return { elements: _elements };
       });
     },
 
@@ -346,13 +346,13 @@ export const useCanvasStore = create<CanvasStore>()(
       }));
 
       set((state) => {
-        const newElements = [...state.elements, ...duplicated];
+        const _elements = [...state.elements, ...duplicated];
         return {
-          elements: newElements,
+          elements: _elements,
           selectedIds: duplicated.map(el => el.id),
           history: {
             ...state.history,
-            present: newElements,
+            present: _elements,
             past: [...state.history.past, state.elements],
             future: []
           }

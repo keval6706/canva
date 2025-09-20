@@ -3,6 +3,16 @@
 import React from 'react';
 import { useCanvasStore } from '../../store/canvasStore';
 import { TextElement, ImageElement, ShapeElement, CanvasElement } from '../../types/canvas';
+import { Input } from './input';
+import { Label } from './label';
+import { Button } from './button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './select';
 
 export const PropertiesPanel: React.FC = () => {
   const { selectedIds, elements, updateElement } = useCanvasStore();
@@ -39,10 +49,9 @@ export const PropertiesPanel: React.FC = () => {
   const renderTextProperties = (textElement: TextElement) => (
     <div className="space-y-4">
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Text
-        </label>
+        <Label htmlFor="text-content">Text</Label>
         <textarea
+          id="text-content"
           value={textElement.text}
           onChange={(e) => handleUpdate({ text: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
@@ -52,87 +61,77 @@ export const PropertiesPanel: React.FC = () => {
       
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Font Size
-          </label>
-          <input
+          <Label htmlFor="font-size">Font Size</Label>
+          <Input
+            id="font-size"
             type="number"
             value={textElement.fontSize}
             onChange={(e) => handleUpdate({ fontSize: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             min="8"
             max="200"
           />
         </div>
         
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Font Family
-          </label>
-          <select
+          <Label htmlFor="font-family">Font Family</Label>
+          <Select
             value={textElement.fontFamily}
-            onChange={(e) => handleUpdate({ fontFamily: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            onValueChange={(value) => handleUpdate({ fontFamily: value })}
           >
-            <option value="Arial">Arial</option>
-            <option value="Helvetica">Helvetica</option>
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Verdana">Verdana</option>
-          </select>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Arial">Arial</SelectItem>
+              <SelectItem value="Helvetica">Helvetica</SelectItem>
+              <SelectItem value="Times New Roman">Times New Roman</SelectItem>
+              <SelectItem value="Georgia">Georgia</SelectItem>
+              <SelectItem value="Verdana">Verdana</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       
       <div className="grid grid-cols-3 gap-2">
-        <button
+        <Button
           onClick={() => handleUpdate({ 
             fontWeight: textElement.fontWeight === 'bold' ? 'normal' : 'bold' 
           })}
-          className={`px-3 py-2 text-sm rounded ${
-            textElement.fontWeight === 'bold'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          variant={textElement.fontWeight === 'bold' ? 'default' : 'outline'}
+          size="sm"
         >
           Bold
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={() => handleUpdate({ 
             fontStyle: textElement.fontStyle === 'italic' ? 'normal' : 'italic' 
           })}
-          className={`px-3 py-2 text-sm rounded ${
-            textElement.fontStyle === 'italic'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          variant={textElement.fontStyle === 'italic' ? 'default' : 'outline'}
+          size="sm"
         >
           Italic
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={() => handleUpdate({ 
             textDecoration: textElement.textDecoration === 'underline' ? 'none' : 'underline' 
           })}
-          className={`px-3 py-2 text-sm rounded ${
-            textElement.textDecoration === 'underline'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          variant={textElement.textDecoration === 'underline' ? 'default' : 'outline'}
+          size="sm"
         >
           U
-        </button>
+        </Button>
       </div>
       
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Color
-        </label>
-        <input
+        <Label htmlFor="text-color">Color</Label>
+        <Input
+          id="text-color"
           type="color"
           value={textElement.fill}
           onChange={(e) => handleUpdate({ fill: e.target.value })}
-          className="w-full h-10 border border-gray-300 rounded-md"
+          className="w-full h-10"
         />
       </div>
     </div>
@@ -141,38 +140,34 @@ export const PropertiesPanel: React.FC = () => {
   const renderShapeProperties = (shapeElement: ShapeElement) => (
     <div className="space-y-4">
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Fill Color
-        </label>
-        <input
+        <Label htmlFor="fill-color">Fill Color</Label>
+        <Input
+          id="fill-color"
           type="color"
           value={shapeElement.fill || '#000000'}
           onChange={(e) => handleUpdate({ fill: e.target.value })}
-          className="w-full h-10 border border-gray-300 rounded-md"
+          className="w-full h-10"
         />
       </div>
       
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Stroke Color
-        </label>
-        <input
+        <Label htmlFor="stroke-color">Stroke Color</Label>
+        <Input
+          id="stroke-color"
           type="color"
           value={shapeElement.stroke || '#000000'}
           onChange={(e) => handleUpdate({ stroke: e.target.value })}
-          className="w-full h-10 border border-gray-300 rounded-md"
+          className="w-full h-10"
         />
       </div>
       
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Stroke Width
-        </label>
-        <input
+        <Label htmlFor="stroke-width">Stroke Width</Label>
+        <Input
+          id="stroke-width"
           type="number"
           value={shapeElement.strokeWidth || 0}
           onChange={(e) => handleUpdate({ strokeWidth: parseInt(e.target.value) })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
           min="0"
           max="20"
         />
@@ -180,14 +175,12 @@ export const PropertiesPanel: React.FC = () => {
       
       {shapeElement.shapeType === 'rectangle' && (
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Corner Radius
-          </label>
-          <input
+          <Label htmlFor="corner-radius">Corner Radius</Label>
+          <Input
+            id="corner-radius"
             type="number"
             value={shapeElement.cornerRadius || 0}
             onChange={(e) => handleUpdate({ cornerRadius: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             min="0"
             max="50"
           />
@@ -199,39 +192,31 @@ export const PropertiesPanel: React.FC = () => {
   const renderImageProperties = (imageElement: ImageElement) => (
     <div className="space-y-4">
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Image URL
-        </label>
-        <input
+        <Label htmlFor="image-url">Image URL</Label>
+        <Input
+          id="image-url"
           type="text"
           value={imageElement.src}
           onChange={(e) => handleUpdate({ src: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
         />
       </div>
       
       <div className="grid grid-cols-2 gap-3">
-        <button
+        <Button
           onClick={() => handleUpdate({ flipX: !imageElement.flipX })}
-          className={`px-3 py-2 text-sm rounded ${
-            imageElement.flipX
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          variant={imageElement.flipX ? 'default' : 'outline'}
+          size="sm"
         >
           Flip X
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={() => handleUpdate({ flipY: !imageElement.flipY })}
-          className={`px-3 py-2 text-sm rounded ${
-            imageElement.flipY
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+          variant={imageElement.flipY ? 'default' : 'outline'}
+          size="sm"
         >
           Flip Y
-        </button>
+        </Button>
       </div>
       
       {imageElement.filters && (
@@ -284,39 +269,37 @@ export const PropertiesPanel: React.FC = () => {
 
   const renderCommonProperties = () => (
     <div className="space-y-4 mt-6 pt-4 border-t border-gray-200">
-      <h4 className="text-xs font-medium text-gray-700">Position & Transform</h4>
+      <h4 className="text-sm font-medium">Position & Transform</h4>
       
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">X</label>
-          <input
+          <Label htmlFor="pos-x">X</Label>
+          <Input
+            id="pos-x"
             type="number"
             value={Math.round(element.transform.x)}
             onChange={(e) => handleUpdate({
               transform: { ...element.transform, x: parseInt(e.target.value) }
             })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
           />
         </div>
         
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">Y</label>
-          <input
+          <Label htmlFor="pos-y">Y</Label>
+          <Input
+            id="pos-y"
             type="number"
             value={Math.round(element.transform.y)}
             onChange={(e) => handleUpdate({
               transform: { ...element.transform, y: parseInt(e.target.value) }
             })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
           />
         </div>
       </div>
       
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Opacity: {Math.round(element.opacity * 100)}%
-        </label>
-        <input
+        <Label>Opacity: {Math.round(element.opacity * 100)}%</Label>
+        <Input
           type="range"
           min="0"
           max="1"
@@ -328,10 +311,8 @@ export const PropertiesPanel: React.FC = () => {
       </div>
       
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Rotation: {Math.round(element.transform.rotation)}°
-        </label>
-        <input
+        <Label>Rotation: {Math.round(element.transform.rotation)}°</Label>
+        <Input
           type="range"
           min="0"
           max="360"
