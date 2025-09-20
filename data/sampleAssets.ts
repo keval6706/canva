@@ -1,0 +1,200 @@
+import { Template } from '../types/canvas';
+
+export const sampleTemplates: Template[] = [
+  {
+    id: 'template-1',
+    name: 'Social Media Post',
+    category: 'Social Media',
+    thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzNCODJGNiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNCI+U29jaWFsPC90ZXh0Pjwvc3ZnPg==',
+    width: 1080,
+    height: 1080,
+    elements: [
+      {
+        id: 'bg-1',
+        type: 'background',
+        name: 'Background',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        zIndex: 0,
+        transform: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0 },
+        backgroundType: 'color',
+        color: '#3B82F6'
+      },
+      {
+        id: 'text-1',
+        type: 'text',
+        name: 'Title',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        zIndex: 1,
+        transform: { x: 100, y: 300, scaleX: 1, scaleY: 1, rotation: 0 },
+        text: 'Your Social Media Post',
+        fontSize: 48,
+        fontFamily: 'Arial',
+        fontWeight: 'bold',
+        fontStyle: 'normal',
+        textDecoration: 'none',
+        fill: '#FFFFFF',
+        align: 'center',
+        verticalAlign: 'middle',
+        lineHeight: 1.2,
+        letterSpacing: 0,
+        padding: 20,
+        width: 880,
+        wrap: 'word'
+      }
+    ]
+  },
+  {
+    id: 'template-2',
+    name: 'Business Card',
+    category: 'Business',
+    thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzFGMjkzNyIvPjx0ZXh0IHg9IjEwMCIgeT0iNjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIj5CdXNpbmVzcyBDYXJkPC90ZXh0Pjwvc3ZnPg==',
+    width: 900,
+    height: 540,
+    elements: [
+      {
+        id: 'bg-2',
+        type: 'background',
+        name: 'Background',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        zIndex: 0,
+        transform: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0 },
+        backgroundType: 'color',
+        color: '#1F2937'
+      },
+      {
+        id: 'text-2',
+        type: 'text',
+        name: 'Name',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        zIndex: 1,
+        transform: { x: 50, y: 100, scaleX: 1, scaleY: 1, rotation: 0 },
+        text: 'John Smith',
+        fontSize: 32,
+        fontFamily: 'Arial',
+        fontWeight: 'bold',
+        fontStyle: 'normal',
+        textDecoration: 'none',
+        fill: '#FFFFFF',
+        align: 'left',
+        verticalAlign: 'top',
+        lineHeight: 1.2,
+        letterSpacing: 0,
+        padding: 10,
+        wrap: 'word'
+      },
+      {
+        id: 'text-3',
+        type: 'text',
+        name: 'Title',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        zIndex: 2,
+        transform: { x: 50, y: 180, scaleX: 1, scaleY: 1, rotation: 0 },
+        text: 'Creative Director',
+        fontSize: 18,
+        fontFamily: 'Arial',
+        fontWeight: 'normal',
+        fontStyle: 'normal',
+        textDecoration: 'none',
+        fill: '#9CA3AF',
+        align: 'left',
+        verticalAlign: 'top',
+        lineHeight: 1.2,
+        letterSpacing: 0,
+        padding: 10,
+        wrap: 'word'
+      }
+    ]
+  },
+  {
+    id: 'template-3',
+    name: 'Poster',
+    category: 'Marketing',
+    thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0VGNDQ0NCIvPjx0ZXh0IHg9IjcwIiB5PSIxMDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0Ij5Qb3N0ZXI8L3RleHQ+PC9zdmc+',
+    width: 600,
+    height: 800,
+    elements: [
+      {
+        id: 'bg-3',
+        type: 'background',
+        name: 'Background',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        zIndex: 0,
+        transform: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0 },
+        backgroundType: 'color',
+        color: '#EF4444'
+      },
+      {
+        id: 'text-4',
+        type: 'text',
+        name: 'Headline',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        zIndex: 1,
+        transform: { x: 50, y: 200, scaleX: 1, scaleY: 1, rotation: 0 },
+        text: 'EVENT POSTER',
+        fontSize: 42,
+        fontFamily: 'Arial',
+        fontWeight: 'bold',
+        fontStyle: 'normal',
+        textDecoration: 'none',
+        fill: '#FFFFFF',
+        align: 'center',
+        verticalAlign: 'middle',
+        lineHeight: 1.1,
+        letterSpacing: 2,
+        padding: 20,
+        width: 500,
+        wrap: 'word'
+      }
+    ]
+  }
+];
+
+export const sampleStickers = [
+  {
+    id: 'sticker-1',
+    src: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjAiIGZpbGw9IiNGRkQ3MDAiLz4KPGNpcmNsZSBjeD0iMTgiIGN5PSIyMCIgcj0iMyIgZmlsbD0iIzAwMDAwMCIvPgo8Y2lyY2xlIGN4PSIzMiIgY3k9IjIwIiByPSIzIiBmaWxsPSIjMDAwMDAwIi8+CjxwYXRoIGQ9Ik0xNSAzMFEyNSA0MCAzNSAzMCIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPC9zdmc+',
+    name: 'Happy Face',
+    category: 'Emoji'
+  },
+  {
+    id: 'sticker-2',
+    src: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBvbHlnb24gcG9pbnRzPSIyNSw1IDM1LDE1IDQ1LDE1IDM1LDI1IDQwLDM1IDI1LDMwIDEwLDM1IDE1LDI1IDUsMTUgMTUsMTUiIGZpbGw9IiNGRkQ3MDAiLz4KPC9zdmc+',
+    name: 'Star',
+    category: 'Shapes'
+  },
+  {
+    id: 'sticker-3',
+    src: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI1IDVMMzAgMjBINDVMMzMuNzUgMjlMNDAuNDUgNDVMMjUgMzQuNUw5LjU1IDQ1TDE2LjI1IDI5TDUgMjBIMjBMMjUgNVoiIGZpbGw9IiNFRjQ0NDQiLz4KPC9zdmc+',
+    name: 'Heart',
+    category: 'Shapes'
+  }
+];
+
+export const sampleImages = [
+  {
+    id: 'img-1',
+    src: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0Y3RkFGQyIgc3Ryb2tlPSIjRDFEOUUwIi8+PHRleHQgeD0iMTAwIiB5PSIxMDAiIGZpbGw9IiM2QjczODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTQiPkltYWdlPC90ZXh0Pjwvc3ZnPg==',
+    name: 'Sample Image 1',
+    tags: ['sample', 'placeholder']
+  },
+  {
+    id: 'img-2',
+    src: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0Y5RkJGRiIgc3Ryb2tlPSIjRDFGQUU1Ii8+PHRleHQgeD0iMTAwIiB5PSIxMDAiIGZpbGw9IiMxMDdDNDEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTQiPkxhbmRzY2FwZTwvdGV4dD48L3N2Zz4=',
+    name: 'Landscape',
+    tags: ['nature', 'landscape']
+  }
+];

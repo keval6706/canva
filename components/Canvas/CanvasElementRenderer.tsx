@@ -1,0 +1,57 @@
+'use client';
+
+import React from 'react';
+import Konva from 'konva';
+import { CanvasElement, TextElement, ImageElement, ShapeElement, BackgroundElement, StickerElement } from '../../types/canvas';
+import { TextElementRenderer } from './elements/TextElementRenderer';
+import { ImageElementRenderer } from './elements/ImageElementRenderer';
+import { ShapeElementRenderer } from './elements/ShapeElementRenderer';
+import { BackgroundElementRenderer } from './elements/BackgroundElementRenderer';
+import { StickerElementRenderer } from './elements/StickerElementRenderer';
+
+interface CanvasElementRendererProps {
+  element: CanvasElement;
+  isSelected: boolean;
+  onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
+}
+
+export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
+  element,
+  isSelected,
+  onSelect,
+}) => {
+  switch (element.type) {
+    case 'text':
+      return <TextElementRenderer 
+        element={element as TextElement} 
+        isSelected={isSelected} 
+        onSelect={onSelect} 
+      />;
+    case 'image':
+      return <ImageElementRenderer 
+        element={element as ImageElement} 
+        isSelected={isSelected} 
+        onSelect={onSelect} 
+      />;
+    case 'shape':
+      return <ShapeElementRenderer 
+        element={element as ShapeElement} 
+        isSelected={isSelected} 
+        onSelect={onSelect} 
+      />;
+    case 'background':
+      return <BackgroundElementRenderer 
+        element={element as BackgroundElement} 
+        isSelected={isSelected} 
+        onSelect={onSelect} 
+      />;
+    case 'sticker':
+      return <StickerElementRenderer 
+        element={element as StickerElement} 
+        isSelected={isSelected} 
+        onSelect={onSelect} 
+      />;
+    default:
+      return null;
+  }
+};
