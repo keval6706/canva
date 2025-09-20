@@ -123,8 +123,15 @@ export const useCanvasStore = create<CanvasStore>()(
         const _elements = [...state.elements];
         _elements[_index] = { ..._elements[_index], ...updates } as CanvasElement;
 
+        // If element is being hidden, remove it from selection
+        let newSelectedIds = state.selectedIds;
+        if (updates.visible === false && state.selectedIds.includes(id)) {
+          newSelectedIds = state.selectedIds.filter(selectedId => selectedId !== id);
+        }
+
         return {
           elements: _elements,
+          selectedIds: newSelectedIds,
           history: {
             ...state.history,
             present: _elements,
