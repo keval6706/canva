@@ -136,6 +136,17 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     }
   }, [pan, zoom]);
 
+  // Center canvas on mount and when viewport size changes
+  useEffect(() => {
+    const centerCanvas = () => {
+      const centerX = (width - canvasWidth * zoom) / 2;
+      const centerY = (height - canvasHeight * zoom) / 2;
+      setPan({ x: centerX, y: centerY });
+    };
+
+    centerCanvas();
+  }, [width, height, canvasWidth, canvasHeight, zoom, setPan]);
+
   // Sort elements by zIndex
   const sortedElements = [...elements].sort((a, b) => a.zIndex - b.zIndex);
 
