@@ -413,7 +413,33 @@ export const useCanvasStore = create<CanvasStore>()(
 
     setPan: (pan) => set({ pan }),
 
-    setCanvasSize: (width, height) => set({ width, height }),
+    setCanvasSize: (width, height) => {
+      set((state) => {
+        // Calculate zoom to fit canvas in viewport with padding
+        // Use more realistic viewport estimates based on common screen sizes
+        const viewportWidth = 1400; // Account for sidebars and padding
+        const viewportHeight = 900; // Account for toolbar and padding
+        const padding = 80; // Generous padding around canvas
+
+        const availableWidth = viewportWidth - padding;
+        const availableHeight = viewportHeight - padding;
+
+        const scaleX = availableWidth / width;
+        const scaleY = availableHeight / height;
+        const fitZoom = Math.min(scaleX, scaleY, 1); // Don't zoom in beyond 100%
+
+        // Ensure minimum zoom level for usability
+        const minZoom = 0.1;
+        const finalZoom = Math.max(minZoom, fitZoom);
+
+        return {
+          width,
+          height,
+          zoom: finalZoom,
+          pan: { x: 0, y: 0 } // Reset pan, let Canvas component center it
+        };
+      });
+    },
 
     // Tools
     setTool: (tool) => set({ tool }),

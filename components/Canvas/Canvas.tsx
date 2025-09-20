@@ -136,7 +136,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     }
   }, [pan, zoom]);
 
-  // Center canvas on mount and when viewport size changes
+  // Center canvas on mount and when viewport or canvas size changes
   useEffect(() => {
     const centerCanvas = () => {
       const centerX = (width - canvasWidth * zoom) / 2;

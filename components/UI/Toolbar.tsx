@@ -13,6 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useCanvasStore } from '../../store/canvasStore';
 import { ExportModal } from './ExportModal';
+import { CanvasSizeSelector } from './CanvasSizeSelector';
 import { ExportOptions } from '../../types/canvas';
 
 export const Toolbar: React.FC = () => {
@@ -83,31 +84,35 @@ export const Toolbar: React.FC = () => {
         </button>
       </div>
 
-      {/* Center Section - Zoom Controls */}
-      <div className="flex items-center space-x-2">
-        <button
-          onClick={handleZoomOut}
-          className="p-2 rounded hover:bg-gray-100 text-gray-700"
-          title="Zoom Out"
-        >
-          <MagnifyingGlassMinusIcon className="w-5 h-5" />
-        </button>
+      {/* Center Section - Canvas Size & Zoom Controls */}
+      <div className="flex items-center space-x-4">
+        <CanvasSizeSelector />
         
-        <button
-          onClick={handleZoomReset}
-          className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200 min-w-[60px]"
-          title="Reset Zoom"
-        >
-          {Math.round(zoom * 100)}%
-        </button>
-        
-        <button
-          onClick={handleZoomIn}
-          className="p-2 rounded hover:bg-gray-100 text-gray-700"
-          title="Zoom In"
-        >
-          <MagnifyingGlassPlusIcon className="w-5 h-5" />
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={handleZoomOut}
+            className="p-2 rounded hover:bg-gray-100 text-gray-700"
+            title="Zoom Out"
+          >
+            <MagnifyingGlassMinusIcon className="w-5 h-5" />
+          </button>
+          
+          <button
+            onClick={handleZoomReset}
+            className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200 min-w-[60px]"
+            title="Reset Zoom"
+          >
+            {Math.round(zoom * 100)}%
+          </button>
+          
+          <button
+            onClick={handleZoomIn}
+            className="p-2 rounded hover:bg-gray-100 text-gray-700"
+            title="Zoom In"
+          >
+            <MagnifyingGlassPlusIcon className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Right Section - View Options & Export */}
