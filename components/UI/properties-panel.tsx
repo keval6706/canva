@@ -7,6 +7,7 @@ import { Input } from './input';
 import { Label } from './label';
 import { Button } from './button';
 import { Slider } from './slider';
+import { Checkbox } from './checkbox';
 import {
   Select,
   SelectContent,
@@ -110,34 +111,28 @@ export const PropertiesPanel: React.FC = () => {
       </div>
       
       <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
+        <Checkbox
           id="bold"
           checked={textElement.fontWeight === 'bold'}
-          onChange={(e) => updateElement(textElement.id, { fontWeight: e.target.checked ? 'bold' : 'normal' })}
-          className="w-4 h-4"
+          onCheckedChange={(checked) => updateElement(textElement.id, { fontWeight: checked ? 'bold' : 'normal' })}
         />
         <Label htmlFor="bold" className="text-sm font-medium text-gray-700">Bold</Label>
       </div>
       
       <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
+        <Checkbox
           id="italic"
           checked={textElement.fontStyle === 'italic'}
-          onChange={(e) => updateElement(textElement.id, { fontStyle: e.target.checked ? 'italic' : 'normal' })}
-          className="w-4 h-4"
+          onCheckedChange={(checked) => updateElement(textElement.id, { fontStyle: checked ? 'italic' : 'normal' })}
         />
         <Label htmlFor="italic" className="text-sm font-medium text-gray-700">Italic</Label>
       </div>
       
       <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
+        <Checkbox
           id="underline"
           checked={textElement.textDecoration === 'underline'}
-          onChange={(e) => updateElement(textElement.id, { textDecoration: e.target.checked ? 'underline' : 'none' })}
-          className="w-4 h-4"
+          onCheckedChange={(checked) => updateElement(textElement.id, { textDecoration: checked ? 'underline' : 'none' })}
         />
         <Label htmlFor="underline" className="text-sm font-medium text-gray-700">Underline</Label>
       </div>
