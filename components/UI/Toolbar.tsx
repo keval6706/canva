@@ -67,7 +67,7 @@ export const Toolbar: React.FC = () => {
   return (
     <div className="bg-white border-b border-gray-200 px-5 py-2.5 flex items-center justify-between shadow-sm">
       {/* Left Section - History & Groups */}
-      <div className="flex items-center space-x-1.5">
+      <div className="flex items-center space-x-2">
         <Button
           onClick={undo}
           disabled={!canUndo}
@@ -90,7 +90,7 @@ export const Toolbar: React.FC = () => {
           <ArrowUturnRightIcon className="w-5 h-5" />
         </Button>
 
-        <div className="w-px h-7 bg-gray-300 mx-2.5" />
+        <div className="w-px h-7 bg-gray-300 mx-3" />
 
         <Button
           onClick={() => groupElements(selectedIds)}
@@ -124,12 +124,12 @@ export const Toolbar: React.FC = () => {
       </div>
 
       {/* Center Section - Canvas Size & Zoom Controls */}
-      <div className="flex items-center space-x-5">
-        <div className="flex items-center space-x-2.5">
+      <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-3">
           <CanvasSizeSelector />
         </div>
 
-        <div className="flex items-center space-x-1 border-l border-gray-200 pl-5">
+        <div className="flex items-center space-x-2 border-l border-gray-200 pl-6">
           <Button
             onClick={handleZoomOut}
             variant="ghost"
@@ -144,7 +144,7 @@ export const Toolbar: React.FC = () => {
             onClick={handleZoomReset}
             variant="outline"
             size="sm"
-            className="min-w-[65px] mx-1"
+            className="min-w-[65px] mx-2"
             title="Reset Zoom"
           >
             {Math.round(zoom * 100)}%
@@ -162,7 +162,7 @@ export const Toolbar: React.FC = () => {
         </div>
 
         {/* Zoom Slider */}
-        <div className="flex items-center space-x-2.5 border-l border-gray-200 pl-5 min-w-[130px]">
+        <div className="flex items-center space-x-3 border-l border-gray-200 pl-6 min-w-[130px]">
           <span className="text-sm text-gray-600 font-medium">Zoom:</span>
           <Slider
             value={[zoom * 100]}
@@ -179,7 +179,7 @@ export const Toolbar: React.FC = () => {
       </div>
 
       {/* Right Section - View Options & Export */}
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-2">
         <Button
           onClick={toggleGrid}
           variant={grid.enabled ? 'default' : 'ghost'}
@@ -214,10 +214,10 @@ export const Toolbar: React.FC = () => {
           )}
         </Button>
 
-        <div className="w-px h-7 bg-gray-300 mx-2.5" />
+        <div className="w-px h-7 bg-gray-300 mx-3" />
 
-        <Button onClick={handleExport} title="Export" className="ml-1.5">
-          <DocumentArrowDownIcon className="w-4 h-4 mr-1.5" />
+        <Button onClick={handleExport} title="Export" className="ml-2">
+          <DocumentArrowDownIcon className="w-4 h-4 mr-2" />
           Export
         </Button>
       </div>

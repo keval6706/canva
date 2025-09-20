@@ -1,16 +1,20 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { 
+import {
   CursorArrowRaysIcon,
   ChatBubbleBottomCenterTextIcon,
   PhotoIcon,
   Square3Stack3DIcon,
-  PencilIcon
+  PencilIcon,
 } from '@heroicons/react/24/outline';
 import { useCanvasStore } from '../../store/canvas-store';
 import { Tool, CanvasElement, Template } from '../../types/canvas';
-import { sampleTemplates, sampleStickers, sampleImages } from '../../data/sample-assets';
+import {
+  sampleTemplates,
+  sampleStickers,
+  sampleImages,
+} from '../../data/sample-assets';
 import { Button } from './button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { Label } from './label';
@@ -30,20 +34,20 @@ const tools: ToolItem[] = [
 ];
 
 export const LeftSidebar: React.FC = () => {
-    const { 
+  const {
     tool,
-    setTool, 
-    addElement, 
+    setTool,
+    addElement,
     setCanvasSize,
     width: canvasWidth,
-    height: canvasHeight
+    height: canvasHeight,
   } = useCanvasStore();
 
   const [toolsUploadKey, setToolsUploadKey] = useState(0);
   const [assetsUploadKey, setAssetsUploadKey] = useState(0);
   const [isUploadingTools, setIsUploadingTools] = useState(false);
   const [isUploadingAssets, setIsUploadingAssets] = useState(false);
-  
+
   const toolsFileInputRef = useRef<HTMLInputElement>(null);
   const assetsFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -56,7 +60,12 @@ export const LeftSidebar: React.FC = () => {
   };
 
   // Helper function to calculate image scaling and positioning
-  const calculateImageTransform = (imageWidth: number, imageHeight: number, canvasWidth: number, canvasHeight: number) => {
+  const calculateImageTransform = (
+    imageWidth: number,
+    imageHeight: number,
+    canvasWidth: number,
+    canvasHeight: number
+  ) => {
     // Maximum size the image should occupy (80% of canvas to leave some margin)
     const maxWidth = canvasWidth * 0.8;
     const maxHeight = canvasHeight * 0.8;
@@ -80,7 +89,7 @@ export const LeftSidebar: React.FC = () => {
       scaleX: scale,
       scaleY: scale,
       scaledWidth,
-      scaledHeight
+      scaledHeight,
     };
   };
 
@@ -91,28 +100,33 @@ export const LeftSidebar: React.FC = () => {
   const handleTemplateSelect = (template: Template) => {
     // Clear existing elements and add template elements
     setCanvasSize(template.width, template.height);
-    
+
     // Add template elements
     template.elements.forEach((templateElement: CanvasElement) => {
       addElement(templateElement);
     });
   };
 
-  const handleStickerSelect = (sticker: { id: string; name: string; src: string; category: string }) => {
+  const handleStickerSelect = (sticker: {
+    id: string;
+    name: string;
+    src: string;
+    category: string;
+  }) => {
     // Create a temporary image to get dimensions
     const img = new Image();
     img.onload = () => {
       // Calculate appropriate scaling for stickers (smaller max size than regular images)
-      const maxStickerWidth = canvasWidth * 0.3;  // 30% of canvas width
+      const maxStickerWidth = canvasWidth * 0.3; // 30% of canvas width
       const maxStickerHeight = canvasHeight * 0.3; // 30% of canvas height
-      
+
       const scaleX = maxStickerWidth / img.naturalWidth;
       const scaleY = maxStickerHeight / img.naturalHeight;
       const scale = Math.min(scaleX, scaleY, 1); // Don't scale up small stickers
-      
+
       const scaledWidth = img.naturalWidth * scale;
       const scaledHeight = img.naturalHeight * scale;
-      
+
       // Position sticker with some offset from center
       const x = (canvasWidth - scaledWidth) / 2 + Math.random() * 50 - 25;
       const y = (canvasHeight - scaledHeight) / 2 + Math.random() * 50 - 25;
@@ -128,26 +142,30 @@ export const LeftSidebar: React.FC = () => {
           y: Math.max(0, Math.min(y, canvasHeight - scaledHeight)),
           scaleX: scale,
           scaleY: scale,
-          rotation: 0
+          rotation: 0,
         },
         src: sticker.src,
-        category: sticker.category
+        category: sticker.category,
       };
-      
+
       addElement(stickerElement);
     };
     img.src = sticker.src;
   };
 
-  const handleAssetImageSelect = (image: { id: string; name: string; src: string }) => {
+  const handleAssetImageSelect = (image: {
+    id: string;
+    name: string;
+    src: string;
+  }) => {
     // Create a temporary image to get dimensions
     const img = new Image();
     img.onload = () => {
       // Calculate appropriate scaling and positioning
       const transform = calculateImageTransform(
-        img.naturalWidth, 
-        img.naturalHeight, 
-        canvasWidth, 
+        img.naturalWidth,
+        img.naturalHeight,
+        canvasWidth,
         canvasHeight
       );
 
@@ -162,15 +180,15 @@ export const LeftSidebar: React.FC = () => {
           y: transform.y,
           scaleX: transform.scaleX,
           scaleY: transform.scaleY,
-          rotation: 0
+          rotation: 0,
         },
         src: image.src,
         cropX: 0,
         cropY: 0,
         cropWidth: img.naturalWidth,
-        cropHeight: img.naturalHeight
+        cropHeight: img.naturalHeight,
       };
-      
+
       addElement(imageElement);
     };
     img.src = image.src;
@@ -188,18 +206,28 @@ export const LeftSidebar: React.FC = () => {
         y: 100,
         scaleX: 1,
         scaleY: 1,
-        rotation: 0
+        rotation: 0,
       },
-      shapeType: shapeType as 'rectangle' | 'circle' | 'triangle' | 'hexagon' | 'star' | 'line' | 'arrow',
+      shapeType: shapeType as
+        | 'rectangle'
+        | 'circle'
+        | 'triangle'
+        | 'hexagon'
+        | 'star'
+        | 'line'
+        | 'arrow',
       fill: '#3B82F6',
       stroke: '#1E40AF',
-      strokeWidth: 2
+      strokeWidth: 2,
     };
-    
+
     addElement(shapeElement);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, source: 'tools' | 'assets') => {
+  const handleImageUpload = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    source: 'tools' | 'assets'
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -244,9 +272,9 @@ export const LeftSidebar: React.FC = () => {
         img.onload = () => {
           // Calculate appropriate scaling and positioning
           const transform = calculateImageTransform(
-            img.naturalWidth, 
-            img.naturalHeight, 
-            canvasWidth, 
+            img.naturalWidth,
+            img.naturalHeight,
+            canvasWidth,
             canvasHeight
           );
 
@@ -261,24 +289,24 @@ export const LeftSidebar: React.FC = () => {
               y: transform.y,
               scaleX: transform.scaleX,
               scaleY: transform.scaleY,
-              rotation: 0
+              rotation: 0,
             },
             src,
             cropX: 0,
             cropY: 0,
             cropWidth: img.naturalWidth,
-            cropHeight: img.naturalHeight
+            cropHeight: img.naturalHeight,
           };
-          
+
           addElement(imageElement);
-          
+
           // Reset the input value and update key to allow re-uploading the same file
           event.target.value = '';
           if (source === 'tools') {
-            setToolsUploadKey(prev => prev + 1);
+            setToolsUploadKey((prev) => prev + 1);
             setIsUploadingTools(false);
           } else {
-            setAssetsUploadKey(prev => prev + 1);
+            setAssetsUploadKey((prev) => prev + 1);
             setIsUploadingAssets(false);
           }
         };
@@ -304,24 +332,30 @@ export const LeftSidebar: React.FC = () => {
       <Tabs defaultValue="tools" className="flex flex-col h-full">
         <div className="px-4 py-3 border-b border-gray-200">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="tools" className="text-sm">Tools</TabsTrigger>
-            <TabsTrigger value="assets" className="text-sm">Assets</TabsTrigger>
+            <TabsTrigger value="tools" className="text-sm">
+              Tools
+            </TabsTrigger>
+            <TabsTrigger value="assets" className="text-sm">
+              Assets
+            </TabsTrigger>
           </TabsList>
         </div>
 
         <TabsContent value="tools" className="flex-1 overflow-y-auto">
-          <div className="p-5 space-y-5">
+          <div className="p-6 space-y-6">
             <div>
-              <Label className="text-sm font-semibold text-gray-900 mb-3 block">Tools</Label>
-              <div className="space-y-1.5">
+              <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+                Tools
+              </Label>
+              <div className="space-y-2">
                 {tools.map((toolItem) => (
                   <Button
                     key={toolItem.id}
                     onClick={() => handleToolSelect(toolItem.id)}
-                    variant={tool === toolItem.id ? "default" : "ghost"}
-                    className="w-full justify-start h-10 px-3"
+                    variant={tool === toolItem.id ? 'default' : 'ghost'}
+                    className="w-full justify-start h-10 px-4"
                   >
-                    <toolItem.icon className="w-5 h-5 mr-2.5" />
+                    <toolItem.icon className="w-5 h-5 mr-3" />
                     {toolItem.name}
                   </Button>
                 ))}
@@ -330,8 +364,10 @@ export const LeftSidebar: React.FC = () => {
 
             {tool === 'rectangle' && (
               <div>
-                <Label className="text-sm font-semibold text-gray-900 mb-3 block">Shapes</Label>
-                <div className="grid grid-cols-2 gap-2.5">
+                <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+                  Shapes
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
                   {['rectangle', 'circle', 'triangle', 'star'].map((shape) => (
                     <Button
                       key={shape}
@@ -348,7 +384,9 @@ export const LeftSidebar: React.FC = () => {
 
             {tool === 'image' && (
               <div>
-                <Label className="text-sm font-semibold text-gray-900 mb-3 block">Add Image</Label>
+                <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+                  Add Image
+                </Label>
                 <div className="block">
                   <input
                     ref={toolsFileInputRef}
@@ -360,8 +398,8 @@ export const LeftSidebar: React.FC = () => {
                     aria-label="Upload image file"
                     aria-describedby="tools-upload-description"
                   />
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full h-20 flex-col border-2 border-dashed border-gray-300 hover:border-gray-400"
                     disabled={isUploadingTools}
                     onClick={handleToolsUploadClick}
@@ -369,18 +407,29 @@ export const LeftSidebar: React.FC = () => {
                   >
                     {isUploadingTools ? (
                       <>
-                        <div className="w-7 h-7 mb-2.5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
-                        <span className="text-sm text-gray-600">Uploading...</span>
+                        <div
+                          className="w-7 h-7 mb-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"
+                          aria-hidden="true"
+                        ></div>
+                        <span className="text-sm text-gray-600">
+                          Uploading...
+                        </span>
                       </>
                     ) : (
                       <>
-                        <PhotoIcon className="w-7 h-7 mb-2.5 text-gray-400" aria-hidden="true" />
-                        <span className="text-sm text-gray-600">Click to upload image</span>
+                        <PhotoIcon
+                          className="w-7 h-7 mb-3 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        <span className="text-sm text-gray-600">
+                          Click to upload image
+                        </span>
                       </>
                     )}
                   </Button>
                   <div id="tools-upload-description" className="sr-only">
-                    Select an image file to upload. Supported formats: JPG, PNG, GIF, WebP, SVG. Maximum file size: 10MB.
+                    Select an image file to upload. Supported formats: JPG, PNG,
+                    GIF, WebP, SVG. Maximum file size: 10MB.
                   </div>
                 </div>
               </div>
@@ -392,20 +441,28 @@ export const LeftSidebar: React.FC = () => {
           <Tabs defaultValue="templates" className="w-full">
             <div className="px-4 py-3 border-b border-gray-200">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="templates" className="text-xs">Templates</TabsTrigger>
-                <TabsTrigger value="stickers" className="text-xs">Stickers</TabsTrigger>
-                <TabsTrigger value="uploads" className="text-xs">Uploads</TabsTrigger>
+                <TabsTrigger value="templates" className="text-xs">
+                  Templates
+                </TabsTrigger>
+                <TabsTrigger value="stickers" className="text-xs">
+                  Stickers
+                </TabsTrigger>
+                <TabsTrigger value="uploads" className="text-xs">
+                  Uploads
+                </TabsTrigger>
               </TabsList>
             </div>
 
-            <TabsContent value="templates" className="p-5">
-              <Label className="text-sm font-semibold text-gray-900 mb-3 block">Choose a template</Label>
+            <TabsContent value="templates" className="p-6">
+              <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+                Choose a template
+              </Label>
               <div className="space-y-3">
                 {sampleTemplates.map((template) => (
                   <div
                     key={template.id}
                     onClick={() => handleTemplateSelect(template)}
-                    className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-colors"
+                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-colors"
                   >
                     <div className="flex items-center space-x-3">
                       <img
@@ -414,9 +471,15 @@ export const LeftSidebar: React.FC = () => {
                         className="w-14 h-14 rounded-lg border border-gray-200"
                       />
                       <div className="flex-1">
-                        <div className="font-medium text-sm text-gray-900">{template.name}</div>
-                        <div className="text-xs text-gray-500 mt-0.5">{template.category}</div>
-                        <div className="text-xs text-gray-400 mt-0.5">{template.width} × {template.height}</div>
+                        <div className="font-medium text-sm text-gray-900">
+                          {template.name}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {template.category}
+                        </div>
+                        <div className="text-xs text-gray-400 mt-1">
+                          {template.width} × {template.height}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -424,15 +487,17 @@ export const LeftSidebar: React.FC = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="stickers" className="p-5">
-              <Label className="text-sm font-semibold text-gray-900 mb-3 block">Click to add stickers</Label>
-              <div className="grid grid-cols-4 gap-2.5">
+            <TabsContent value="stickers" className="p-6">
+              <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+                Click to add stickers
+              </Label>
+              <div className="grid grid-cols-4 gap-3">
                 {sampleStickers.map((sticker) => (
                   <Button
                     key={sticker.id}
                     onClick={() => handleStickerSelect(sticker)}
                     variant="outline"
-                    className="aspect-square p-2.5 hover:bg-gray-50"
+                    className="aspect-square p-3 hover:bg-gray-50"
                     title={sticker.name}
                   >
                     <img
@@ -445,15 +510,17 @@ export const LeftSidebar: React.FC = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="uploads" className="p-5">
-              <Label className="text-sm font-semibold text-gray-900 mb-3 block">Sample images</Label>
-              <div className="grid grid-cols-2 gap-2.5 mb-5">
+            <TabsContent value="uploads" className="p-6">
+              <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+                Sample images
+              </Label>
+              <div className="grid grid-cols-2 gap-3 mb-6">
                 {sampleImages.map((image) => (
                   <Button
                     key={image.id}
                     onClick={() => handleAssetImageSelect(image)}
                     variant="outline"
-                    className="aspect-square p-2.5 hover:bg-gray-50"
+                    className="aspect-square p-3 hover:bg-gray-50"
                     title={image.name}
                   >
                     <img
@@ -464,9 +531,11 @@ export const LeftSidebar: React.FC = () => {
                   </Button>
                 ))}
               </div>
-              
+
               <div>
-                <Label className="text-sm font-semibold text-gray-900 mb-3 block">Upload your own image</Label>
+                <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+                  Upload your own image
+                </Label>
                 <div className="block">
                   <input
                     ref={assetsFileInputRef}
@@ -478,8 +547,8 @@ export const LeftSidebar: React.FC = () => {
                     aria-label="Upload image file"
                     aria-describedby="assets-upload-description"
                   />
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full h-20 flex-col border-2 border-dashed border-gray-300 hover:border-gray-400"
                     disabled={isUploadingAssets}
                     onClick={handleAssetsUploadClick}
@@ -487,18 +556,29 @@ export const LeftSidebar: React.FC = () => {
                   >
                     {isUploadingAssets ? (
                       <>
-                        <div className="w-7 h-7 mb-2.5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
-                        <span className="text-sm text-gray-600">Uploading...</span>
+                        <div
+                          className="w-7 h-7 mb-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"
+                          aria-hidden="true"
+                        ></div>
+                        <span className="text-sm text-gray-600">
+                          Uploading...
+                        </span>
                       </>
                     ) : (
                       <>
-                        <PhotoIcon className="w-7 h-7 mb-2.5 text-gray-400" aria-hidden="true" />
-                        <span className="text-sm text-gray-600">Click to upload image</span>
+                        <PhotoIcon
+                          className="w-7 h-7 mb-3 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        <span className="text-sm text-gray-600">
+                          Click to upload image
+                        </span>
                       </>
                     )}
                   </Button>
                   <div id="assets-upload-description" className="sr-only">
-                    Select an image file to upload. Supported formats: JPG, PNG, GIF, WebP, SVG. Maximum file size: 10MB.
+                    Select an image file to upload. Supported formats: JPG, PNG,
+                    GIF, WebP, SVG. Maximum file size: 10MB.
                   </div>
                 </div>
               </div>
