@@ -12,7 +12,7 @@ interface TransformerOverlayProps {
 export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selectedIds }) => {
   const transformerRef = useRef<Konva.Transformer>(null);
   const [isProportionalScaling, setIsProportionalScaling] = useState(false);
-  const { elements, updateElement } = useCanvasStore();
+  const { updateElement } = useCanvasStore();
 
   useEffect(() => {
     if (!transformerRef.current) return;
@@ -55,7 +55,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
     const nodes = transformer.nodes();
     
     // Check if shift key is pressed for proportional scaling
-    const isShiftPressed = e.evt && (e.evt as any).shiftKey;
+    const isShiftPressed = e.evt && (e.evt as KeyboardEvent).shiftKey;
     setIsProportionalScaling(isShiftPressed);
     
     nodes.forEach((node) => {
@@ -79,107 +79,58 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
         node.scaleX(scaleX);
         node.scaleY(scaleY);
       }
-      
-      // Clamp scale values to prevent extreme scaling
-      const finalScaleX = node.scaleX();
-      const finalScaleY = node.scaleY();
-      
-      const clampedScaleX = Math.max(0.1, Math.min(10, Math.abs(finalScaleX))) * (finalScaleX >= 0 ? 1 : -1);
-      const clampedScaleY = Math.max(0.1, Math.min(10, Math.abs(finalScaleY))) * (finalScaleY >= 0 ? 1 : -1);
-      
-      if (Math.abs(finalScaleX) < 0.1 || Math.abs(finalScaleX) > 10) {
-        node.scaleX(clampedScaleX);
-      }
-      if (Math.abs(finalScaleY) < 0.1 || Math.abs(finalScaleY) > 10) {
-        node.scaleY(clampedScaleY);
-      }
     });
   };
 
-  const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
+  const handleTransformEnd = () => {
     const transformer = transformerRef.current;
     if (!transformer) return;
 
     const nodes = transformer.nodes();
-    
-    // Check if shift key was pressed during transform
-    const wasShiftPressed = e.evt && (e.evt as any).shiftKey;
-    
-    // Reset proportional scaling state
-    setIsProportionalScaling(false);
     
     nodes.forEach((node) => {
       // Extract element ID from node name
       const elementId = node.name().replace('element-', '');
       if (!elementId) return;
 
-      const element = elements.find(el => el.id === elementId);
+      // Get fresh element data to avoid stale state
+      const currentElements = useCanvasStore.getState().elements;
+      const element = currentElements.find(el => el.id === elementId);
       if (!element) return;
 
-      const scaleX = node.scaleX();
-      const scaleY = node.scaleY();
+      // Get the final transform values from the node
+      const finalX = node.x();
+      const finalY = node.y();
+      const finalScaleX = node.scaleX();
+      const finalScaleY = node.scaleY();
+      const finalRotation = node.rotation();
 
-      // Debug logging
-      console.log(`Transform end - Element: ${elementId}, ScaleX: ${scaleX}, ScaleY: ${scaleY}, Shift: ${wasShiftPressed}`);
+      // Clamp scale values to prevent extreme scaling
+      const clampedScaleX = Math.max(0.1, Math.min(10, Math.abs(finalScaleX))) * (finalScaleX >= 0 ? 1 : -1);
+      const clampedScaleY = Math.max(0.1, Math.min(10, Math.abs(finalScaleY))) * (finalScaleY >= 0 ? 1 : -1);
 
-      // Validate scale values to prevent extreme scaling
-      const clampedScaleX = Math.max(0.1, Math.min(10, Math.abs(scaleX))) * (scaleX >= 0 ? 1 : -1);
-      const clampedScaleY = Math.max(0.1, Math.min(10, Math.abs(scaleY))) * (scaleY >= 0 ? 1 : -1);
+      // Update element with final transform values
+      updateElement(elementId, {
+        transform: {
+          ...element.transform,
+          x: finalX,
+          y: finalY,
+          scaleX: clampedScaleX,
+          scaleY: clampedScaleY,
+          rotation: finalRotation,
+        },
+      });
 
-      // Handle different element types differently
-      if (element.type === 'text') {
-        // For text elements, update fontSize and dimensions instead of scale
-        const textElement = element as any; // Cast to access text properties
-        const currentFontSize = textElement.fontSize || 24;
-        
-        // Use the average scale for font size if shift was pressed (proportional)
-        const fontScale = wasShiftPressed ? 
-          (Math.abs(clampedScaleX) + Math.abs(clampedScaleY)) / 2 : 
-          Math.abs(clampedScaleY);
-          
-        const newFontSize = Math.max(8, Math.min(200, currentFontSize * fontScale));
-        
-        updateElement(elementId, {
-          fontSize: newFontSize,
-          width: textElement.width ? Math.max(10, textElement.width * Math.abs(clampedScaleX)) : undefined,
-          height: textElement.height ? Math.max(10, textElement.height * Math.abs(clampedScaleY)) : undefined,
-          transform: {
-            ...element.transform,
-            x: node.x(),
-            y: node.y(),
-            rotation: node.rotation(),
-            // Keep scale at 1 for text elements
-            scaleX: 1,
-            scaleY: 1,
-          },
-        });
-      } else {
-        // For other elements, use scale transforms with validation
-        const newScaleX = Math.max(0.1, Math.min(10, element.transform.scaleX * clampedScaleX));
-        const newScaleY = Math.max(0.1, Math.min(10, element.transform.scaleY * clampedScaleY));
-        
-        updateElement(elementId, {
-          transform: {
-            ...element.transform,
-            x: node.x(),
-            y: node.y(),
-            scaleX: newScaleX,
-            scaleY: newScaleY,
-            rotation: node.rotation(),
-          },
-        });
-      }
-
-      // Reset the node scale AFTER updating the element to prevent timing issues
+      // Reset the node scale to 1 to keep the visual representation clean
+      // but DON'T reset position/rotation as they're now stored in the element
       node.scaleX(1);
       node.scaleY(1);
     });
 
-    // Force transformer to update its bounds after a short delay
+    // Force transformer to update
     setTimeout(() => {
       if (transformer && transformer.getLayer()) {
         transformer.getLayer()?.batchDraw();
-        transformer.forceUpdate();
       }
     }, 10);
   };
