@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import { CanvasElement, CanvasState, Tool, Point, Transform, ExportOptions, HistoryAction } from '../types/canvas';
+import { CanvasElement, CanvasState, Tool, Point, HistoryAction } from '../types/canvas';
 
 interface CanvasStore extends CanvasState {
   // Element management
