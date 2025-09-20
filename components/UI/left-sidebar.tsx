@@ -87,27 +87,32 @@ export const LeftSidebar: React.FC = () => {
   };
 
   const handleAssetImageSelect = (image: { id: string; name: string; src: string }) => {
-    const imageElement = {
-      type: 'image' as const,
-      name: image.name,
-      visible: true,
-      locked: false,
-      opacity: 1,
-      transform: {
-        x: 100,
-        y: 100,
-        scaleX: 1,
-        scaleY: 1,
-        rotation: 0
-      },
-      src: image.src,
-      cropX: 0,
-      cropY: 0,
-      cropWidth: 200,
-      cropHeight: 200
+    // Create a temporary image to get dimensions
+    const img = new Image();
+    img.onload = () => {
+      const imageElement = {
+        type: 'image' as const,
+        name: image.name,
+        visible: true,
+        locked: false,
+        opacity: 1,
+        transform: {
+          x: 100,
+          y: 100,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0
+        },
+        src: image.src,
+        cropX: 0,
+        cropY: 0,
+        cropWidth: img.naturalWidth,
+        cropHeight: img.naturalHeight
+      };
+      
+      addElement(imageElement);
     };
-    
-    addElement(imageElement);
+    img.src = image.src;
   };
 
   const handleAddShape = (shapeType: string) => {
@@ -173,37 +178,42 @@ export const LeftSidebar: React.FC = () => {
     reader.onload = (e: ProgressEvent<FileReader>) => {
       const src = e.target?.result as string;
       if (src) {
-        const imageElement = {
-          type: 'image' as const,
-          name: file.name,
-          visible: true,
-          locked: false,
-          opacity: 1,
-          transform: {
-            x: 100,
-            y: 100,
-            scaleX: 1,
-            scaleY: 1,
-            rotation: 0
-          },
-          src,
-          cropX: 0,
-          cropY: 0,
-          cropWidth: 200,
-          cropHeight: 200
+        // Create a temporary image to get dimensions
+        const img = new Image();
+        img.onload = () => {
+          const imageElement = {
+            type: 'image' as const,
+            name: file.name,
+            visible: true,
+            locked: false,
+            opacity: 1,
+            transform: {
+              x: 100,
+              y: 100,
+              scaleX: 1,
+              scaleY: 1,
+              rotation: 0
+            },
+            src,
+            cropX: 0,
+            cropY: 0,
+            cropWidth: img.naturalWidth,
+            cropHeight: img.naturalHeight
+          };
+          
+          addElement(imageElement);
+          
+          // Reset the input value and update key to allow re-uploading the same file
+          event.target.value = '';
+          if (source === 'tools') {
+            setToolsUploadKey(prev => prev + 1);
+            setIsUploadingTools(false);
+          } else {
+            setAssetsUploadKey(prev => prev + 1);
+            setIsUploadingAssets(false);
+          }
         };
-        
-        addElement(imageElement);
-        
-        // Reset the input value and update key to allow re-uploading the same file
-        event.target.value = '';
-        if (source === 'tools') {
-          setToolsUploadKey(prev => prev + 1);
-          setIsUploadingTools(false);
-        } else {
-          setAssetsUploadKey(prev => prev + 1);
-          setIsUploadingAssets(false);
-        }
+        img.src = src;
       }
     };
 
