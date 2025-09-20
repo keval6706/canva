@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { Group, Rect, Circle, RegularPolygon, Line, Arrow, Star, Transformer } from 'react-konva';
+import { Group, Rect, Circle, RegularPolygon, Line, Arrow, Star } from 'react-konva';
 import Konva from 'konva';
 import { ShapeElement } from '../../../types/canvas';
 import { useCanvasStore } from '../../../store/canvasStore';
@@ -17,42 +17,11 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
   isSelected,
   onSelect,
 }) => {
-  const transformerRef = useRef<Konva.Transformer>(null);
   const groupRef = useRef<Konva.Group>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const shapeRef = useRef<any>(null);
   
   const { updateElement } = useCanvasStore();
-
-  useEffect(() => {
-    if (isSelected && transformerRef.current && groupRef.current) {
-      transformerRef.current.nodes([groupRef.current]);
-      transformerRef.current.getLayer()?.batchDraw();
-    }
-  }, [isSelected]);
-
-  const handleTransformEnd = () => {
-    if (!groupRef.current) return;
-
-    const node = groupRef.current;
-    const scaleX = node.scaleX();
-    const scaleY = node.scaleY();
-
-    // Reset scale and update transform
-    node.scaleX(1);
-    node.scaleY(1);
-
-    updateElement(element.id, {
-      transform: {
-        ...element.transform,
-        x: node.x(),
-        y: node.y(),
-        scaleX: element.transform.scaleX * scaleX,
-        scaleY: element.transform.scaleY * scaleY,
-        rotation: node.rotation(),
-      },
-    });
-  };
 
   const handleDragEnd = () => {
     if (!groupRef.current) return;
@@ -164,6 +133,8 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
   return (
     <Group
       ref={groupRef}
+      id={`element-${element.id}`}
+      name={`element-${element.id}`}
       x={element.transform.x}
       y={element.transform.y}
       scaleX={element.transform.scaleX}
@@ -172,22 +143,9 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
       opacity={element.opacity}
       draggable={!element.locked}
       onDragEnd={handleDragEnd}
-      onTransformEnd={handleTransformEnd}
       onClick={onSelect}
     >
       {renderShape()}
-      
-      {isSelected && (
-        <Transformer
-          ref={transformerRef}
-          boundBoxFunc={(oldBox, newBox) => {
-            if (newBox.width < 10 || newBox.height < 10) {
-              return oldBox;
-            }
-            return newBox;
-          }}
-        />
-      )}
     </Group>
   );
 };

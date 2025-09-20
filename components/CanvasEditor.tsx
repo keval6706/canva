@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Canvas } from './Canvas/Canvas';
 import { Toolbar } from './UI/Toolbar';
 import { LeftSidebar } from './UI/LeftSidebar';
 import { RightSidebar } from './UI/RightSidebar';
 import { BottomBar } from './UI/BottomBar';
+import { ExportModal } from './UI/ExportModal';
 import { useCanvasStore } from '../store/canvasStore';
 
 interface CanvasEditorProps {
@@ -14,6 +15,8 @@ interface CanvasEditorProps {
 
 export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [viewportSize, setViewportSize] = useState({ width: 800, height: 600 });
+  
   const { 
     copyElements, 
     cutElements, 
@@ -25,6 +28,43 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
     selectedIds,
     duplicateElements
   } = useCanvasStore();
+
+  // Stable viewport sizing
+  useEffect(() => {
+    const updateViewportSize = () => {
+      if (canvasContainerRef.current) {
+        const { clientWidth, clientHeight } = canvasContainerRef.current;
+        // Only update if the change is significant (more than 20px) to prevent constant re-renders
+        if (Math.abs(clientWidth - viewportSize.width) > 20 || 
+            Math.abs(clientHeight - viewportSize.height) > 20) {
+          setViewportSize({
+            width: Math.max(clientWidth, 400), // Minimum viewport size
+            height: Math.max(clientHeight, 300)
+          });
+        }
+      }
+    };
+
+    // Initial size
+    updateViewportSize();
+
+    // Update on resize with debouncing
+    let timeoutId: NodeJS.Timeout;
+    const debouncedUpdate = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(updateViewportSize, 100);
+    };
+
+    const resizeObserver = new ResizeObserver(debouncedUpdate);
+    if (canvasContainerRef.current) {
+      resizeObserver.observe(canvasContainerRef.current);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      resizeObserver.disconnect();
+    };
+  }, []); // Remove viewportSize from deps to prevent loops
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -103,8 +143,8 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
           className="flex-1 flex items-center justify-center bg-gray-200 overflow-hidden"
         >
           <Canvas 
-            width={canvasContainerRef.current?.clientWidth || 800}
-            height={canvasContainerRef.current?.clientHeight || 600}
+            width={viewportSize.width}
+            height={viewportSize.height}
             className="border border-gray-300 shadow-lg"
           />
         </div>

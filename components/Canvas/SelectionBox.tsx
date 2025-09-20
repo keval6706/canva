@@ -3,6 +3,7 @@
 import React from 'react';
 import { Group, Rect } from 'react-konva';
 import { useCanvasStore } from '../../store/canvasStore';
+import { getCombinedBounds } from '../../utils/elementBounds';
 
 interface SelectionBoxProps {
   selectedIds: string[];
@@ -15,54 +16,27 @@ export const SelectionBox: React.FC<SelectionBoxProps> = ({ selectedIds }) => {
 
   const selectedElements = selectedIds
     .map(id => elements.find(el => el.id === id))
-    .filter(Boolean);
+    .filter((element): element is NonNullable<typeof element> => element !== undefined);
 
   if (selectedElements.length === 0) return null;
 
-  // Calculate bounding box for all selected elements
-  const bounds = selectedElements.reduce((acc, element) => {
-    if (!element) return acc;
-    
-    const { x, y, scaleX = 1, scaleY = 1 } = element.transform;
-    
-    // For simplicity, using default dimensions
-    // In a real implementation, you'd calculate actual element bounds
-    const width = 100 * scaleX;
-    const height = 50 * scaleY;
-    
-    const left = x;
-    const right = x + width;
-    const top = y;
-    const bottom = y + height;
-    
-    return {
-      left: Math.min(acc.left, left),
-      right: Math.max(acc.right, right),
-      top: Math.min(acc.top, top),
-      bottom: Math.max(acc.bottom, bottom)
-    };
-  }, {
-    left: Infinity,
-    right: -Infinity,
-    top: Infinity,
-    bottom: -Infinity
-  });
+  // Calculate actual bounds for all selected elements
+  const bounds = getCombinedBounds(selectedElements);
+  
+  if (!bounds) return null;
 
-  if (bounds.left === Infinity) return null;
-
-  const width = bounds.right - bounds.left;
-  const height = bounds.bottom - bounds.top;
   const strokeWidth = 2 / zoom;
   const dashArray = [5 / zoom, 5 / zoom];
+  const handleSize = 8 / zoom;
 
   return (
     <Group>
       {/* Selection outline */}
       <Rect
-        x={bounds.left}
-        y={bounds.top}
-        width={width}
-        height={height}
+        x={bounds.x}
+        y={bounds.y}
+        width={bounds.width}
+        height={bounds.height}
         stroke="#007bff"
         strokeWidth={strokeWidth}
         dash={dashArray}
@@ -72,17 +46,17 @@ export const SelectionBox: React.FC<SelectionBoxProps> = ({ selectedIds }) => {
       
       {/* Corner handles */}
       {[
-        { x: bounds.left, y: bounds.top }, // top-left
-        { x: bounds.right, y: bounds.top }, // top-right
-        { x: bounds.right, y: bounds.bottom }, // bottom-right
-        { x: bounds.left, y: bounds.bottom }, // bottom-left
+        { x: bounds.x, y: bounds.y }, // top-left
+        { x: bounds.x + bounds.width, y: bounds.y }, // top-right
+        { x: bounds.x + bounds.width, y: bounds.y + bounds.height }, // bottom-right
+        { x: bounds.x, y: bounds.y + bounds.height }, // bottom-left
       ].map((corner, index) => (
         <Rect
           key={index}
-          x={corner.x - 4 / zoom}
-          y={corner.y - 4 / zoom}
-          width={8 / zoom}
-          height={8 / zoom}
+          x={corner.x - handleSize / 2}
+          y={corner.y - handleSize / 2}
+          width={handleSize}
+          height={handleSize}
           fill="white"
           stroke="#007bff"
           strokeWidth={strokeWidth}
@@ -92,17 +66,17 @@ export const SelectionBox: React.FC<SelectionBoxProps> = ({ selectedIds }) => {
       
       {/* Edge handles */}
       {[
-        { x: bounds.left + width / 2, y: bounds.top }, // top
-        { x: bounds.right, y: bounds.top + height / 2 }, // right
-        { x: bounds.left + width / 2, y: bounds.bottom }, // bottom
-        { x: bounds.left, y: bounds.top + height / 2 }, // left
+        { x: bounds.x + bounds.width / 2, y: bounds.y }, // top
+        { x: bounds.x + bounds.width, y: bounds.y + bounds.height / 2 }, // right
+        { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height }, // bottom
+        { x: bounds.x, y: bounds.y + bounds.height / 2 }, // left
       ].map((edge, index) => (
         <Rect
           key={`edge-${index}`}
-          x={edge.x - 4 / zoom}
-          y={edge.y - 4 / zoom}
-          width={8 / zoom}
-          height={8 / zoom}
+          x={edge.x - handleSize / 2}
+          y={edge.y - handleSize / 2}
+          width={handleSize}
+          height={handleSize}
           fill="white"
           stroke="#007bff"
           strokeWidth={strokeWidth}
