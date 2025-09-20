@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useCanvasStore } from '../../store/canvas-store';
 import { TextElement, ImageElement, ShapeElement, CanvasElement } from '../../types/canvas';
 import { Input } from './input';
@@ -8,6 +8,7 @@ import { Label } from './label';
 import { Button } from './button';
 import { Slider } from './slider';
 import { Checkbox } from './checkbox';
+import { Sketch } from '@uiw/react-color';
 import {
   Select,
   SelectContent,
@@ -15,9 +16,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from './select';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from './popover';
 
 export const PropertiesPanel: React.FC = () => {
   const { selectedIds, elements, updateElement } = useCanvasStore();
+  const [colorPickerOpen, setColorPickerOpen] = useState<string | null>(null);
 
   if (selectedIds.length === 0) {
     return (
@@ -95,12 +102,26 @@ export const PropertiesPanel: React.FC = () => {
       <div>
         <Label className="text-sm font-medium text-gray-700 mb-2 block">Text Color</Label>
         <div className="flex items-center gap-2">
-          <input
-            type="color"
-            value={textElement.fill}
-            onChange={(e) => updateElement(textElement.id, { fill: e.target.value })}
-            className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
-          />
+          <Popover open={colorPickerOpen === 'text-fill'} onOpenChange={(open) => setColorPickerOpen(open ? 'text-fill' : null)}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-8 h-8 p-0 border-2"
+                style={{ backgroundColor: textElement.fill }}
+              />
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-3" align="start">
+              <div className="mb-2">
+                <Label className="text-sm font-medium">Choose Text Color</Label>
+              </div>
+              <Sketch
+                color={textElement.fill}
+                onChange={(color) => {
+                  updateElement(textElement.id, { fill: color.hex });
+                }}
+              />
+            </PopoverContent>
+          </Popover>
           <Input
             value={textElement.fill}
             onChange={(e) => updateElement(textElement.id, { fill: e.target.value })}
@@ -142,25 +163,67 @@ export const PropertiesPanel: React.FC = () => {
   const renderShapeProperties = (shapeElement: ShapeElement) => (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="fill-color" className="text-sm font-medium text-gray-700 mb-2 block">Fill Color</Label>
-        <Input
-          id="fill-color"
-          type="color"
-          value={shapeElement.fill || '#000000'}
-          onChange={(e) => handleUpdate({ fill: e.target.value })}
-          className="w-full h-8 rounded border border-gray-300"
-        />
+        <Label className="text-sm font-medium text-gray-700 mb-2 block">Fill Color</Label>
+        <div className="flex items-center gap-2">
+          <Popover open={colorPickerOpen === 'shape-fill'} onOpenChange={(open) => setColorPickerOpen(open ? 'shape-fill' : null)}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-8 h-8 p-0 border-2"
+                style={{ backgroundColor: shapeElement.fill || '#000000' }}
+              />
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-3" align="start">
+              <div className="mb-2">
+                <Label className="text-sm font-medium">Choose Fill Color</Label>
+              </div>
+              <Sketch
+                color={shapeElement.fill || '#000000'}
+                onChange={(color) => {
+                  handleUpdate({ fill: color.hex });
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+          <Input
+            value={shapeElement.fill || '#000000'}
+            onChange={(e) => handleUpdate({ fill: e.target.value })}
+            className="flex-1"
+            placeholder="#000000"
+          />
+        </div>
       </div>
       
       <div>
-        <Label htmlFor="stroke-color" className="text-sm font-medium text-gray-700 mb-2 block">Stroke Color</Label>
-        <Input
-          id="stroke-color"
-          type="color"
-          value={shapeElement.stroke || '#000000'}
-          onChange={(e) => handleUpdate({ stroke: e.target.value })}
-          className="w-full h-8 rounded border border-gray-300"
-        />
+        <Label className="text-sm font-medium text-gray-700 mb-2 block">Stroke Color</Label>
+        <div className="flex items-center gap-2">
+          <Popover open={colorPickerOpen === 'shape-stroke'} onOpenChange={(open) => setColorPickerOpen(open ? 'shape-stroke' : null)}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-8 h-8 p-0 border-2"
+                style={{ backgroundColor: shapeElement.stroke || '#000000' }}
+              />
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-3" align="start">
+              <div className="mb-2">
+                <Label className="text-sm font-medium">Choose Stroke Color</Label>
+              </div>
+              <Sketch
+                color={shapeElement.stroke || '#000000'}
+                onChange={(color) => {
+                  handleUpdate({ stroke: color.hex });
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+          <Input
+            value={shapeElement.stroke || '#000000'}
+            onChange={(e) => handleUpdate({ stroke: e.target.value })}
+            className="flex-1"
+            placeholder="#000000"
+          />
+        </div>
       </div>
       
       <div>
