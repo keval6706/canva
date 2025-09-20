@@ -2,12 +2,13 @@
 
 import React from 'react';
 import Konva from 'konva';
-import { CanvasElement, TextElement, ImageElement, ShapeElement, BackgroundElement, StickerElement } from '../../types/canvas';
+import { CanvasElement, TextElement, ImageElement, ShapeElement, BackgroundElement, StickerElement, DrawingElement } from '../../types/canvas';
 import { TextElementRenderer } from './elements/text-element-renderer';
 import { ImageElementRenderer } from './elements/image-element-renderer';
 import { ShapeElementRenderer } from './elements/shape-element-renderer';
 import { BackgroundElementRenderer } from './elements/background-element-renderer';
 import { StickerElementRenderer } from './elements/sticker-element-renderer';
+import { DrawingElementRenderer } from './elements/drawing-element-renderer';
 
 interface CanvasElementRendererProps {
   element: CanvasElement;
@@ -48,6 +49,12 @@ export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
     case 'sticker':
       return <StickerElementRenderer 
         element={element as StickerElement} 
+        isSelected={isSelected} 
+        onSelect={onSelect} 
+      />;
+    case 'drawing':
+      return <DrawingElementRenderer 
+        element={element as DrawingElement} 
         isSelected={isSelected} 
         onSelect={onSelect} 
       />;

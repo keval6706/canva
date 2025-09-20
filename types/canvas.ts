@@ -30,7 +30,7 @@ export interface ElementBase {
   groupId?: string;
 }
 
-export type ElementType = 'text' | 'image' | 'shape' | 'background' | 'sticker';
+export type ElementType = 'text' | 'image' | 'shape' | 'background' | 'sticker' | 'drawing';
 
 export interface TextElement extends ElementBase {
   type: 'text';
@@ -120,7 +120,19 @@ export interface StickerElement extends ElementBase {
   category?: string;
 }
 
-export type CanvasElement = TextElement | ImageElement | ShapeElement | BackgroundElement | StickerElement;
+export interface DrawingElement extends ElementBase {
+  type: 'drawing';
+  points: number[]; // Array of x,y coordinates [x1, y1, x2, y2, ...]
+  stroke: string;
+  strokeWidth: number;
+  opacity: number;
+  lineCap?: 'butt' | 'round' | 'square';
+  lineJoin?: 'miter' | 'round' | 'bevel';
+  tension?: number; // For smooth curves
+  fill?: string; // Optional fill for closed shapes
+}
+
+export type CanvasElement = TextElement | ImageElement | ShapeElement | BackgroundElement | StickerElement | DrawingElement;
 
 export interface CanvasState {
   width: number;

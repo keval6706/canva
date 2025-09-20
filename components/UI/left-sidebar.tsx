@@ -5,7 +5,8 @@ import {
   CursorArrowRaysIcon,
   ChatBubbleBottomCenterTextIcon,
   PhotoIcon,
-  Square3Stack3DIcon
+  Square3Stack3DIcon,
+  PencilIcon
 } from '@heroicons/react/24/outline';
 import { useCanvasStore } from '../../store/canvas-store';
 import { Tool, CanvasElement, Template } from '../../types/canvas';
@@ -22,6 +23,7 @@ interface ToolItem {
 
 const tools: ToolItem[] = [
   { id: 'select', name: 'Select', icon: CursorArrowRaysIcon },
+  { id: 'brush', name: 'Brush', icon: PencilIcon },
   { id: 'text', name: 'Text', icon: ChatBubbleBottomCenterTextIcon },
   { id: 'image', name: 'Images', icon: PhotoIcon },
   { id: 'rectangle', name: 'Shapes', icon: Square3Stack3DIcon },

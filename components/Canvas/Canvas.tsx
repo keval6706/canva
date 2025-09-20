@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Stage, Layer, Rect } from 'react-konva';
+import { Stage, Layer, Rect, Line } from 'react-konva';
 import Konva from 'konva';
 import { useCanvasStore } from '../../store/canvas-store';
 import { CanvasElementRenderer } from './canvas-element-renderer';
@@ -18,6 +18,8 @@ interface CanvasProps {
 export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
   const stageRef = useRef<Konva.Stage>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [currentPath, setCurrentPath] = useState<number[]>([]);
   
   const {
     elements,
@@ -79,6 +81,74 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
       selectElement(elementId);
     }
   }, [selectedIds, selectElement, selectElements]);
+
+  // Handle drawing
+  const handleMouseDown = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
+    if (tool !== 'brush') return;
+
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    const pointer = stage.getPointerPosition();
+    if (!pointer) return;
+
+    const position = {
+      x: (pointer.x - pan.x) / zoom,
+      y: (pointer.y - pan.y) / zoom
+    };
+
+    setIsDrawing(true);
+    setCurrentPath([position.x, position.y]);
+  }, [tool, pan, zoom]);
+
+  const handleMouseMove = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
+    if (!isDrawing || tool !== 'brush') return;
+
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    const pointer = stage.getPointerPosition();
+    if (!pointer) return;
+
+    const position = {
+      x: (pointer.x - pan.x) / zoom,
+      y: (pointer.y - pan.y) / zoom
+    };
+
+    setCurrentPath(prev => [...prev, position.x, position.y]);
+  }, [isDrawing, tool, pan, zoom]);
+
+  const handleMouseUp = useCallback(() => {
+    if (!isDrawing || tool !== 'brush') return;
+
+    if (currentPath.length >= 4) { // Need at least 2 points (4 coordinates)
+      const drawingElement = {
+        type: 'drawing' as const,
+        name: 'Drawing',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        transform: {
+          x: 0,
+          y: 0,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0
+        },
+        points: currentPath,
+        stroke: '#000000',
+        strokeWidth: 2,
+        lineCap: 'round' as const,
+        lineJoin: 'round' as const,
+        tension: 0
+      };
+
+      addElement(drawingElement);
+    }
+
+    setIsDrawing(false);
+    setCurrentPath([]);
+  }, [isDrawing, tool, currentPath, addElement]);
 
   // Create new element based on tool
   const handleStageDoubleClick = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
@@ -160,6 +230,9 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
         onDragEnd={handleStageDragEnd}
         onClick={handleStageClick}
         onDblClick={handleStageDoubleClick}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
         draggable={tool === 'pan' || tool === 'select'}
       >
         {/* Grid Layer */}
@@ -198,6 +271,20 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
               onSelect={(e: Konva.KonvaEventObject<MouseEvent>) => handleElementClick(element.id, e)}
             />
           ))}
+          
+          {/* Current drawing path */}
+          {isDrawing && currentPath.length >= 4 && (
+            <Line
+              points={currentPath}
+              stroke="#000000"
+              strokeWidth={2}
+              opacity={0.7}
+              lineCap="round"
+              lineJoin="round"
+              tension={0}
+              globalCompositeOperation="source-over"
+            />
+          )}
         </Layer>
 
         {/* Selection/Transform Layer */}
