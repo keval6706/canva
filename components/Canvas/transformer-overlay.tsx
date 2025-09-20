@@ -9,7 +9,9 @@ interface TransformerOverlayProps {
   selectedIds: string[];
 }
 
-export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selectedIds }) => {
+export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
+  selectedIds,
+}) => {
   const transformerRef = useRef<Konva.Transformer>(null);
   const [isProportionalScaling, setIsProportionalScaling] = useState(false);
   const { updateElement } = useCanvasStore();
@@ -28,9 +30,9 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
 
     // Find the selected element nodes in the stage
     const selectedNodes: Konva.Node[] = [];
-    
-    selectedIds.forEach(id => {
-      // Find the group node for this element by traversing the stage
+
+    selectedIds.forEach((id) => {
+      // Find the element node by traversing the stage
       const elementNode = stage.findOne(`#element-${id}`);
       if (elementNode) {
         selectedNodes.push(elementNode);
@@ -50,29 +52,29 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
     if (!transformer) return;
 
     const nodes = transformer.nodes();
-    
+
     // Check if shift key is pressed for proportional scaling
     const isShiftPressed = e.evt && (e.evt as KeyboardEvent).shiftKey;
     setIsProportionalScaling(isShiftPressed);
-    
+
     nodes.forEach((node) => {
       let scaleX = node.scaleX();
       let scaleY = node.scaleY();
-      
+
       // If shift is pressed, maintain aspect ratio
       if (isShiftPressed) {
         // Calculate the smaller absolute scale to maintain aspect ratio
         const absScaleX = Math.abs(scaleX);
         const absScaleY = Math.abs(scaleY);
         const uniformScale = Math.min(absScaleX, absScaleY);
-        
+
         // Preserve sign of the scale
         const signX = scaleX >= 0 ? 1 : -1;
         const signY = scaleY >= 0 ? 1 : -1;
-        
+
         scaleX = uniformScale * signX;
         scaleY = uniformScale * signY;
-        
+
         node.scaleX(scaleX);
         node.scaleY(scaleY);
       }
@@ -84,7 +86,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
     if (!transformer) return;
 
     const nodes = transformer.nodes();
-    
+
     nodes.forEach((node) => {
       // Extract element ID from node name
       const elementId = node.name().replace('element-', '');
@@ -92,7 +94,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
 
       // Get fresh element data to avoid stale state
       const currentElements = useCanvasStore.getState().elements;
-      const element = currentElements.find(el => el.id === elementId);
+      const element = currentElements.find((el) => el.id === elementId);
       if (!element) return;
 
       // Get the final transform values from the node
@@ -103,8 +105,12 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
       const finalRotation = node.rotation();
 
       // Clamp scale values to prevent extreme scaling
-      const clampedScaleX = Math.max(0.1, Math.min(10, Math.abs(finalScaleX))) * (finalScaleX >= 0 ? 1 : -1);
-      const clampedScaleY = Math.max(0.1, Math.min(10, Math.abs(finalScaleY))) * (finalScaleY >= 0 ? 1 : -1);
+      const clampedScaleX =
+        Math.max(0.1, Math.min(10, Math.abs(finalScaleX))) *
+        (finalScaleX >= 0 ? 1 : -1);
+      const clampedScaleY =
+        Math.max(0.1, Math.min(10, Math.abs(finalScaleY))) *
+        (finalScaleY >= 0 ? 1 : -1);
 
       // Update element with final transform values
       updateElement(elementId, {
@@ -118,8 +124,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
         },
       });
 
-      // Reset the node position/rotation to match stored values, but keep scale as-is
-      // since the element renderer will handle the visual scaling
+      // Reset the node position/rotation to match stored values
       node.x(finalX);
       node.y(finalY);
       node.rotation(finalRotation);
@@ -146,15 +151,15 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
         const minHeight = 10;
         const maxWidth = 2000;
         const maxHeight = 2000;
-        
+
         if (newBox.width < minWidth || newBox.height < minHeight) {
           return oldBox;
         }
-        
+
         if (newBox.width > maxWidth || newBox.height > maxHeight) {
           return oldBox;
         }
-        
+
         return newBox;
       }}
       onTransform={handleTransform}
@@ -163,20 +168,20 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({ selected
       centeredScaling={false}
       enabledAnchors={[
         'top-left',
-        'top-center', 
+        'top-center',
         'top-right',
         'middle-right',
         'bottom-right',
         'bottom-center',
         'bottom-left',
-        'middle-left'
+        'middle-left',
       ]}
       borderEnabled={true}
-      borderStroke={isProportionalScaling ? "#ff6b6b" : "#0066ff"}
+      borderStroke={isProportionalScaling ? '#ff6b6b' : '#0066ff'}
       borderStrokeWidth={isProportionalScaling ? 2 : 1}
       borderDash={isProportionalScaling ? [2, 2] : [3, 3]}
       anchorFill="white"
-      anchorStroke={isProportionalScaling ? "#ff6b6b" : "#0066ff"}
+      anchorStroke={isProportionalScaling ? '#ff6b6b' : '#0066ff'}
       anchorStrokeWidth={1}
       anchorSize={8}
       anchorCornerRadius={2}

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import { CanvasElement, CanvasState, Tool, Point, HistoryAction } from '../types/canvas';
+import { CanvasElement, CanvasState, Tool, Point, HistoryAction, GroupElement } from '../types/canvas';
 
 interface CanvasStore extends CanvasState {
   // Element management
@@ -27,6 +27,8 @@ interface CanvasStore extends CanvasState {
   // Grouping
   groupElements: (ids: string[]) => void;
   ungroupElements: (groupId: string) => void;
+  createGroup: (elementIds: string[], groupName?: string) => string;
+  dissolveGroup: (groupId: string) => void;
   
   // Clipboard
   copyElements: (ids?: string[]) => void;
@@ -57,6 +59,8 @@ interface CanvasStore extends CanvasState {
   getElementById: (id: string) => CanvasElement | undefined;
   getSelectedElements: () => CanvasElement[];
   getNextZIndex: () => number;
+  getElementsBounds: (elementIds: string[]) => { x: number; y: number; width: number; height: number };
+  getElementBounds: (element: CanvasElement) => { x: number; y: number; width: number; height: number };
 }
 
 const initialState: CanvasState = {
@@ -229,7 +233,7 @@ export const useCanvasStore = create<CanvasStore>()(
         const _elements = [...state.elements, ...duplicated];
         return {
           elements: _elements,
-          selectedIds: duplicated.map(el => el.id),
+          selectedIds: duplicated.length > 0 ? [duplicated[0].id] : [], // Only select the first duplicated element
           history: {
             ...state.history,
             present: _elements,
@@ -254,7 +258,11 @@ export const useCanvasStore = create<CanvasStore>()(
     },
 
     selectAll: () => {
-      set((state) => ({ selectedIds: state.elements.map(el => el.id) }));
+      set((state) => ({ 
+        selectedIds: state.elements
+          .filter(el => el.groupId === undefined) // Only select elements that are not children of groups
+          .map(el => el.id) 
+      }));
     },
 
     // Layer management
@@ -306,22 +314,117 @@ export const useCanvasStore = create<CanvasStore>()(
 
     // Grouping
     groupElements: (ids) => {
-      const groupId = uuidv4();
-      set((state) => {
-        const _elements = state.elements.map(el => 
-          ids.includes(el.id) ? { ...el, groupId } : el
-        );
-        return { elements: _elements };
-      });
+      if (ids.length < 2) return;
+      get().createGroup(ids);
     },
 
     ungroupElements: (groupId) => {
-      set((state) => {
-        const _elements = state.elements.map(el => 
-          el.groupId === groupId ? { ...el, groupId: undefined } : el
-        );
-        return { elements: _elements };
+      get().dissolveGroup(groupId);
+    },
+
+    createGroup: (elementIds, groupName) => {
+      const elements = elementIds.map(id => get().getElementById(id)).filter(Boolean) as CanvasElement[];
+      if (elements.length < 2) return '';
+
+      // Calculate group bounds
+      const bounds = get().getElementsBounds(elementIds);
+      const centerX = bounds.x + bounds.width / 2;
+      const centerY = bounds.y + bounds.height / 2;
+
+      // Create group element
+      const groupElement: Omit<GroupElement, 'id' | 'zIndex'> = {
+        type: 'group',
+        name: groupName || 'Group',
+        visible: true,
+        locked: false,
+        opacity: 1,
+        transform: {
+          x: centerX,
+          y: centerY,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0
+        },
+        children: elementIds
+      };
+
+      // Add group element
+      const groupId = uuidv4();
+      const group: GroupElement = {
+        ...groupElement,
+        id: groupId,
+        zIndex: get().getNextZIndex()
+      };
+
+      // Update child elements to be relative to group center
+      const updatedChildElements = elements.map(el => ({
+        ...el,
+        transform: {
+          ...el.transform,
+          x: el.transform.x - centerX,
+          y: el.transform.y - centerY,
+          scaleX: el.transform.scaleX,
+          scaleY: el.transform.scaleY,
+          rotation: el.transform.rotation
+        },
+        groupId: groupId
+      }));
+
+      // Remove child elements from main elements array and add group
+      const elementsWithoutChildren = get().elements.filter(el => !elementIds.includes(el.id));
+
+      set((state) => ({
+        elements: [...elementsWithoutChildren, ...updatedChildElements, group] as CanvasElement[],
+        selectedIds: [groupId],
+        history: {
+          ...state.history,
+          present: [...elementsWithoutChildren, ...updatedChildElements, group] as CanvasElement[],
+          past: [...state.history.past, state.elements],
+          future: []
+        }
+      }));
+
+      return groupId;
+    },
+
+    dissolveGroup: (groupId) => {
+      const group = get().getElementById(groupId) as GroupElement;
+      if (!group || group.type !== 'group') return;
+
+      // Get child elements
+      const childElements = group.children.map(id => get().getElementById(id)).filter(Boolean) as CanvasElement[];
+
+      // Transform child elements back to world coordinates
+      const updatedChildElements = childElements.map(child => ({
+        ...child,
+        transform: {
+          ...child.transform,
+          x: child.transform.x + group.transform.x,
+          y: child.transform.y + group.transform.y,
+          scaleX: child.transform.scaleX * group.transform.scaleX,
+          scaleY: child.transform.scaleY * group.transform.scaleY,
+          rotation: child.transform.rotation + group.transform.rotation
+        },
+        groupId: undefined
+      }));
+
+      // Remove group and update children
+      const elementsWithoutGroup = get().elements.filter(el => el.id !== groupId);
+      const finalElements = elementsWithoutGroup.map(el => {
+        const updatedChild = updatedChildElements.find(child => child.id === el.id);
+        return updatedChild || el;
       });
+
+      set((state) => ({
+        elements: finalElements,
+        selectedIds: group.children,
+        history: {
+          ...state.history,
+          present: finalElements,
+          past: [...state.history.past, state.elements],
+          future: []
+        }
+      }));
     },
 
     // Clipboard
@@ -356,7 +459,7 @@ export const useCanvasStore = create<CanvasStore>()(
         const _elements = [...state.elements, ...duplicated];
         return {
           elements: _elements,
-          selectedIds: duplicated.map(el => el.id),
+          selectedIds: duplicated.length > 0 ? [duplicated[0].id] : [], // Only select the first pasted element
           history: {
             ...state.history,
             present: _elements,
@@ -485,6 +588,47 @@ export const useCanvasStore = create<CanvasStore>()(
     getNextZIndex: () => {
       const { elements } = get();
       return elements.length > 0 ? Math.max(...elements.map(el => el.zIndex)) + 1 : 0;
+    },
+
+    getElementsBounds: (elementIds) => {
+      const { elements } = get();
+      const selectedElements = elements.filter(el => elementIds.includes(el.id));
+      
+      if (selectedElements.length === 0) {
+        return { x: 0, y: 0, width: 0, height: 0 };
+      }
+
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+
+      selectedElements.forEach(element => {
+        const bounds = get().getElementBounds(element);
+        minX = Math.min(minX, bounds.x);
+        minY = Math.min(minY, bounds.y);
+        maxX = Math.max(maxX, bounds.x + bounds.width);
+        maxY = Math.max(maxY, bounds.y + bounds.height);
+      });
+
+      return {
+        x: minX,
+        y: minY,
+        width: maxX - minX,
+        height: maxY - minY
+      };
+    },
+
+    getElementBounds: (element) => {
+      // This is a simplified bounds calculation - in a real implementation
+      // you'd need to calculate based on the actual rendered size
+      const padding = 10;
+      return {
+        x: element.transform.x - padding,
+        y: element.transform.y - padding,
+        width: 100, // Default width - should be calculated based on content
+        height: 50  // Default height - should be calculated based on content
+      };
     }
   }))
 );

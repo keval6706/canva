@@ -20,7 +20,7 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
   const textRef = useRef<Konva.Text>(null);
   const groupRef = useRef<Konva.Group>(null);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   const { updateElement } = useCanvasStore();
 
   const handleDragEnd = () => {
@@ -39,10 +39,13 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
     setIsEditing(true);
   };
 
-  const handleTextChange = useCallback((e: Event) => {
-    const target = e.target as HTMLTextAreaElement;
-    updateElement(element.id, { text: target.value });
-  }, [element.id, updateElement]);
+  const handleTextChange = useCallback(
+    (e: Event) => {
+      const target = e.target as HTMLTextAreaElement;
+      updateElement(element.id, { text: target.value });
+    },
+    [element.id, updateElement]
+  );
 
   const handleEditingEnd = () => {
     setIsEditing(false);
@@ -110,22 +113,43 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
 
       return cleanup;
     }
-  }, [isEditing, element.text, element.fontSize, element.fontFamily, element.fontWeight, element.fontStyle, element.fill, handleTextChange]);
+  }, [
+    isEditing,
+    element.text,
+    element.fontSize,
+    element.fontFamily,
+    element.fontWeight,
+    element.fontStyle,
+    element.fill,
+    handleTextChange,
+  ]);
 
   if (!element.visible) return null;
+
+  // If element is part of a group, use relative transform (group handles absolute positioning)
+  const isInGroup = element.groupId !== undefined;
+  const transform = isInGroup
+    ? {
+        x: element.transform.x,
+        y: element.transform.y,
+        scaleX: element.transform.scaleX,
+        scaleY: element.transform.scaleY,
+        rotation: element.transform.rotation,
+      }
+    : element.transform;
 
   return (
     <Group
       ref={groupRef}
       id={`element-${element.id}`}
       name={`element-${element.id}`}
-      x={element.transform.x}
-      y={element.transform.y}
-      scaleX={element.transform.scaleX}
-      scaleY={element.transform.scaleY}
-      rotation={element.transform.rotation}
+      x={transform.x}
+      y={transform.y}
+      scaleX={transform.scaleX}
+      scaleY={transform.scaleY}
+      rotation={transform.rotation}
       opacity={element.opacity}
-      draggable={!element.locked && !isEditing}
+      draggable={!element.locked && !isEditing && !isInGroup} // Don't allow dragging when in group
       onDragEnd={handleDragEnd}
       onClick={onSelect}
       onDblClick={handleDoubleClick}

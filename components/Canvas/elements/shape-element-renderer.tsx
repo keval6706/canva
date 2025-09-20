@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { Group, Rect, Circle, RegularPolygon, Line, Arrow, Star } from 'react-konva';
+import {
+  Group,
+  Rect,
+  Circle,
+  RegularPolygon,
+  Line,
+  Arrow,
+  Star,
+} from 'react-konva';
 import Konva from 'konva';
 import { ShapeElement } from '../../../types/canvas';
 import { useCanvasStore } from '../../../store/canvas-store';
@@ -20,7 +28,7 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
   const groupRef = useRef<Konva.Group>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const shapeRef = useRef<any>(null);
-  
+
   const { updateElement } = useCanvasStore();
 
   const handleDragEnd = () => {
@@ -36,6 +44,18 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
   };
 
   if (!element.visible) return null;
+
+  // If element is part of a group, use relative transform (group handles absolute positioning)
+  const isInGroup = element.groupId !== undefined;
+  const transform = isInGroup
+    ? {
+        x: element.transform.x,
+        y: element.transform.y,
+        scaleX: element.transform.scaleX,
+        scaleY: element.transform.scaleY,
+        rotation: element.transform.rotation,
+      }
+    : element.transform;
 
   const renderShape = () => {
     const commonProps = {
@@ -64,14 +84,7 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
         );
 
       case 'circle':
-        return (
-          <Circle
-            {...commonProps}
-            x={50}
-            y={50}
-            radius={50}
-          />
-        );
+        return <Circle {...commonProps} x={50} y={50} radius={50} />;
 
       case 'triangle':
         return (
@@ -109,10 +122,7 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
 
       case 'line':
         return (
-          <Line
-            {...commonProps}
-            points={element.points || [0, 0, 100, 0]}
-          />
+          <Line {...commonProps} points={element.points || [0, 0, 100, 0]} />
         );
 
       case 'arrow':
@@ -135,13 +145,13 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
       ref={groupRef}
       id={`element-${element.id}`}
       name={`element-${element.id}`}
-      x={element.transform.x}
-      y={element.transform.y}
-      scaleX={element.transform.scaleX}
-      scaleY={element.transform.scaleY}
-      rotation={element.transform.rotation}
+      x={transform.x}
+      y={transform.y}
+      scaleX={transform.scaleX}
+      scaleY={transform.scaleY}
+      rotation={transform.rotation}
       opacity={element.opacity}
-      draggable={!element.locked}
+      draggable={!element.locked && !isInGroup} // Don't allow dragging when in group
       onDragEnd={handleDragEnd}
       onClick={onSelect}
     >

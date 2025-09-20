@@ -20,22 +20,22 @@ export const StickerElementRenderer: React.FC<StickerElementRendererProps> = ({
   const imageRef = useRef<Konva.Image>(null);
   const groupRef = useRef<Konva.Group>(null);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
-  
+
   const { updateElement } = useCanvasStore();
 
   // Load sticker image
   useEffect(() => {
     const img = new window.Image();
     img.crossOrigin = 'anonymous';
-    
+
     img.onload = () => {
       setImage(img);
     };
-    
+
     img.onerror = () => {
       console.error('Failed to load sticker:', element.src);
     };
-    
+
     img.src = element.src;
   }, [element.src]);
 
@@ -53,18 +53,30 @@ export const StickerElementRenderer: React.FC<StickerElementRendererProps> = ({
 
   if (!element.visible || !image) return null;
 
+  // If element is part of a group, use relative transform (group handles absolute positioning)
+  const isInGroup = element.groupId !== undefined;
+  const transform = isInGroup
+    ? {
+        x: element.transform.x,
+        y: element.transform.y,
+        scaleX: element.transform.scaleX,
+        scaleY: element.transform.scaleY,
+        rotation: element.transform.rotation,
+      }
+    : element.transform;
+
   return (
     <Group
       ref={groupRef}
       id={`element-${element.id}`}
       name={`element-${element.id}`}
-      x={element.transform.x}
-      y={element.transform.y}
-      scaleX={element.transform.scaleX}
-      scaleY={element.transform.scaleY}
-      rotation={element.transform.rotation}
+      x={transform.x}
+      y={transform.y}
+      scaleX={transform.scaleX}
+      scaleY={transform.scaleY}
+      rotation={transform.rotation}
       opacity={element.opacity}
-      draggable={!element.locked}
+      draggable={!element.locked && !isInGroup} // Don't allow dragging when in group
       onDragEnd={handleDragEnd}
       onClick={onSelect}
     >

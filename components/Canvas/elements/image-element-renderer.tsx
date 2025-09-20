@@ -20,22 +20,22 @@ export const ImageElementRenderer: React.FC<ImageElementRendererProps> = ({
   const imageRef = useRef<Konva.Image>(null);
   const groupRef = useRef<Konva.Group>(null);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
-  
+
   const { updateElement } = useCanvasStore();
 
   // Load image
   useEffect(() => {
     const img = new window.Image();
     img.crossOrigin = 'anonymous';
-    
+
     img.onload = () => {
       setImage(img);
     };
-    
+
     img.onerror = () => {
       console.error('Failed to load image:', element.src);
     };
-    
+
     img.src = element.src;
   }, [element.src]);
 
@@ -56,27 +56,33 @@ export const ImageElementRenderer: React.FC<ImageElementRendererProps> = ({
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filters: any[] = [];
-    
-    if (element.filters.brightness !== undefined && element.filters.brightness !== 0) {
+
+    if (
+      element.filters.brightness !== undefined &&
+      element.filters.brightness !== 0
+    ) {
       filters.push(Konva.Filters.Brighten);
     }
-    
-    if (element.filters.contrast !== undefined && element.filters.contrast !== 0) {
+
+    if (
+      element.filters.contrast !== undefined &&
+      element.filters.contrast !== 0
+    ) {
       filters.push(Konva.Filters.Contrast);
     }
-    
+
     if (element.filters.blur !== undefined && element.filters.blur > 0) {
       filters.push(Konva.Filters.Blur);
     }
-    
+
     if (element.filters.grayscale) {
       filters.push(Konva.Filters.Grayscale);
     }
-    
+
     if (element.filters.sepia) {
       filters.push(Konva.Filters.Sepia);
     }
-    
+
     if (element.filters.invert) {
       filters.push(Konva.Filters.Invert);
     }
@@ -93,25 +99,37 @@ export const ImageElementRenderer: React.FC<ImageElementRendererProps> = ({
 
   const imageWidth = image.naturalWidth;
   const imageHeight = image.naturalHeight;
-  
+
   // Calculate crop dimensions
   const cropWidth = element.cropWidth || imageWidth;
   const cropHeight = element.cropHeight || imageHeight;
   const cropX = element.cropX || 0;
   const cropY = element.cropY || 0;
 
+  // If element is part of a group, use relative transform (group handles absolute positioning)
+  const isInGroup = element.groupId !== undefined;
+  const transform = isInGroup
+    ? {
+        x: element.transform.x,
+        y: element.transform.y,
+        scaleX: element.transform.scaleX,
+        scaleY: element.transform.scaleY,
+        rotation: element.transform.rotation,
+      }
+    : element.transform;
+
   return (
     <Group
       ref={groupRef}
       id={`element-${element.id}`}
       name={`element-${element.id}`}
-      x={element.transform.x}
-      y={element.transform.y}
-      scaleX={element.transform.scaleX * (element.flipX ? -1 : 1)}
-      scaleY={element.transform.scaleY * (element.flipY ? -1 : 1)}
-      rotation={element.transform.rotation}
+      x={transform.x}
+      y={transform.y}
+      scaleX={transform.scaleX * (element.flipX ? -1 : 1)}
+      scaleY={transform.scaleY * (element.flipY ? -1 : 1)}
+      rotation={transform.rotation}
       opacity={element.opacity}
-      draggable={!element.locked}
+      draggable={!element.locked && !isInGroup} // Don't allow dragging when in group
       onDragEnd={handleDragEnd}
       onClick={onSelect}
     >

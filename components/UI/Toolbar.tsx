@@ -1,15 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  ArrowUturnLeftIcon, 
+import {
+  ArrowUturnLeftIcon,
   ArrowUturnRightIcon,
   MagnifyingGlassPlusIcon,
   MagnifyingGlassMinusIcon,
   DocumentArrowDownIcon,
   Squares2X2Icon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
+  RectangleStackIcon,
+  ArrowRightCircleIcon,
 } from '@heroicons/react/24/outline';
 import { useCanvasStore } from '../../store/canvas-store';
 import { ExportModal } from './export-modal';
@@ -20,19 +22,22 @@ import { Slider } from './slider';
 
 export const Toolbar: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
-  
-  const { 
-    undo, 
-    redo, 
-    zoom, 
-    setZoom, 
-    grid, 
-    toggleGrid, 
+
+  const {
+    undo,
+    redo,
+    zoom,
+    setZoom,
+    grid,
+    toggleGrid,
     guides,
     toggleGuides,
     rulers,
     toggleRulers,
-    history 
+    history,
+    selectedIds,
+    groupElements,
+    ungroupElements,
   } = useCanvasStore();
 
   const canUndo = history.past.length > 0;
@@ -61,7 +66,7 @@ export const Toolbar: React.FC = () => {
 
   return (
     <div className="bg-white border-b border-gray-200 px-5 py-2.5 flex items-center justify-between shadow-sm">
-      {/* Left Section - History */}
+      {/* Left Section - History & Groups */}
       <div className="flex items-center space-x-1.5">
         <Button
           onClick={undo}
@@ -73,7 +78,7 @@ export const Toolbar: React.FC = () => {
         >
           <ArrowUturnLeftIcon className="w-5 h-5" />
         </Button>
-        
+
         <Button
           onClick={redo}
           disabled={!canRedo}
@@ -84,6 +89,38 @@ export const Toolbar: React.FC = () => {
         >
           <ArrowUturnRightIcon className="w-5 h-5" />
         </Button>
+
+        <div className="w-px h-7 bg-gray-300 mx-2.5" />
+
+        <Button
+          onClick={() => groupElements(selectedIds)}
+          disabled={selectedIds.length < 2}
+          variant="ghost"
+          size="sm"
+          title="Group Elements (Ctrl+G)"
+          className="hover:bg-gray-100"
+        >
+          <RectangleStackIcon className="w-5 h-5" />
+        </Button>
+
+        <Button
+          onClick={() => {
+            // Find groups in selection and ungroup them
+            const { elements } = useCanvasStore.getState();
+            const groupIds = selectedIds.filter((id) => {
+              const element = elements.find((el) => el.id === id);
+              return element?.type === 'group';
+            });
+            groupIds.forEach((id) => ungroupElements(id));
+          }}
+          disabled={selectedIds.length === 0}
+          variant="ghost"
+          size="sm"
+          title="Ungroup Elements (Ctrl+Shift+G)"
+          className="hover:bg-gray-100"
+        >
+          <ArrowRightCircleIcon className="w-5 h-5" />
+        </Button>
       </div>
 
       {/* Center Section - Canvas Size & Zoom Controls */}
@@ -91,7 +128,7 @@ export const Toolbar: React.FC = () => {
         <div className="flex items-center space-x-2.5">
           <CanvasSizeSelector />
         </div>
-        
+
         <div className="flex items-center space-x-1 border-l border-gray-200 pl-5">
           <Button
             onClick={handleZoomOut}
@@ -102,7 +139,7 @@ export const Toolbar: React.FC = () => {
           >
             <MagnifyingGlassMinusIcon className="w-5 h-5" />
           </Button>
-          
+
           <Button
             onClick={handleZoomReset}
             variant="outline"
@@ -112,7 +149,7 @@ export const Toolbar: React.FC = () => {
           >
             {Math.round(zoom * 100)}%
           </Button>
-          
+
           <Button
             onClick={handleZoomIn}
             variant="ghost"
@@ -135,7 +172,9 @@ export const Toolbar: React.FC = () => {
             step={10}
             className="w-20"
           />
-          <span className="text-sm text-gray-600 font-medium w-8">{Math.round(zoom * 100)}%</span>
+          <span className="text-sm text-gray-600 font-medium w-8">
+            {Math.round(zoom * 100)}%
+          </span>
         </div>
       </div>
 
@@ -143,27 +182,27 @@ export const Toolbar: React.FC = () => {
       <div className="flex items-center space-x-1">
         <Button
           onClick={toggleGrid}
-          variant={grid.enabled ? "default" : "ghost"}
+          variant={grid.enabled ? 'default' : 'ghost'}
           size="sm"
           title="Toggle Grid"
           className="hover:bg-gray-100"
         >
           <Squares2X2Icon className="w-5 h-5" />
         </Button>
-        
+
         <Button
           onClick={toggleRulers}
-          variant={rulers.enabled ? "default" : "ghost"}
+          variant={rulers.enabled ? 'default' : 'ghost'}
           size="sm"
           title="Toggle Rulers"
           className="hover:bg-gray-100"
         >
           <Squares2X2Icon className="w-5 h-5" />
         </Button>
-        
+
         <Button
           onClick={toggleGuides}
-          variant={guides.enabled ? "default" : "ghost"}
+          variant={guides.enabled ? 'default' : 'ghost'}
           size="sm"
           title="Toggle Guides"
           className="hover:bg-gray-100"
@@ -176,12 +215,8 @@ export const Toolbar: React.FC = () => {
         </Button>
 
         <div className="w-px h-7 bg-gray-300 mx-2.5" />
-        
-        <Button
-          onClick={handleExport}
-          title="Export"
-          className="ml-1.5"
-        >
+
+        <Button onClick={handleExport} title="Export" className="ml-1.5">
           <DocumentArrowDownIcon className="w-4 h-4 mr-1.5" />
           Export
         </Button>

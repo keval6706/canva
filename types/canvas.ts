@@ -30,7 +30,7 @@ export interface ElementBase {
   groupId?: string;
 }
 
-export type ElementType = 'text' | 'image' | 'shape' | 'background' | 'sticker' | 'drawing';
+export type ElementType = 'text' | 'image' | 'shape' | 'background' | 'sticker' | 'drawing' | 'group';
 
 export interface TextElement extends ElementBase {
   type: 'text';
@@ -132,7 +132,19 @@ export interface DrawingElement extends ElementBase {
   fill?: string; // Optional fill for closed shapes
 }
 
-export type CanvasElement = TextElement | ImageElement | ShapeElement | BackgroundElement | StickerElement | DrawingElement;
+export interface GroupElement extends ElementBase {
+  type: 'group';
+  children: string[]; // Array of child element IDs
+  name: string;
+  visible: boolean;
+  locked: boolean;
+  opacity: number;
+  transform: Transform;
+  zIndex: number;
+  groupId?: string; // Groups can be nested
+}
+
+export type CanvasElement = TextElement | ImageElement | ShapeElement | BackgroundElement | StickerElement | DrawingElement | GroupElement;
 
 export interface CanvasState {
   width: number;

@@ -20,7 +20,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentPath, setCurrentPath] = useState<number[]>([]);
-  
+
   const {
     elements,
     selectedIds,
@@ -35,93 +35,122 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     selectElement,
     selectElements,
     clearSelection,
-    addElement
+    addElement,
+    groupElements,
+    ungroupElements,
+    undo,
+    redo,
+    copyElements,
+    cutElements,
+    pasteElements,
+    duplicateElements,
+    deleteElements,
+    selectAll,
   } = useCanvasStore();
 
   // Handle stage drag (panning)
-  const handleStageDragStart = useCallback((_e: Konva.KonvaEventObject<DragEvent>) => {
-    if (tool !== 'pan' && tool !== 'select') return;
-    
-    setIsDragging(true);
-  }, [tool]);
+  const handleStageDragStart = useCallback(
+    (_e: Konva.KonvaEventObject<DragEvent>) => {
+      if (tool !== 'pan' && tool !== 'select') return;
 
-  const handleStageDragMove = useCallback((e: Konva.KonvaEventObject<DragEvent>) => {
-    if (!isDragging || (tool !== 'pan' && tool !== 'select')) return;
-    
-    const stage = e.target.getStage();
-    if (stage) {
-      setPan({ x: stage.x(), y: stage.y() });
-    }
-  }, [isDragging, tool, setPan]);
+      setIsDragging(true);
+    },
+    [tool]
+  );
+
+  const handleStageDragMove = useCallback(
+    (e: Konva.KonvaEventObject<DragEvent>) => {
+      if (!isDragging || (tool !== 'pan' && tool !== 'select')) return;
+
+      const stage = e.target.getStage();
+      if (stage) {
+        setPan({ x: stage.x(), y: stage.y() });
+      }
+    },
+    [isDragging, tool, setPan]
+  );
 
   const handleStageDragEnd = useCallback(() => {
     setIsDragging(false);
   }, []);
 
   // Handle click on empty area
-  const handleStageClick = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
-    // Check if clicked on empty area
-    if (e.target === e.target.getStage()) {
-      clearSelection();
-    }
-  }, [clearSelection]);
+  const handleStageClick = useCallback(
+    (e: Konva.KonvaEventObject<MouseEvent>) => {
+      // Check if clicked on empty area
+      if (e.target === e.target.getStage()) {
+        clearSelection();
+      }
+    },
+    [clearSelection]
+  );
 
   // Handle element selection
-  const handleElementClick = useCallback((elementId: string, e: Konva.KonvaEventObject<MouseEvent>) => {
-    e.cancelBubble = true;
-    
-    if (e.evt.ctrlKey || e.evt.metaKey) {
-      // Multi-select
-      if (selectedIds.includes(elementId)) {
-        selectElements(selectedIds.filter(id => id !== elementId));
+  const handleElementClick = useCallback(
+    (elementId: string, e: Konva.KonvaEventObject<MouseEvent>) => {
+      e.cancelBubble = true;
+
+      if (e.evt.ctrlKey || e.evt.metaKey) {
+        // Multi-select
+        if (selectedIds.includes(elementId)) {
+          selectElements(selectedIds.filter((id) => id !== elementId));
+        } else {
+          selectElements([...selectedIds, elementId]);
+        }
       } else {
-        selectElements([...selectedIds, elementId]);
+        selectElement(elementId);
       }
-    } else {
-      selectElement(elementId);
-    }
-  }, [selectedIds, selectElement, selectElements]);
+    },
+    [selectedIds, selectElement, selectElements]
+  );
 
   // Handle drawing
-  const handleMouseDown = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
-    if (tool !== 'brush') return;
+  const handleMouseDown = useCallback(
+    (e: Konva.KonvaEventObject<MouseEvent>) => {
+      if (tool !== 'brush') return;
 
-    const stage = e.target.getStage();
-    if (!stage) return;
+      const stage = e.target.getStage();
+      if (!stage) return;
 
-    const pointer = stage.getPointerPosition();
-    if (!pointer) return;
+      const pointer = stage.getPointerPosition();
+      if (!pointer) return;
 
-    const position = {
-      x: (pointer.x - pan.x) / zoom,
-      y: (pointer.y - pan.y) / zoom
-    };
+      const position = {
+        x: (pointer.x - pan.x) / zoom,
+        y: (pointer.y - pan.y) / zoom,
+      };
 
-    setIsDrawing(true);
-    setCurrentPath([position.x, position.y]);
-  }, [tool, pan, zoom]);
+      setIsDrawing(true);
+      setCurrentPath([position.x, position.y]);
+    },
+    [tool, pan, zoom]
+  );
 
-  const handleMouseMove = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
-    if (!isDrawing || tool !== 'brush') return;
+  const handleMouseMove = useCallback(
+    (e: Konva.KonvaEventObject<MouseEvent>) => {
+      if (!isDrawing || tool !== 'brush') return;
 
-    const stage = e.target.getStage();
-    if (!stage) return;
+      const stage = e.target.getStage();
+      if (!stage) return;
 
-    const pointer = stage.getPointerPosition();
-    if (!pointer) return;
+      const pointer = stage.getPointerPosition();
+      if (!pointer) return;
 
-    const position = {
-      x: (pointer.x - pan.x) / zoom,
-      y: (pointer.y - pan.y) / zoom
-    };
+      const position = {
+        x: (pointer.x - pan.x) / zoom,
+        y: (pointer.y - pan.y) / zoom,
+      };
 
-    setCurrentPath(prev => [...prev, position.x, position.y]);
-  }, [isDrawing, tool, pan, zoom]);
+      setCurrentPath((prev) => [...prev, position.x, position.y]);
+    },
+    [isDrawing, tool, pan, zoom]
+  );
 
   const handleMouseUp = useCallback(() => {
     if (!isDrawing || tool !== 'brush') return;
 
-    if (currentPath.length >= 4) { // Need at least 2 points (4 coordinates)
+    if (currentPath.length >= 4) {
+      // Need at least 2 points (4 coordinates)
       const drawingElement = {
         type: 'drawing' as const,
         name: 'Drawing',
@@ -133,14 +162,14 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
           y: 0,
           scaleX: 1,
           scaleY: 1,
-          rotation: 0
+          rotation: 0,
         },
         points: currentPath,
         stroke: '#000000',
         strokeWidth: 2,
         lineCap: 'round' as const,
         lineJoin: 'round' as const,
-        tension: 0
+        tension: 0,
       };
 
       addElement(drawingElement);
@@ -151,50 +180,143 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
   }, [isDrawing, tool, currentPath, addElement]);
 
   // Create new element based on tool
-  const handleStageDoubleClick = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
-    if (tool === 'text') {
-      const stage = e.target.getStage();
-      if (!stage) return;
-      
-      const pointer = stage.getPointerPosition();
-      if (!pointer) return;
+  const handleStageDoubleClick = useCallback(
+    (e: Konva.KonvaEventObject<MouseEvent>) => {
+      if (tool === 'text') {
+        const stage = e.target.getStage();
+        if (!stage) return;
 
-      const position = {
-        x: (pointer.x - pan.x) / zoom,
-        y: (pointer.y - pan.y) / zoom
-      };
+        const pointer = stage.getPointerPosition();
+        if (!pointer) return;
 
-            const newElement = {
-        type: 'text' as const,
-        name: 'Text',
-        visible: true,
-        locked: false,
-        opacity: 1,
-        transform: {
-          x: position.x,
-          y: position.y,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0
-        },
-        text: 'Double click to edit',
-        fontSize: 24,
-        fontFamily: 'Arial',
-        fontWeight: 'normal' as const,
-        fontStyle: 'normal' as const,
-        textDecoration: 'none' as const,
-        fill: '#000000',
-        align: 'left' as const,
-        verticalAlign: 'top' as const,
-        lineHeight: 1.2,
-        letterSpacing: 0,
-        padding: 0,
-        wrap: 'word' as const
-      };
+        const position = {
+          x: (pointer.x - pan.x) / zoom,
+          y: (pointer.y - pan.y) / zoom,
+        };
 
-      addElement(newElement);
-    }
-  }, [tool, pan, zoom, addElement]);
+        const newElement = {
+          type: 'text' as const,
+          name: 'Text',
+          visible: true,
+          locked: false,
+          opacity: 1,
+          transform: {
+            x: position.x,
+            y: position.y,
+            scaleX: 1,
+            scaleY: 1,
+            rotation: 0,
+          },
+          text: 'Double click to edit',
+          fontSize: 24,
+          fontFamily: 'Arial',
+          fontWeight: 'normal' as const,
+          fontStyle: 'normal' as const,
+          textDecoration: 'none' as const,
+          fill: '#000000',
+          align: 'left' as const,
+          verticalAlign: 'top' as const,
+          lineHeight: 1.2,
+          letterSpacing: 0,
+          padding: 0,
+          wrap: 'word' as const,
+        };
+
+        addElement(newElement);
+      }
+    },
+    [tool, pan, zoom, addElement]
+  );
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle shortcuts when not typing in an input
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key.toLowerCase()) {
+          case 'z':
+            if (e.shiftKey) {
+              e.preventDefault();
+              redo();
+            } else {
+              e.preventDefault();
+              undo();
+            }
+            break;
+          case 'y':
+            e.preventDefault();
+            redo();
+            break;
+          case 'c':
+            e.preventDefault();
+            copyElements();
+            break;
+          case 'v':
+            e.preventDefault();
+            pasteElements();
+            break;
+          case 'x':
+            e.preventDefault();
+            cutElements();
+            break;
+          case 'd':
+            e.preventDefault();
+            duplicateElements(selectedIds);
+            break;
+          case 'a':
+            e.preventDefault();
+            selectAll();
+            break;
+          case 'g':
+            e.preventDefault();
+            if (e.shiftKey) {
+              // Ungroup (Ctrl+Shift+G)
+              const groupIds = selectedIds.filter((id) => {
+                const element = elements.find((el) => el.id === id);
+                return element?.type === 'group';
+              });
+              groupIds.forEach((id) => ungroupElements(id));
+            } else {
+              // Group (Ctrl+G)
+              if (selectedIds.length >= 2) {
+                groupElements(selectedIds);
+              }
+            }
+            break;
+          case 'backspace':
+          case 'delete':
+            e.preventDefault();
+            if (selectedIds.length > 0) {
+              deleteElements(selectedIds);
+            }
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    selectedIds,
+    elements,
+    groupElements,
+    ungroupElements,
+    undo,
+    redo,
+    copyElements,
+    pasteElements,
+    cutElements,
+    duplicateElements,
+    selectAll,
+    deleteElements,
+  ]);
 
   // Update stage position and scale
   useEffect(() => {
@@ -214,10 +336,10 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     };
 
     centerCanvas();
-  }, [width, height, canvasWidth, canvasHeight, zoom, setPan]);
-
-  // Sort elements by zIndex
-  const sortedElements = [...elements].sort((a, b) => a.zIndex - b.zIndex);
+  }, [width, height, canvasWidth, canvasHeight, zoom, setPan]); // Sort elements by zIndex and filter out child elements (they're rendered by their parent groups)
+  const sortedElements = [...elements]
+    .filter((element) => element.groupId === undefined) // Only render elements that are not children of groups
+    .sort((a, b) => a.zIndex - b.zIndex);
 
   return (
     <div className={`relative overflow-hidden bg-gray-100 ${className}`}>
@@ -268,10 +390,12 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
               key={element.id}
               element={element}
               isSelected={selectedIds.includes(element.id)}
-              onSelect={(e: Konva.KonvaEventObject<MouseEvent>) => handleElementClick(element.id, e)}
+              onSelect={(e: Konva.KonvaEventObject<MouseEvent>) =>
+                handleElementClick(element.id, e)
+              }
             />
           ))}
-          
+
           {/* Current drawing path */}
           {isDrawing && currentPath.length >= 4 && (
             <Line
