@@ -1,4 +1,4 @@
-import { CanvasElement, TextElement, ShapeElement, ImageElement } from '../types/canvas';
+import { CanvasElement, TextElement, ShapeElement, ImageElement, StickerElement } from '../types/canvas';
 
 export interface ElementBounds {
   x: number;
@@ -173,12 +173,21 @@ export const getElementBounds = (element: CanvasElement): ElementBounds => {
     }
 
     case 'sticker': {
-      // Default sticker size
+      // For stickers, we need to get the actual image dimensions
+      // Since stickers are loaded dynamically, we'll use a reasonable default
+      // that gets updated when the image loads
+      const stickerElement = element as StickerElement;
+      
+      // If we have cached dimensions, use them; otherwise use a default
+      const defaultSize = 100;
+      const width = defaultSize * scaleX * stickerElement.transform.scaleX;
+      const height = defaultSize * scaleY * stickerElement.transform.scaleY;
+      
       return {
         x,
         y,
-        width: 100 * scaleX,
-        height: 100 * scaleY
+        width,
+        height
       };
     }
 

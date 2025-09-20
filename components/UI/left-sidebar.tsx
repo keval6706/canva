@@ -32,7 +32,9 @@ export const LeftSidebar: React.FC = () => {
     tool,
     setTool, 
     addElement, 
-    setCanvasSize 
+    setCanvasSize,
+    width: canvasWidth,
+    height: canvasHeight
   } = useCanvasStore();
 
   const [toolsUploadKey, setToolsUploadKey] = useState(0);
@@ -51,6 +53,35 @@ export const LeftSidebar: React.FC = () => {
     assetsFileInputRef.current?.click();
   };
 
+  // Helper function to calculate image scaling and positioning
+  const calculateImageTransform = (imageWidth: number, imageHeight: number, canvasWidth: number, canvasHeight: number) => {
+    // Maximum size the image should occupy (80% of canvas to leave some margin)
+    const maxWidth = canvasWidth * 0.8;
+    const maxHeight = canvasHeight * 0.8;
+
+    // Calculate scale to fit within bounds while maintaining aspect ratio
+    const scaleX = maxWidth / imageWidth;
+    const scaleY = maxHeight / imageHeight;
+    const scale = Math.min(scaleX, scaleY, 1); // Don't scale up images smaller than max size
+
+    // Calculate scaled dimensions
+    const scaledWidth = imageWidth * scale;
+    const scaledHeight = imageHeight * scale;
+
+    // Center the image on canvas
+    const x = (canvasWidth - scaledWidth) / 2;
+    const y = (canvasHeight - scaledHeight) / 2;
+
+    return {
+      x,
+      y,
+      scaleX: scale,
+      scaleY: scale,
+      scaledWidth,
+      scaledHeight
+    };
+  };
+
   const handleToolSelect = (selectedTool: Tool) => {
     setTool(selectedTool);
   };
@@ -66,30 +97,58 @@ export const LeftSidebar: React.FC = () => {
   };
 
   const handleStickerSelect = (sticker: { id: string; name: string; src: string; category: string }) => {
-    const stickerElement = {
-      type: 'sticker' as const,
-      name: sticker.name,
-      visible: true,
-      locked: false,
-      opacity: 1,
-      transform: {
-        x: 100,
-        y: 100,
-        scaleX: 1,
-        scaleY: 1,
-        rotation: 0
-      },
-      src: sticker.src,
-      category: sticker.category
+    // Create a temporary image to get dimensions
+    const img = new Image();
+    img.onload = () => {
+      // Calculate appropriate scaling for stickers (smaller max size than regular images)
+      const maxStickerWidth = canvasWidth * 0.3;  // 30% of canvas width
+      const maxStickerHeight = canvasHeight * 0.3; // 30% of canvas height
+      
+      const scaleX = maxStickerWidth / img.naturalWidth;
+      const scaleY = maxStickerHeight / img.naturalHeight;
+      const scale = Math.min(scaleX, scaleY, 1); // Don't scale up small stickers
+      
+      const scaledWidth = img.naturalWidth * scale;
+      const scaledHeight = img.naturalHeight * scale;
+      
+      // Position sticker with some offset from center
+      const x = (canvasWidth - scaledWidth) / 2 + Math.random() * 50 - 25;
+      const y = (canvasHeight - scaledHeight) / 2 + Math.random() * 50 - 25;
+
+      const stickerElement = {
+        type: 'sticker' as const,
+        name: sticker.name,
+        visible: true,
+        locked: false,
+        opacity: 1,
+        transform: {
+          x: Math.max(0, Math.min(x, canvasWidth - scaledWidth)),
+          y: Math.max(0, Math.min(y, canvasHeight - scaledHeight)),
+          scaleX: scale,
+          scaleY: scale,
+          rotation: 0
+        },
+        src: sticker.src,
+        category: sticker.category
+      };
+      
+      addElement(stickerElement);
     };
-    
-    addElement(stickerElement);
+    img.src = sticker.src;
   };
 
   const handleAssetImageSelect = (image: { id: string; name: string; src: string }) => {
     // Create a temporary image to get dimensions
     const img = new Image();
     img.onload = () => {
+      // Calculate appropriate scaling and positioning
+      const transform = calculateImageTransform(
+        img.naturalWidth, 
+        img.naturalHeight, 
+        canvasWidth, 
+        canvasHeight
+      );
+
       const imageElement = {
         type: 'image' as const,
         name: image.name,
@@ -97,10 +156,10 @@ export const LeftSidebar: React.FC = () => {
         locked: false,
         opacity: 1,
         transform: {
-          x: 100,
-          y: 100,
-          scaleX: 1,
-          scaleY: 1,
+          x: transform.x,
+          y: transform.y,
+          scaleX: transform.scaleX,
+          scaleY: transform.scaleY,
           rotation: 0
         },
         src: image.src,
@@ -181,6 +240,14 @@ export const LeftSidebar: React.FC = () => {
         // Create a temporary image to get dimensions
         const img = new Image();
         img.onload = () => {
+          // Calculate appropriate scaling and positioning
+          const transform = calculateImageTransform(
+            img.naturalWidth, 
+            img.naturalHeight, 
+            canvasWidth, 
+            canvasHeight
+          );
+
           const imageElement = {
             type: 'image' as const,
             name: file.name,
@@ -188,10 +255,10 @@ export const LeftSidebar: React.FC = () => {
             locked: false,
             opacity: 1,
             transform: {
-              x: 100,
-              y: 100,
-              scaleX: 1,
-              scaleY: 1,
+              x: transform.x,
+              y: transform.y,
+              scaleX: transform.scaleX,
+              scaleY: transform.scaleY,
               rotation: 0
             },
             src,
