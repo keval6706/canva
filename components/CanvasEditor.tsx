@@ -129,31 +129,39 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
   return (
     <div className={`flex flex-col h-screen bg-gray-50 ${className}`}>
       {/* Top Toolbar */}
-      <Toolbar />
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <Toolbar />
+      </div>
       
       {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden gap-0.5">
         {/* Left Sidebar */}
-        <LeftSidebar />
+        <div className="bg-white rounded-md shadow-sm border border-gray-200">
+          <LeftSidebar />
+        </div>
         
         {/* Canvas Area */}
         <div 
           ref={canvasContainerRef}
-          className="flex-1 flex items-center justify-center bg-gray-200 overflow-hidden"
+          className="flex-1 flex items-center justify-center bg-gray-100 rounded-md overflow-hidden shadow-inner border border-gray-200"
         >
           <Canvas 
             width={viewportSize.width}
             height={viewportSize.height}
-            className="border border-gray-300 shadow-lg"
+            className="border border-gray-300 shadow-lg rounded"
           />
         </div>
         
         {/* Right Sidebar */}
-        <RightSidebar />
+        <div className="bg-white rounded-md shadow-sm border border-gray-200">
+          <RightSidebar />
+        </div>
       </div>
       
       {/* Bottom Bar */}
-      <BottomBar />
+      <div className="bg-white border-t border-gray-200 shadow-sm">
+        <BottomBar />
+      </div>
     </div>
   );
 };

@@ -20,9 +20,9 @@ export const PropertiesPanel: React.FC = () => {
 
   if (selectedIds.length === 0) {
     return (
-      <div className="p-4">
-        <h3 className="text-sm font-medium text-gray-900 mb-3">Properties</h3>
-        <div className="text-sm text-gray-500">
+      <div className="p-5">
+        <h3 className="text-base font-semibold text-gray-900 mb-3">Properties</h3>
+        <div className="text-sm text-gray-500 bg-gray-50 rounded-lg p-3">
           Select an element to edit its properties
         </div>
       </div>
@@ -31,9 +31,9 @@ export const PropertiesPanel: React.FC = () => {
 
   if (selectedIds.length > 1) {
     return (
-      <div className="p-4">
-        <h3 className="text-sm font-medium text-gray-900 mb-3">Properties</h3>
-        <div className="text-sm text-gray-500">
+      <div className="p-5">
+        <h3 className="text-base font-semibold text-gray-900 mb-3">Properties</h3>
+        <div className="text-sm text-gray-500 bg-gray-50 rounded-lg p-3">
           Multiple elements selected
         </div>
       </div>
@@ -47,93 +47,99 @@ export const PropertiesPanel: React.FC = () => {
     updateElement(element.id, updates);
   };
 
-  const renderTextProperties = (textElement: TextElement) => (
+    const renderTextProperties = (textElement: TextElement) => (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="text-content">Text</Label>
-        <textarea
-          id="text-content"
+        <Label className="text-sm font-medium text-gray-700 mb-2 block">Text Content</Label>
+        <Input
           value={textElement.text}
-          onChange={(e) => handleUpdate({ text: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-          rows={3}
+          onChange={(e) => updateElement(textElement.id, { text: e.target.value })}
+          className="w-full"
+          placeholder="Enter text content"
         />
-      </div>
-      
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <Label htmlFor="font-size">Font Size</Label>
-          <Input
-            id="font-size"
-            type="number"
-            value={textElement.fontSize}
-            onChange={(e) => handleUpdate({ fontSize: parseInt(e.target.value) })}
-            min="8"
-            max="200"
-          />
-        </div>
-        
-        <div>
-          <Label htmlFor="font-family">Font Family</Label>
-          <Select
-            value={textElement.fontFamily}
-            onValueChange={(value) => handleUpdate({ fontFamily: value })}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Arial">Arial</SelectItem>
-              <SelectItem value="Helvetica">Helvetica</SelectItem>
-              <SelectItem value="Times New Roman">Times New Roman</SelectItem>
-              <SelectItem value="Georgia">Georgia</SelectItem>
-              <SelectItem value="Verdana">Verdana</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-3 gap-2">
-        <Button
-          onClick={() => handleUpdate({ 
-            fontWeight: textElement.fontWeight === 'bold' ? 'normal' : 'bold' 
-          })}
-          variant={textElement.fontWeight === 'bold' ? 'default' : 'outline'}
-          size="sm"
-        >
-          Bold
-        </Button>
-        
-        <Button
-          onClick={() => handleUpdate({ 
-            fontStyle: textElement.fontStyle === 'italic' ? 'normal' : 'italic' 
-          })}
-          variant={textElement.fontStyle === 'italic' ? 'default' : 'outline'}
-          size="sm"
-        >
-          Italic
-        </Button>
-        
-        <Button
-          onClick={() => handleUpdate({ 
-            textDecoration: textElement.textDecoration === 'underline' ? 'none' : 'underline' 
-          })}
-          variant={textElement.textDecoration === 'underline' ? 'default' : 'outline'}
-          size="sm"
-        >
-          U
-        </Button>
       </div>
       
       <div>
-        <Label htmlFor="text-color">Color</Label>
-        <Input
-          id="text-color"
-          type="color"
-          value={textElement.fill}
-          onChange={(e) => handleUpdate({ fill: e.target.value })}
-          className="w-full h-10"
+        <Label className="text-sm font-medium text-gray-700 mb-2 block">Font Size</Label>
+        <Slider
+          value={[textElement.fontSize]}
+          onValueChange={(value) => updateElement(textElement.id, { fontSize: value[0] })}
+          max={72}
+          min={8}
+          step={1}
+          className="w-full"
         />
+        <div className="text-xs text-gray-500 mt-1">{textElement.fontSize}px</div>
+      </div>
+      
+      <div>
+        <Label className="text-sm font-medium text-gray-700 mb-2 block">Font Family</Label>
+        <Select
+          value={textElement.fontFamily}
+          onValueChange={(value) => updateElement(textElement.id, { fontFamily: value })}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Arial">Arial</SelectItem>
+            <SelectItem value="Helvetica">Helvetica</SelectItem>
+            <SelectItem value="Times New Roman">Times New Roman</SelectItem>
+            <SelectItem value="Georgia">Georgia</SelectItem>
+            <SelectItem value="Verdana">Verdana</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      
+      <div>
+        <Label className="text-sm font-medium text-gray-700 mb-2 block">Text Color</Label>
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            value={textElement.fill}
+            onChange={(e) => updateElement(textElement.id, { fill: e.target.value })}
+            className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
+          />
+          <Input
+            value={textElement.fill}
+            onChange={(e) => updateElement(textElement.id, { fill: e.target.value })}
+            className="flex-1"
+            placeholder="#000000"
+          />
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="bold"
+          checked={textElement.fontWeight === 'bold'}
+          onChange={(e) => updateElement(textElement.id, { fontWeight: e.target.checked ? 'bold' : 'normal' })}
+          className="w-4 h-4"
+        />
+        <Label htmlFor="bold" className="text-sm font-medium text-gray-700">Bold</Label>
+      </div>
+      
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="italic"
+          checked={textElement.fontStyle === 'italic'}
+          onChange={(e) => updateElement(textElement.id, { fontStyle: e.target.checked ? 'italic' : 'normal' })}
+          className="w-4 h-4"
+        />
+        <Label htmlFor="italic" className="text-sm font-medium text-gray-700">Italic</Label>
+      </div>
+      
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="underline"
+          checked={textElement.textDecoration === 'underline'}
+          onChange={(e) => updateElement(textElement.id, { textDecoration: e.target.checked ? 'underline' : 'none' })}
+          className="w-4 h-4"
+        />
+        <Label htmlFor="underline" className="text-sm font-medium text-gray-700">Underline</Label>
       </div>
     </div>
   );
@@ -141,29 +147,29 @@ export const PropertiesPanel: React.FC = () => {
   const renderShapeProperties = (shapeElement: ShapeElement) => (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="fill-color">Fill Color</Label>
+        <Label htmlFor="fill-color" className="text-sm font-medium text-gray-700 mb-2 block">Fill Color</Label>
         <Input
           id="fill-color"
           type="color"
           value={shapeElement.fill || '#000000'}
           onChange={(e) => handleUpdate({ fill: e.target.value })}
-          className="w-full h-10"
+          className="w-full h-8 rounded border border-gray-300"
         />
       </div>
       
       <div>
-        <Label htmlFor="stroke-color">Stroke Color</Label>
+        <Label htmlFor="stroke-color" className="text-sm font-medium text-gray-700 mb-2 block">Stroke Color</Label>
         <Input
           id="stroke-color"
           type="color"
           value={shapeElement.stroke || '#000000'}
           onChange={(e) => handleUpdate({ stroke: e.target.value })}
-          className="w-full h-10"
+          className="w-full h-8 rounded border border-gray-300"
         />
       </div>
       
       <div>
-        <Label htmlFor="stroke-width">Stroke Width</Label>
+        <Label htmlFor="stroke-width" className="text-sm font-medium text-gray-700 mb-2 block">Stroke Width</Label>
         <Input
           id="stroke-width"
           type="number"
@@ -171,12 +177,13 @@ export const PropertiesPanel: React.FC = () => {
           onChange={(e) => handleUpdate({ strokeWidth: parseInt(e.target.value) })}
           min="0"
           max="20"
+          className="w-full"
         />
       </div>
       
       {shapeElement.shapeType === 'rectangle' && (
         <div>
-          <Label htmlFor="corner-radius">Corner Radius</Label>
+          <Label htmlFor="corner-radius" className="text-sm font-medium text-gray-700 mb-2 block">Corner Radius</Label>
           <Input
             id="corner-radius"
             type="number"
@@ -184,16 +191,15 @@ export const PropertiesPanel: React.FC = () => {
             onChange={(e) => handleUpdate({ cornerRadius: parseInt(e.target.value) })}
             min="0"
             max="50"
+            className="w-full"
           />
         </div>
       )}
     </div>
-  );
-
-  const renderImageProperties = (imageElement: ImageElement) => (
+  );  const renderImageProperties = (imageElement: ImageElement) => (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="image-url">Image URL</Label>
+        <Label htmlFor="image-url" className="text-sm font-medium text-gray-700 mb-2 block">Image URL</Label>
         <Input
           id="image-url"
           type="text"
@@ -202,7 +208,7 @@ export const PropertiesPanel: React.FC = () => {
         />
       </div>
       
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <Button
           onClick={() => handleUpdate({ flipX: !imageElement.flipX })}
           variant={imageElement.flipX ? 'default' : 'outline'}
@@ -222,10 +228,10 @@ export const PropertiesPanel: React.FC = () => {
       
       {imageElement.filters && (
         <div className="space-y-3">
-          <h4 className="text-xs font-medium text-gray-700">Filters</h4>
+          <h4 className="text-sm font-medium text-gray-700">Filters</h4>
           
           <div>
-            <Label>Brightness: {imageElement.filters.brightness || 0}</Label>
+            <Label className="text-sm font-medium text-gray-700 mb-1 block">Brightness: {imageElement.filters.brightness || 0}</Label>
             <Slider
               value={[imageElement.filters.brightness || 0]}
               onValueChange={(value) => handleUpdate({
@@ -242,7 +248,7 @@ export const PropertiesPanel: React.FC = () => {
           </div>
           
           <div>
-            <Label>Contrast: {imageElement.filters.contrast || 0}</Label>
+            <Label className="text-sm font-medium text-gray-700 mb-1 block">Contrast: {imageElement.filters.contrast || 0}</Label>
             <Slider
               value={[imageElement.filters.contrast || 0]}
               onValueChange={(value) => handleUpdate({
@@ -263,12 +269,12 @@ export const PropertiesPanel: React.FC = () => {
   );
 
   const renderCommonProperties = () => (
-    <div className="space-y-4 mt-6 pt-4 border-t border-gray-200">
-      <h4 className="text-sm font-medium">Position & Transform</h4>
+    <div className="space-y-4 mt-5 pt-4 border-t border-gray-200">
+      <h4 className="text-sm font-semibold text-gray-900">Position & Transform</h4>
       
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <div>
-          <Label htmlFor="pos-x">X</Label>
+          <Label htmlFor="pos-x" className="text-sm font-medium text-gray-700 mb-1 block">X</Label>
           <Input
             id="pos-x"
             type="number"
@@ -276,11 +282,12 @@ export const PropertiesPanel: React.FC = () => {
             onChange={(e) => handleUpdate({
               transform: { ...element.transform, x: parseInt(e.target.value) }
             })}
+            className="w-full"
           />
         </div>
         
         <div>
-          <Label htmlFor="pos-y">Y</Label>
+          <Label htmlFor="pos-y" className="text-sm font-medium text-gray-700 mb-1 block">Y</Label>
           <Input
             id="pos-y"
             type="number"
@@ -288,12 +295,13 @@ export const PropertiesPanel: React.FC = () => {
             onChange={(e) => handleUpdate({
               transform: { ...element.transform, y: parseInt(e.target.value) }
             })}
+            className="w-full"
           />
         </div>
       </div>
       
       <div>
-        <Label>Opacity: {Math.round(element.opacity * 100)}%</Label>
+        <Label className="text-sm font-medium text-gray-700 mb-2 block">Opacity: {Math.round(element.opacity * 100)}%</Label>
         <Slider
           value={[element.opacity]}
           onValueChange={(value) => handleUpdate({ opacity: value[0] })}
@@ -305,7 +313,7 @@ export const PropertiesPanel: React.FC = () => {
       </div>
       
       <div>
-        <Label>Rotation: {Math.round(element.transform.rotation)}°</Label>
+        <Label className="text-sm font-medium text-gray-700 mb-2 block">Rotation: {Math.round(element.transform.rotation)}°</Label>
         <Slider
           value={[element.transform.rotation]}
           onValueChange={(value) => handleUpdate({
@@ -321,11 +329,11 @@ export const PropertiesPanel: React.FC = () => {
   );
 
   return (
-    <div className="p-4 overflow-y-auto">
-      <h3 className="text-sm font-medium text-gray-900 mb-4">Properties</h3>
+    <div className="p-5 overflow-y-auto h-full">
+      <h3 className="text-base font-semibold text-gray-900 mb-4">Properties</h3>
       
-      <div className="mb-4">
-        <div className="text-xs text-gray-500 mb-2">Element Type</div>
+      <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+        <div className="text-sm text-gray-600 mb-1">Element Type</div>
         <div className="text-sm font-medium text-gray-900 capitalize">
           {element.type}
         </div>

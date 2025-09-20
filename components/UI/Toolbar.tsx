@@ -60,15 +60,16 @@ export const Toolbar: React.FC = () => {
   };
 
   return (
-    <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between">
+    <div className="bg-white border-b border-gray-200 px-5 py-2.5 flex items-center justify-between shadow-sm">
       {/* Left Section - History */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-1.5">
         <Button
           onClick={undo}
           disabled={!canUndo}
           variant="ghost"
           size="sm"
           title="Undo (Ctrl+Z)"
+          className="hover:bg-gray-100"
         >
           <ArrowUturnLeftIcon className="w-5 h-5" />
         </Button>
@@ -79,21 +80,25 @@ export const Toolbar: React.FC = () => {
           variant="ghost"
           size="sm"
           title="Redo (Ctrl+Y)"
+          className="hover:bg-gray-100"
         >
           <ArrowUturnRightIcon className="w-5 h-5" />
         </Button>
       </div>
 
       {/* Center Section - Canvas Size & Zoom Controls */}
-      <div className="flex items-center space-x-4">
-        <CanvasSizeSelector />
+      <div className="flex items-center space-x-5">
+        <div className="flex items-center space-x-2.5">
+          <CanvasSizeSelector />
+        </div>
         
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1 border-l border-gray-200 pl-5">
           <Button
             onClick={handleZoomOut}
             variant="ghost"
             size="sm"
             title="Zoom Out"
+            className="hover:bg-gray-100"
           >
             <MagnifyingGlassMinusIcon className="w-5 h-5" />
           </Button>
@@ -102,7 +107,7 @@ export const Toolbar: React.FC = () => {
             onClick={handleZoomReset}
             variant="outline"
             size="sm"
-            className="min-w-[60px]"
+            className="min-w-[65px] mx-1"
             title="Reset Zoom"
           >
             {Math.round(zoom * 100)}%
@@ -113,14 +118,15 @@ export const Toolbar: React.FC = () => {
             variant="ghost"
             size="sm"
             title="Zoom In"
+            className="hover:bg-gray-100"
           >
             <MagnifyingGlassPlusIcon className="w-5 h-5" />
           </Button>
         </div>
 
         {/* Zoom Slider */}
-        <div className="flex items-center space-x-2 min-w-[120px]">
-          <span className="text-xs text-gray-500">Zoom:</span>
+        <div className="flex items-center space-x-2.5 border-l border-gray-200 pl-5 min-w-[130px]">
+          <span className="text-sm text-gray-600 font-medium">Zoom:</span>
           <Slider
             value={[zoom * 100]}
             onValueChange={(value) => setZoom(value[0] / 100)}
@@ -129,17 +135,18 @@ export const Toolbar: React.FC = () => {
             step={10}
             className="w-20"
           />
-          <span className="text-xs text-gray-500 w-8">{Math.round(zoom * 100)}%</span>
+          <span className="text-sm text-gray-600 font-medium w-8">{Math.round(zoom * 100)}%</span>
         </div>
       </div>
 
       {/* Right Section - View Options & Export */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-1">
         <Button
           onClick={toggleGrid}
           variant={grid.enabled ? "default" : "ghost"}
           size="sm"
           title="Toggle Grid"
+          className="hover:bg-gray-100"
         >
           <Squares2X2Icon className="w-5 h-5" />
         </Button>
@@ -149,6 +156,7 @@ export const Toolbar: React.FC = () => {
           variant={rulers.enabled ? "default" : "ghost"}
           size="sm"
           title="Toggle Rulers"
+          className="hover:bg-gray-100"
         >
           <Squares2X2Icon className="w-5 h-5" />
         </Button>
@@ -158,6 +166,7 @@ export const Toolbar: React.FC = () => {
           variant={guides.enabled ? "default" : "ghost"}
           size="sm"
           title="Toggle Guides"
+          className="hover:bg-gray-100"
         >
           {guides.enabled ? (
             <EyeIcon className="w-5 h-5" />
@@ -166,13 +175,14 @@ export const Toolbar: React.FC = () => {
           )}
         </Button>
 
-        <div className="w-px h-6 bg-gray-300 mx-2" />
+        <div className="w-px h-7 bg-gray-300 mx-2.5" />
         
         <Button
           onClick={handleExport}
           title="Export"
+          className="ml-1.5"
         >
-          <DocumentArrowDownIcon className="w-4 h-4" />
+          <DocumentArrowDownIcon className="w-4 h-4 mr-1.5" />
           Export
         </Button>
       </div>

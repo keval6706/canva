@@ -152,26 +152,28 @@ export const LeftSidebar: React.FC = () => {
   };
 
   return (
-    <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+    <div className="w-80 bg-white border-r border-gray-200 flex flex-col h-full">
       <Tabs defaultValue="tools" className="flex flex-col h-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="tools">Tools</TabsTrigger>
-          <TabsTrigger value="assets">Assets</TabsTrigger>
-        </TabsList>
+        <div className="px-4 py-3 border-b border-gray-200">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="tools" className="text-sm">Tools</TabsTrigger>
+            <TabsTrigger value="assets" className="text-sm">Assets</TabsTrigger>
+          </TabsList>
+        </div>
 
-        <TabsContent value="tools" className="flex-1 overflow-y-auto p-4">
-          <div className="space-y-4">
+        <TabsContent value="tools" className="flex-1 overflow-y-auto">
+          <div className="p-5 space-y-5">
             <div>
-              <Label className="text-sm font-medium">Tools</Label>
-              <div className="space-y-2 mt-2">
+              <Label className="text-sm font-semibold text-gray-900 mb-3 block">Tools</Label>
+              <div className="space-y-1.5">
                 {tools.map((toolItem) => (
                   <Button
                     key={toolItem.id}
                     onClick={() => handleToolSelect(toolItem.id)}
                     variant={tool === toolItem.id ? "default" : "ghost"}
-                    className="w-full justify-start"
+                    className="w-full justify-start h-10 px-3"
                   >
-                    <toolItem.icon className="w-5 h-5 mr-2" />
+                    <toolItem.icon className="w-5 h-5 mr-2.5" />
                     {toolItem.name}
                   </Button>
                 ))}
@@ -180,14 +182,14 @@ export const LeftSidebar: React.FC = () => {
 
             {tool === 'rectangle' && (
               <div>
-                <Label className="text-sm font-medium">Shapes</Label>
-                <div className="grid grid-cols-2 gap-2 mt-2">
+                <Label className="text-sm font-semibold text-gray-900 mb-3 block">Shapes</Label>
+                <div className="grid grid-cols-2 gap-2.5">
                   {['rectangle', 'circle', 'triangle', 'star'].map((shape) => (
                     <Button
                       key={shape}
                       onClick={() => handleAddShape(shape)}
                       variant="outline"
-                      className="h-12"
+                      className="h-11 text-sm"
                     >
                       {shape.charAt(0).toUpperCase() + shape.slice(1)}
                     </Button>
@@ -198,17 +200,17 @@ export const LeftSidebar: React.FC = () => {
 
             {tool === 'image' && (
               <div>
-                <Label className="text-sm font-medium">Add Image</Label>
-                <label className="block mt-2">
+                <Label className="text-sm font-semibold text-gray-900 mb-3 block">Add Image</Label>
+                <label className="block">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
                     className="hidden"
                   />
-                  <Button variant="outline" className="w-full h-20 flex-col">
-                    <PhotoIcon className="w-8 h-8 mb-2" />
-                    Click to upload image
+                  <Button variant="outline" className="w-full h-20 flex-col border-2 border-dashed border-gray-300 hover:border-gray-400">
+                    <PhotoIcon className="w-7 h-7 mb-2.5 text-gray-400" />
+                    <span className="text-sm text-gray-600">Click to upload image</span>
                   </Button>
                 </label>
               </div>
@@ -216,33 +218,35 @@ export const LeftSidebar: React.FC = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="assets" className="flex-1 overflow-y-auto p-4">
+        <TabsContent value="assets" className="flex-1 overflow-y-auto">
           <Tabs defaultValue="templates" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="templates">Templates</TabsTrigger>
-              <TabsTrigger value="stickers">Stickers</TabsTrigger>
-              <TabsTrigger value="uploads">Uploads</TabsTrigger>
-            </TabsList>
+            <div className="px-4 py-3 border-b border-gray-200">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="templates" className="text-xs">Templates</TabsTrigger>
+                <TabsTrigger value="stickers" className="text-xs">Stickers</TabsTrigger>
+                <TabsTrigger value="uploads" className="text-xs">Uploads</TabsTrigger>
+              </TabsList>
+            </div>
 
-            <TabsContent value="templates" className="mt-4">
-              <Label className="text-sm text-muted-foreground">Choose a template to get started</Label>
-              <div className="space-y-3 mt-2">
+            <TabsContent value="templates" className="p-5">
+              <Label className="text-sm font-semibold text-gray-900 mb-3 block">Choose a template</Label>
+              <div className="space-y-3">
                 {sampleTemplates.map((template) => (
                   <div
                     key={template.id}
                     onClick={() => handleTemplateSelect(template)}
-                    className="border rounded-lg p-3 hover:bg-accent cursor-pointer"
+                    className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-colors"
                   >
                     <div className="flex items-center space-x-3">
                       <img
                         src={template.thumbnail}
                         alt={template.name}
-                        className="w-12 h-12 rounded border"
+                        className="w-14 h-14 rounded-lg border border-gray-200"
                       />
-                      <div>
-                        <div className="font-medium text-sm">{template.name}</div>
-                        <div className="text-xs text-muted-foreground">{template.category}</div>
-                        <div className="text-xs text-muted-foreground">{template.width} × {template.height}</div>
+                      <div className="flex-1">
+                        <div className="font-medium text-sm text-gray-900">{template.name}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">{template.category}</div>
+                        <div className="text-xs text-gray-400 mt-0.5">{template.width} × {template.height}</div>
                       </div>
                     </div>
                   </div>
@@ -250,15 +254,15 @@ export const LeftSidebar: React.FC = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="stickers" className="mt-4">
-              <Label className="text-sm text-muted-foreground">Click to add stickers</Label>
-              <div className="grid grid-cols-4 gap-2 mt-2">
+            <TabsContent value="stickers" className="p-5">
+              <Label className="text-sm font-semibold text-gray-900 mb-3 block">Click to add stickers</Label>
+              <div className="grid grid-cols-4 gap-2.5">
                 {sampleStickers.map((sticker) => (
                   <Button
                     key={sticker.id}
                     onClick={() => handleStickerSelect(sticker)}
                     variant="outline"
-                    className="aspect-square p-2"
+                    className="aspect-square p-2.5 hover:bg-gray-50"
                     title={sticker.name}
                   >
                     <img
@@ -271,15 +275,15 @@ export const LeftSidebar: React.FC = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="uploads" className="mt-4">
-              <Label className="text-sm text-muted-foreground">Sample images</Label>
-              <div className="grid grid-cols-2 gap-2 mt-2">
+            <TabsContent value="uploads" className="p-5">
+              <Label className="text-sm font-semibold text-gray-900 mb-3 block">Sample images</Label>
+              <div className="grid grid-cols-2 gap-2.5 mb-5">
                 {sampleImages.map((image) => (
                   <Button
                     key={image.id}
                     onClick={() => handleAssetImageSelect(image)}
                     variant="outline"
-                    className="aspect-square p-2"
+                    className="aspect-square p-2.5 hover:bg-gray-50"
                     title={image.name}
                   >
                     <img
@@ -291,18 +295,18 @@ export const LeftSidebar: React.FC = () => {
                 ))}
               </div>
               
-              <div className="mt-4">
-                <Label className="text-sm text-muted-foreground">Upload your own image</Label>
-                <label className="block mt-2">
+              <div>
+                <Label className="text-sm font-semibold text-gray-900 mb-3 block">Upload your own image</Label>
+                <label className="block">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
                     className="hidden"
                   />
-                  <Button variant="outline" className="w-full h-20 flex-col">
-                    <PhotoIcon className="w-8 h-8 mb-2" />
-                    Click to upload image
+                  <Button variant="outline" className="w-full h-20 flex-col border-2 border-dashed border-gray-300 hover:border-gray-400">
+                    <PhotoIcon className="w-7 h-7 mb-2.5 text-gray-400" />
+                    <span className="text-sm text-gray-600">Click to upload image</span>
                   </Button>
                 </label>
               </div>
