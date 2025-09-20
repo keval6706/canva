@@ -9,7 +9,7 @@ import {
   PencilIcon,
 } from '@heroicons/react/24/outline';
 import { useCanvasStore } from '../../store/canvas-store';
-import { Tool, CanvasElement, Template } from '../../types/canvas';
+import { Tool, CanvasElement, Template, ElementType } from '../../types/canvas';
 import {
   sampleTemplates,
   sampleStickers,
@@ -132,7 +132,7 @@ export const LeftSidebar: React.FC = () => {
       const y = (canvasHeight - scaledHeight) / 2 + Math.random() * 50 - 25;
 
       const stickerElement = {
-        type: 'sticker' as const,
+        type: ElementType.STICKER,
         name: sticker.name,
         visible: true,
         locked: false,
@@ -170,7 +170,7 @@ export const LeftSidebar: React.FC = () => {
       );
 
       const imageElement = {
-        type: 'image' as const,
+        type: ElementType.IMAGE,
         name: image.name,
         visible: true,
         locked: false,
@@ -196,7 +196,7 @@ export const LeftSidebar: React.FC = () => {
 
   const handleAddShape = (shapeType: string) => {
     const shapeElement = {
-      type: 'shape' as const,
+      type: ElementType.SHAPE,
       name: `${shapeType.charAt(0).toUpperCase() + shapeType.slice(1)}`,
       visible: true,
       locked: false,
@@ -279,7 +279,7 @@ export const LeftSidebar: React.FC = () => {
           );
 
           const imageElement = {
-            type: 'image' as const,
+            type: ElementType.IMAGE,
             name: file.name,
             visible: true,
             locked: false,

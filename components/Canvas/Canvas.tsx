@@ -8,6 +8,7 @@ import { CanvasElementRenderer } from './canvas-element-renderer';
 import { TransformerOverlay } from './transformer-overlay';
 import { GridOverlay } from './grid-overlay';
 import { GuidesOverlay } from './guides-overlay';
+import { ElementType } from '../../types/canvas';
 
 interface CanvasProps {
   width: number;
@@ -139,7 +140,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     if (currentPath.length >= 4) {
       // Need at least 2 points (4 coordinates)
       const drawingElement = {
-        type: 'drawing' as const,
+        type: ElementType.DRAWING,
         name: 'Drawing',
         visible: true,
         locked: false,
@@ -182,7 +183,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
         };
 
         const newElement = {
-          type: 'text' as const,
+          type: ElementType.TEXT,
           name: 'Text',
           visible: true,
           locked: false,

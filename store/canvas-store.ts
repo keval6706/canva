@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import { CanvasElement, CanvasState, Tool, Point, HistoryAction, GroupElement } from '../types/canvas';
+import { CanvasElement, CanvasState, Tool, Point, HistoryAction, GroupElement, ElementType } from '../types/canvas';
 
 interface CanvasStore extends CanvasState {
   // Element management
@@ -333,7 +333,7 @@ export const useCanvasStore = create<CanvasStore>()(
 
       // Create group element
       const groupElement: Omit<GroupElement, 'id' | 'zIndex'> = {
-        type: 'group',
+        type: ElementType.GROUP,
         name: groupName || 'Group',
         visible: true,
         locked: false,
@@ -389,7 +389,7 @@ export const useCanvasStore = create<CanvasStore>()(
 
     dissolveGroup: (groupId) => {
       const group = get().getElementById(groupId) as GroupElement;
-      if (!group || group.type !== 'group') return;
+      if (!group || group.type !== ElementType.GROUP) return;
 
       // Get child elements
       const childElements = group.children.map(id => get().getElementById(id)).filter(Boolean) as CanvasElement[];

@@ -18,6 +18,16 @@ export interface Transform {
   skewY?: number;
 }
 
+export enum ElementType {
+  TEXT = 'text',
+  IMAGE = 'image',
+  SHAPE = 'shape',
+  BACKGROUND = 'background',
+  STICKER = 'sticker',
+  DRAWING = 'drawing',
+  GROUP = 'group',
+}
+
 export interface ElementBase {
   id: string;
   type: ElementType;
@@ -30,10 +40,10 @@ export interface ElementBase {
   groupId?: string;
 }
 
-export type ElementType = 'text' | 'image' | 'shape' | 'background' | 'sticker' | 'drawing' | 'group';
+export type ElementTypeUnion = `${ElementType}`;
 
 export interface TextElement extends ElementBase {
-  type: 'text';
+  type: ElementType.TEXT;
   text: string;
   fontSize: number;
   fontFamily: string;
@@ -60,7 +70,7 @@ export interface TextElement extends ElementBase {
 }
 
 export interface ImageElement extends ElementBase {
-  type: 'image';
+  type: ElementType.IMAGE;
   src: string;
   cropX: number;
   cropY: number;
@@ -81,7 +91,7 @@ export interface ImageElement extends ElementBase {
 }
 
 export interface ShapeElement extends ElementBase {
-  type: 'shape';
+  type: ElementType.SHAPE;
   shapeType: 'rectangle' | 'circle' | 'triangle' | 'line' | 'arrow' | 'polygon' | 'star' | 'path';
   fill?: string;
   stroke?: string;
@@ -99,7 +109,7 @@ export interface ShapeElement extends ElementBase {
 }
 
 export interface BackgroundElement extends ElementBase {
-  type: 'background';
+  type: ElementType.BACKGROUND;
   backgroundType: 'color' | 'gradient' | 'image';
   color?: string;
   gradient?: {
@@ -115,13 +125,13 @@ export interface BackgroundElement extends ElementBase {
 }
 
 export interface StickerElement extends ElementBase {
-  type: 'sticker';
+  type: ElementType.STICKER;
   src: string;
   category?: string;
 }
 
 export interface DrawingElement extends ElementBase {
-  type: 'drawing';
+  type: ElementType.DRAWING;
   points: number[]; // Array of x,y coordinates [x1, y1, x2, y2, ...]
   stroke: string;
   strokeWidth: number;
@@ -133,7 +143,7 @@ export interface DrawingElement extends ElementBase {
 }
 
 export interface GroupElement extends ElementBase {
-  type: 'group';
+  type: ElementType.GROUP;
   children: string[]; // Array of child element IDs
   name: string;
   visible: boolean;

@@ -11,6 +11,7 @@ import {
   StickerElement,
   DrawingElement,
   GroupElement,
+  ElementType,
 } from '../../types/canvas';
 import { TextElementRenderer } from './elements/text-element-renderer';
 import { ImageElementRenderer } from './elements/image-element-renderer';
@@ -30,49 +31,49 @@ export const CanvasElementRenderer: React.FC<CanvasElementRendererProps> = ({
   onSelect,
 }) => {
   switch (element.type) {
-    case 'text':
+    case ElementType.TEXT:
       return (
         <TextElementRenderer
           element={element as TextElement}
           onSelect={onSelect}
         />
       );
-    case 'image':
+    case ElementType.IMAGE:
       return (
         <ImageElementRenderer
           element={element as ImageElement}
           onSelect={onSelect}
         />
       );
-    case 'shape':
+    case ElementType.SHAPE:
       return (
         <ShapeElementRenderer
           element={element as ShapeElement}
           onSelect={onSelect}
         />
       );
-    case 'background':
+    case ElementType.BACKGROUND:
       return (
         <BackgroundElementRenderer
           element={element as BackgroundElement}
           onSelect={onSelect}
         />
       );
-    case 'sticker':
+    case ElementType.STICKER:
       return (
         <StickerElementRenderer
           element={element as StickerElement}
           onSelect={onSelect}
         />
       );
-    case 'drawing':
+    case ElementType.DRAWING:
       return (
         <DrawingElementRenderer
           element={element as DrawingElement}
           onSelect={onSelect}
         />
       );
-    case 'group':
+    case ElementType.GROUP:
       return (
         <GroupElementRenderer
           element={element as GroupElement}

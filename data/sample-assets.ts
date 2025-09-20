@@ -1,4 +1,4 @@
-import { Template } from '../types/canvas';
+import { Template, ElementType } from '../types/canvas';
 
 export const sampleTemplates: Template[] = [
   {
@@ -11,7 +11,7 @@ export const sampleTemplates: Template[] = [
     elements: [
       {
         id: 'bg-1',
-        type: 'background',
+        type: ElementType.BACKGROUND,
         name: 'Background',
         visible: true,
         locked: false,
@@ -23,7 +23,7 @@ export const sampleTemplates: Template[] = [
       },
       {
         id: 'text-1',
-        type: 'text',
+        type: ElementType.TEXT,
         name: 'Title',
         visible: true,
         locked: false,
@@ -57,7 +57,7 @@ export const sampleTemplates: Template[] = [
     elements: [
       {
         id: 'bg-2',
-        type: 'background',
+        type: ElementType.BACKGROUND,
         name: 'Background',
         visible: true,
         locked: false,
@@ -69,7 +69,7 @@ export const sampleTemplates: Template[] = [
       },
       {
         id: 'text-2',
-        type: 'text',
+        type: ElementType.TEXT,
         name: 'Name',
         visible: true,
         locked: false,
@@ -92,7 +92,7 @@ export const sampleTemplates: Template[] = [
       },
       {
         id: 'text-3',
-        type: 'text',
+        type: ElementType.TEXT,
         name: 'Title',
         visible: true,
         locked: false,
@@ -125,7 +125,7 @@ export const sampleTemplates: Template[] = [
     elements: [
       {
         id: 'bg-3',
-        type: 'background',
+        type: ElementType.BACKGROUND,
         name: 'Background',
         visible: true,
         locked: false,
@@ -137,7 +137,7 @@ export const sampleTemplates: Template[] = [
       },
       {
         id: 'text-4',
-        type: 'text',
+        type: ElementType.TEXT,
         name: 'Headline',
         visible: true,
         locked: false,
