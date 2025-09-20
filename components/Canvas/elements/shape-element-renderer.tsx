@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Group, Rect, Circle, RegularPolygon, Line, Arrow, Star } from 'react-konva';
 import Konva from 'konva';
 import { ShapeElement } from '../../../types/canvas';

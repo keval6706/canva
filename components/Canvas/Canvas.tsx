@@ -29,7 +29,6 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     guides,
     width: canvasWidth,
     height: canvasHeight,
-    setZoom,
     setPan,
     selectElement,
     selectElements,

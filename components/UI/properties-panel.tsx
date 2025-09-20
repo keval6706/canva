@@ -6,6 +6,7 @@ import { TextElement, ImageElement, ShapeElement, CanvasElement } from '../../ty
 import { Input } from './input';
 import { Label } from './label';
 import { Button } from './button';
+import { Slider } from './slider';
 import {
   Select,
   SelectContent,
@@ -225,36 +226,34 @@ export const PropertiesPanel: React.FC = () => {
           
           <div>
             <Label>Brightness: {imageElement.filters.brightness || 0}</Label>
-            <Input
-              type="range"
-              min="-1"
-              max="1"
-              step="0.1"
-              value={imageElement.filters.brightness || 0}
-              onChange={(e) => handleUpdate({
+            <Slider
+              value={[imageElement.filters.brightness || 0]}
+              onValueChange={(value) => handleUpdate({
                 filters: {
                   ...imageElement.filters,
-                  brightness: parseFloat(e.target.value)
+                  brightness: value[0]
                 }
               })}
+              min={-1}
+              max={1}
+              step={0.1}
               className="w-full"
             />
           </div>
           
           <div>
             <Label>Contrast: {imageElement.filters.contrast || 0}</Label>
-            <Input
-              type="range"
-              min="-1"
-              max="1"
-              step="0.1"
-              value={imageElement.filters.contrast || 0}
-              onChange={(e) => handleUpdate({
+            <Slider
+              value={[imageElement.filters.contrast || 0]}
+              onValueChange={(value) => handleUpdate({
                 filters: {
                   ...imageElement.filters,
-                  contrast: parseFloat(e.target.value)
+                  contrast: value[0]
                 }
               })}
+              min={-1}
+              max={1}
+              step={0.1}
               className="w-full"
             />
           </div>
@@ -295,27 +294,26 @@ export const PropertiesPanel: React.FC = () => {
       
       <div>
         <Label>Opacity: {Math.round(element.opacity * 100)}%</Label>
-        <Input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={element.opacity}
-          onChange={(e) => handleUpdate({ opacity: parseFloat(e.target.value) })}
+        <Slider
+          value={[element.opacity]}
+          onValueChange={(value) => handleUpdate({ opacity: value[0] })}
+          min={0}
+          max={1}
+          step={0.01}
           className="w-full"
         />
       </div>
       
       <div>
         <Label>Rotation: {Math.round(element.transform.rotation)}°</Label>
-        <Input
-          type="range"
-          min="0"
-          max="360"
-          value={element.transform.rotation}
-          onChange={(e) => handleUpdate({
-            transform: { ...element.transform, rotation: parseInt(e.target.value) }
+        <Slider
+          value={[element.transform.rotation]}
+          onValueChange={(value) => handleUpdate({
+            transform: { ...element.transform, rotation: value[0] }
           })}
+          min={0}
+          max={360}
+          step={1}
           className="w-full"
         />
       </div>

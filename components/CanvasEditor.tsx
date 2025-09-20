@@ -6,7 +6,6 @@ import { Toolbar } from './ui/toolbar';
 import { LeftSidebar } from './ui/left-sidebar';
 import { RightSidebar } from './ui/right-sidebar';
 import { BottomBar } from './ui/bottom-bar';
-import { ExportModal } from './ui/export-modal';
 import { useCanvasStore } from '../store/canvas-store';
 
 interface CanvasEditorProps {

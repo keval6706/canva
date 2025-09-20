@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ExportOptions } from '../../types/canvas';
 import {
   Dialog,
@@ -10,8 +9,8 @@ import {
   DialogTitle,
 } from './dialog';
 import { Button } from './button';
-import { Input } from './input';
 import { Label } from './label';
+import { Slider } from './slider';
 import {
   Select,
   SelectContent,
@@ -78,13 +77,12 @@ export const ExportModal: React.FC<ExportModalProps> = ({
           {(options.format === 'png' || options.format === 'jpg') && (
             <div>
               <Label>Quality: {Math.round(options.quality * 100)}%</Label>
-              <Input
-                type="range"
-                min="0.1"
-                max="1"
-                step="0.1"
-                value={options.quality}
-                onChange={(e) => setOptions({ ...options, quality: parseFloat(e.target.value) })}
+              <Slider
+                value={[options.quality]}
+                onValueChange={(value) => setOptions({ ...options, quality: value[0] })}
+                min={0.1}
+                max={1}
+                step={0.1}
                 className="w-full"
               />
             </div>
@@ -93,13 +91,12 @@ export const ExportModal: React.FC<ExportModalProps> = ({
           {/* Scale */}
           <div>
             <Label>Scale: {options.scale}x</Label>
-            <Input
-              type="range"
-              min="0.5"
-              max="3"
-              step="0.5"
-              value={options.scale}
-              onChange={(e) => setOptions({ ...options, scale: parseFloat(e.target.value) })}
+            <Slider
+              value={[options.scale]}
+              onValueChange={(value) => setOptions({ ...options, scale: value[0] })}
+              min={0.5}
+              max={3}
+              step={0.5}
               className="w-full"
             />
           </div>

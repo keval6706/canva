@@ -16,6 +16,7 @@ import { ExportModal } from './export-modal';
 import { CanvasSizeSelector } from './canvas-size-selector';
 import { ExportOptions } from '../../types/canvas';
 import { Button } from './button';
+import { Slider } from './slider';
 
 export const Toolbar: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
@@ -115,6 +116,20 @@ export const Toolbar: React.FC = () => {
           >
             <MagnifyingGlassPlusIcon className="w-5 h-5" />
           </Button>
+        </div>
+
+        {/* Zoom Slider */}
+        <div className="flex items-center space-x-2 min-w-[120px]">
+          <span className="text-xs text-gray-500">Zoom:</span>
+          <Slider
+            value={[zoom * 100]}
+            onValueChange={(value) => setZoom(value[0] / 100)}
+            min={10}
+            max={500}
+            step={10}
+            className="w-20"
+          />
+          <span className="text-xs text-gray-500 w-8">{Math.round(zoom * 100)}%</span>
         </div>
       </div>
 
