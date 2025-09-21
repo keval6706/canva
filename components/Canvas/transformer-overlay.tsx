@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Transformer } from 'react-konva';
 import Konva from 'konva';
 import { useCanvasStore } from '../../store/canvas-store';
+import { ElementType } from '../../types/canvas';
 
 interface TransformerOverlayProps {
   selectedIds: string[];
@@ -14,7 +15,24 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
 }) => {
   const transformerRef = useRef<Konva.Transformer>(null);
   const [isProportionalScaling, setIsProportionalScaling] = useState(false);
-  const { updateElement } = useCanvasStore();
+  const { updateElement, elements } = useCanvasStore();
+
+  // Get selected elements and create a dependency key for properties that affect visual size
+  const selectedElementsKey = selectedIds
+    .map((id) => {
+      const element = elements.find((el) => el.id === id);
+      if (!element) return '';
+
+      // For text elements, include font properties that affect size
+      if (element.type === ElementType.TEXT) {
+        const textEl = element as any;
+        return `${id}-${textEl.fontSize}-${textEl.fontWeight}-${textEl.fontStyle}-${textEl.text}-${textEl.lineHeight}-${textEl.letterSpacing}`;
+      }
+
+      // For other elements, just include basic size-affecting properties
+      return `${id}-${element.transform.scaleX}-${element.transform.scaleY}`;
+    })
+    .join('|');
 
   useEffect(() => {
     if (!transformerRef.current) return;
@@ -45,7 +63,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
     } else {
       transformer.nodes([]);
     }
-  }, [selectedIds]); // Keep original dependencies
+  }, [selectedIds, selectedElementsKey]); // Watch both selectedIds and visual properties
 
   const handleTransform = (e: Konva.KonvaEventObject<Event>) => {
     const transformer = transformerRef.current;
