@@ -1,24 +1,19 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { ExportOptions } from '../../types/canvas';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from './dialog';
-import { Button } from './button';
-import { Label } from './label';
-import { Slider } from './slider';
+import React, { useState } from "react";
+import { ExportOptions } from "../../types/canvas";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
+import { Button } from "./button";
+import { Label } from "./label";
+import { Slider } from "./slider";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './select';
-import { Checkbox } from './checkbox';
+} from "./select";
+import { Checkbox } from "./checkbox";
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -32,7 +27,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   onExport,
 }) => {
   const [options, setOptions] = useState<ExportOptions>({
-    format: 'png',
+    format: "png",
     quality: 1,
     scale: 1,
     transparentBackground: false,
@@ -59,7 +54,12 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             <Label htmlFor="format">Format</Label>
             <Select
               value={options.format}
-              onValueChange={(value) => setOptions({ ...options, format: value as 'png' | 'jpg' | 'pdf' | 'svg' })}
+              onValueChange={(value) =>
+                setOptions({
+                  ...options,
+                  format: value as "png" | "jpg" | "pdf" | "svg",
+                })
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select format" />
@@ -74,12 +74,14 @@ export const ExportModal: React.FC<ExportModalProps> = ({
           </div>
 
           {/* Quality */}
-          {(options.format === 'png' || options.format === 'jpg') && (
+          {(options.format === "png" || options.format === "jpg") && (
             <div>
               <Label>Quality: {Math.round(options.quality * 100)}%</Label>
               <Slider
                 value={[options.quality]}
-                onValueChange={(value) => setOptions({ ...options, quality: value[0] })}
+                onValueChange={(value) =>
+                  setOptions({ ...options, quality: value[0] })
+                }
                 min={0.1}
                 max={1}
                 step={0.1}
@@ -93,7 +95,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             <Label>Scale: {options.scale}x</Label>
             <Slider
               value={[options.scale]}
-              onValueChange={(value) => setOptions({ ...options, scale: value[0] })}
+              onValueChange={(value) =>
+                setOptions({ ...options, scale: value[0] })
+              }
               min={0.5}
               max={3}
               step={0.5}
@@ -107,7 +111,12 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               <Checkbox
                 id="transparent"
                 checked={options.transparentBackground}
-                onCheckedChange={(checked) => setOptions({ ...options, transparentBackground: checked as boolean })}
+                onCheckedChange={(checked) =>
+                  setOptions({
+                    ...options,
+                    transparentBackground: checked as boolean,
+                  })
+                }
               />
               <Label htmlFor="transparent">Transparent background</Label>
             </div>
@@ -116,7 +125,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               <Checkbox
                 id="selected-only"
                 checked={options.selectedOnly}
-                onCheckedChange={(checked) => setOptions({ ...options, selectedOnly: checked as boolean })}
+                onCheckedChange={(checked) =>
+                  setOptions({ ...options, selectedOnly: checked as boolean })
+                }
               />
               <Label htmlFor="selected-only">Selected elements only</Label>
             </div>
@@ -124,17 +135,10 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
           {/* Actions */}
           <div className="flex space-x-3 pt-4">
-            <Button
-              onClick={onClose}
-              variant="outline"
-            >
+            <Button onClick={onClose} variant="outline">
               Cancel
             </Button>
-            <Button
-              onClick={handleExport}
-            >
-              Export
-            </Button>
+            <Button onClick={handleExport}>Export</Button>
           </div>
         </div>
       </DialogContent>

@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useCallback } from 'react';
-import Konva from 'konva';
-import { Group } from 'react-konva';
-import { CanvasElement } from '../../types/canvas';
-import { CanvasElementRenderer } from './canvas-element-renderer';
-import { useCanvasStore } from '../../store/canvas-store';
+import React, { useRef, useEffect, useCallback } from "react";
+import Konva from "konva";
+import { Group } from "react-konva";
+import { CanvasElement } from "../../types/canvas";
+import { CanvasElementRenderer } from "./canvas-element-renderer";
+import { useCanvasStore } from "../../store/canvas-store";
 
 interface ClippedCanvasElementProps {
   element: CanvasElement;
@@ -48,7 +48,7 @@ export const ClippedCanvasElement: React.FC<ClippedCanvasElementProps> = ({
         },
       });
     },
-    [element.id, element.transform, updateElement]
+    [element.id, element.transform, updateElement],
   );
 
   // Apply transforms when element updates

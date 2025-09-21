@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { LayersPanel } from './layers-panel';
-import { PropertiesPanel } from './properties-panel';
+import React from "react";
+import { LayersPanel } from "./layers-panel";
+import { PropertiesPanel } from "./properties-panel";
 
 export const RightSidebar: React.FC = () => {
   return (
@@ -11,7 +11,7 @@ export const RightSidebar: React.FC = () => {
       <div className="flex-1 border-b border-gray-200 overflow-hidden">
         <PropertiesPanel />
       </div>
-      
+
       {/* Layers Panel */}
       <div className="h-80 overflow-hidden">
         <LayersPanel />

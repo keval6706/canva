@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useState } from 'react';
-import { Rect, Group, Image as KonvaImage } from 'react-konva';
-import Konva from 'konva';
-import { BackgroundElement } from '../../../types/canvas';
-import { useCanvasStore } from '../../../store/canvas-store';
+import React, { useRef, useEffect, useState } from "react";
+import { Rect, Group, Image as KonvaImage } from "react-konva";
+import Konva from "konva";
+import { BackgroundElement } from "../../../types/canvas";
+import { useCanvasStore } from "../../../store/canvas-store";
 
 interface BackgroundElementRendererProps {
   element: BackgroundElement;
@@ -23,16 +23,16 @@ export const BackgroundElementRenderer: React.FC<
 
   // Load background image if needed
   useEffect(() => {
-    if (element.backgroundType === 'image' && element.image?.src) {
+    if (element.backgroundType === "image" && element.image?.src) {
       const img = new window.Image();
-      img.crossOrigin = 'anonymous';
+      img.crossOrigin = "anonymous";
 
       img.onload = () => {
         setBackgroundImage(img);
       };
 
       img.onerror = () => {
-        console.error('Failed to load background image:', element.image?.src);
+        console.error("Failed to load background image:", element.image?.src);
       };
 
       img.src = element.image.src;
@@ -57,7 +57,7 @@ export const BackgroundElementRenderer: React.FC<
 
   const renderBackground = () => {
     switch (element.backgroundType) {
-      case 'color':
+      case "color":
         return (
           <Rect
             ref={rectRef}
@@ -65,23 +65,23 @@ export const BackgroundElementRenderer: React.FC<
             y={0}
             width={canvasWidth}
             height={canvasHeight}
-            fill={element.color || '#ffffff'}
+            fill={element.color || "#ffffff"}
             listening={false}
           />
         );
 
-      case 'gradient':
+      case "gradient":
         if (!element.gradient) return null;
 
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
 
         if (ctx) {
           let gradient;
 
-          if (element.gradient.type === 'linear') {
+          if (element.gradient.type === "linear") {
             const angle = ((element.gradient.angle || 0) * Math.PI) / 180;
             const x1 = (Math.cos(angle) * canvasWidth) / 2 + canvasWidth / 2;
             const y1 = (Math.sin(angle) * canvasHeight) / 2 + canvasHeight / 2;
@@ -96,7 +96,7 @@ export const BackgroundElementRenderer: React.FC<
               0,
               canvasWidth / 2,
               canvasHeight / 2,
-              Math.max(canvasWidth, canvasHeight) / 2
+              Math.max(canvasWidth, canvasHeight) / 2,
             );
           }
 
@@ -120,7 +120,7 @@ export const BackgroundElementRenderer: React.FC<
           />
         );
 
-      case 'image':
+      case "image":
         if (!backgroundImage || !element.image) return null;
 
         let imageX = 0;
@@ -129,10 +129,10 @@ export const BackgroundElementRenderer: React.FC<
         let imageHeight = backgroundImage.naturalHeight;
 
         switch (element.image.scale) {
-          case 'cover':
+          case "cover":
             const scale = Math.max(
               canvasWidth / imageWidth,
-              canvasHeight / imageHeight
+              canvasHeight / imageHeight,
             );
             imageWidth *= scale;
             imageHeight *= scale;
@@ -140,10 +140,10 @@ export const BackgroundElementRenderer: React.FC<
             imageY = (canvasHeight - imageHeight) / 2;
             break;
 
-          case 'contain':
+          case "contain":
             const containScale = Math.min(
               canvasWidth / imageWidth,
-              canvasHeight / imageHeight
+              canvasHeight / imageHeight,
             );
             imageWidth *= containScale;
             imageHeight *= containScale;
@@ -151,12 +151,12 @@ export const BackgroundElementRenderer: React.FC<
             imageY = (canvasHeight - imageHeight) / 2;
             break;
 
-          case 'fill':
+          case "fill":
             imageWidth = canvasWidth;
             imageHeight = canvasHeight;
             break;
 
-          case 'none':
+          case "none":
           default:
             imageX = element.image.position?.x || 0;
             imageY = element.image.position?.y || 0;

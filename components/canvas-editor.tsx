@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useState } from 'react';
-import { Canvas } from './canvas/canvas';
-import { Toolbar } from './ui/toolbar';
-import { LeftSidebar } from './ui/left-sidebar';
-import { RightSidebar } from './ui/right-sidebar';
-import { BottomBar } from './ui/bottom-bar';
-import { useCanvasStore } from '../store/canvas-store';
+import React, { useRef, useEffect, useState } from "react";
+import { Canvas } from "./canvas/canvas";
+import { Toolbar } from "./ui/toolbar";
+import { LeftSidebar } from "./ui/left-sidebar";
+import { RightSidebar } from "./ui/right-sidebar";
+import { BottomBar } from "./ui/bottom-bar";
+import { useCanvasStore } from "../store/canvas-store";
 
 interface CanvasEditorProps {
   className?: string;
@@ -88,51 +88,51 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
       // Prevent default browser shortcuts only when not in input fields
       if (
         isCtrlOrCmd &&
-        ['z', 'y', 'c', 'v', 'x', 'a', 'd'].includes(e.key.toLowerCase())
+        ["z", "y", "c", "v", "x", "a", "d"].includes(e.key.toLowerCase())
       ) {
         e.preventDefault();
       }
 
       switch (e.key.toLowerCase()) {
-        case 'z':
+        case "z":
           if (isCtrlOrCmd && e.shiftKey) {
             redo();
           } else if (isCtrlOrCmd) {
             undo();
           }
           break;
-        case 'y':
+        case "y":
           if (isCtrlOrCmd) {
             redo();
           }
           break;
-        case 'c':
+        case "c":
           if (isCtrlOrCmd && selectedIds.length > 0) {
             copyElements();
           }
           break;
-        case 'x':
+        case "x":
           if (isCtrlOrCmd && selectedIds.length > 0) {
             cutElements();
           }
           break;
-        case 'v':
+        case "v":
           if (isCtrlOrCmd) {
             pasteElements();
           }
           break;
-        case 'a':
+        case "a":
           if (isCtrlOrCmd) {
             selectAll();
           }
           break;
-        case 'd':
+        case "d":
           if (isCtrlOrCmd && selectedIds.length > 0) {
             duplicateElements(selectedIds);
           }
           break;
-        case 'delete':
-        case 'backspace':
+        case "delete":
+        case "backspace":
           if (selectedIds.length > 0) {
             deleteElements(selectedIds);
           }
@@ -140,8 +140,8 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({ className }) => {
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [
     copyElements,
     cutElements,

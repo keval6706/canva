@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useCanvasStore } from '../../store/canvas-store';
-import { Button } from './button';
+import React, { useState } from "react";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { useCanvasStore } from "../../store/canvas-store";
+import { Button } from "./button";
 import {
   Dialog,
   DialogContent,
@@ -11,22 +11,22 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from './dialog';
-import { Input } from './input';
-import { Label } from './label';
-import { useForm } from '@tanstack/react-form';
-import { z } from 'zod';
+} from "./dialog";
+import { Input } from "./input";
+import { Label } from "./label";
+import { useForm } from "@tanstack/react-form";
+import { z } from "zod";
 
 // Zod schema for custom size validation
 const customSizeSchema = z.object({
   width: z
-    .number({ message: 'Width must be a valid number' })
-    .min(1, 'Width must be at least 1 pixel')
-    .max(10000, 'Width cannot exceed 10,000 pixels'),
+    .number({ message: "Width must be a valid number" })
+    .min(1, "Width must be at least 1 pixel")
+    .max(10000, "Width cannot exceed 10,000 pixels"),
   height: z
-    .number({ message: 'Height must be a valid number' })
-    .min(1, 'Height must be at least 1 pixel')
-    .max(10000, 'Height cannot exceed 10,000 pixels'),
+    .number({ message: "Height must be a valid number" })
+    .min(1, "Height must be at least 1 pixel")
+    .max(10000, "Height cannot exceed 10,000 pixels"),
 });
 
 interface CanvasSize {
@@ -38,36 +38,36 @@ interface CanvasSize {
 
 const CANVAS_SIZES: CanvasSize[] = [
   // Print sizes
-  { name: 'A4', width: 595, height: 842, category: 'Print' },
-  { name: 'A3', width: 842, height: 1191, category: 'Print' },
-  { name: 'Letter', width: 612, height: 792, category: 'Print' },
-  { name: 'Legal', width: 612, height: 1008, category: 'Print' },
+  { name: "A4", width: 595, height: 842, category: "Print" },
+  { name: "A3", width: 842, height: 1191, category: "Print" },
+  { name: "Letter", width: 612, height: 792, category: "Print" },
+  { name: "Legal", width: 612, height: 1008, category: "Print" },
 
   // Social Media
   {
-    name: 'Instagram Post',
+    name: "Instagram Post",
     width: 1080,
     height: 1080,
-    category: 'Social Media',
+    category: "Social Media",
   },
   {
-    name: 'Instagram Story',
+    name: "Instagram Story",
     width: 1080,
     height: 1920,
-    category: 'Social Media',
+    category: "Social Media",
   },
-  { name: 'Facebook Post', width: 1200, height: 630, category: 'Social Media' },
-  { name: 'Twitter Post', width: 1200, height: 675, category: 'Social Media' },
-  { name: 'LinkedIn Post', width: 1200, height: 627, category: 'Social Media' },
+  { name: "Facebook Post", width: 1200, height: 630, category: "Social Media" },
+  { name: "Twitter Post", width: 1200, height: 675, category: "Social Media" },
+  { name: "LinkedIn Post", width: 1200, height: 627, category: "Social Media" },
 
   // Web & Digital
-  { name: 'Web Banner', width: 1200, height: 300, category: 'Web' },
-  { name: 'Blog Header', width: 1200, height: 400, category: 'Web' },
-  { name: 'Presentation', width: 1024, height: 768, category: 'Web' },
+  { name: "Web Banner", width: 1200, height: 300, category: "Web" },
+  { name: "Blog Header", width: 1200, height: 400, category: "Web" },
+  { name: "Presentation", width: 1024, height: 768, category: "Web" },
 
   // Custom sizes
-  { name: 'HD (1920x1080)', width: 1920, height: 1080, category: 'Video' },
-  { name: '4K (3840x2160)', width: 3840, height: 2160, category: 'Video' },
+  { name: "HD (1920x1080)", width: 1920, height: 1080, category: "Video" },
+  { name: "4K (3840x2160)", width: 3840, height: 2160, category: "Video" },
 ];
 
 interface CanvasSizeSelectorProps {
@@ -98,7 +98,7 @@ export const CanvasSizeSelector: React.FC<CanvasSizeSelectorProps> = ({
   });
 
   const currentSize = CANVAS_SIZES.find(
-    (size) => size.width === width && size.height === height
+    (size) => size.width === width && size.height === height,
   );
   const currentSizeLabel = currentSize
     ? currentSize.name
@@ -117,13 +117,16 @@ export const CanvasSizeSelector: React.FC<CanvasSizeSelectorProps> = ({
     setIsCustomDialogOpen(true);
   };
 
-  const groupedSizes = CANVAS_SIZES.reduce((acc, size) => {
-    if (!acc[size.category]) {
-      acc[size.category] = [];
-    }
-    acc[size.category].push(size);
-    return acc;
-  }, {} as Record<string, CanvasSize[]>);
+  const groupedSizes = CANVAS_SIZES.reduce(
+    (acc, size) => {
+      if (!acc[size.category]) {
+        acc[size.category] = [];
+      }
+      acc[size.category].push(size);
+      return acc;
+    },
+    {} as Record<string, CanvasSize[]>,
+  );
 
   return (
     <div className={`relative ${className}`}>
@@ -159,8 +162,8 @@ export const CanvasSizeSelector: React.FC<CanvasSizeSelectorProps> = ({
                     onClick={() => handleSizeSelect(size)}
                     className={`w-full text-left px-3 py-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 ${
                       currentSize?.name === size.name
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'text-gray-700'
+                        ? "bg-blue-50 text-blue-700"
+                        : "text-gray-700"
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -276,7 +279,7 @@ export const CanvasSizeSelector: React.FC<CanvasSizeSelectorProps> = ({
               >
                 {([canSubmit, isSubmitting]) => (
                   <Button type="submit" disabled={!canSubmit}>
-                    {isSubmitting ? 'Setting...' : 'Set Size'}
+                    {isSubmitting ? "Setting..." : "Set Size"}
                   </Button>
                 )}
               </form.Subscribe>

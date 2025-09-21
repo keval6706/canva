@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   ArrowUturnLeftIcon,
   ArrowUturnRightIcon,
@@ -12,13 +12,13 @@ import {
   EyeSlashIcon,
   RectangleStackIcon,
   ArrowRightCircleIcon,
-} from '@heroicons/react/24/outline';
-import { useCanvasStore } from '../../store/canvas-store';
-import { ExportModal } from './export-modal';
-import { CanvasSizeSelector } from './canvas-size-selector';
-import { ExportOptions } from '../../types/canvas';
-import { Button } from './button';
-import { Slider } from './slider';
+} from "@heroicons/react/24/outline";
+import { useCanvasStore } from "../../store/canvas-store";
+import { ExportModal } from "./export-modal";
+import { CanvasSizeSelector } from "./canvas-size-selector";
+import { ExportOptions } from "../../types/canvas";
+import { Button } from "./button";
+import { Slider } from "./slider";
 
 export const Toolbar: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
@@ -61,7 +61,7 @@ export const Toolbar: React.FC = () => {
 
   const handleExportConfirm = (options: ExportOptions) => {
     // TODO: Get reference to the canvas stage and call exporter
-    console.log('Export with options:', options);
+    console.log("Export with options:", options);
   };
 
   return (
@@ -109,7 +109,7 @@ export const Toolbar: React.FC = () => {
             const { elements } = useCanvasStore.getState();
             const groupIds = selectedIds.filter((id) => {
               const element = elements.find((el) => el.id === id);
-              return element?.type === 'group';
+              return element?.type === "group";
             });
             groupIds.forEach((id) => ungroupElements(id));
           }}
@@ -182,7 +182,7 @@ export const Toolbar: React.FC = () => {
       <div className="flex items-center space-x-2">
         <Button
           onClick={toggleGrid}
-          variant={grid.enabled ? 'default' : 'ghost'}
+          variant={grid.enabled ? "default" : "ghost"}
           size="sm"
           title="Toggle Grid"
           className="hover:bg-gray-100"
@@ -192,7 +192,7 @@ export const Toolbar: React.FC = () => {
 
         <Button
           onClick={toggleRulers}
-          variant={rulers.enabled ? 'default' : 'ghost'}
+          variant={rulers.enabled ? "default" : "ghost"}
           size="sm"
           title="Toggle Rulers"
           className="hover:bg-gray-100"
@@ -202,7 +202,7 @@ export const Toolbar: React.FC = () => {
 
         <Button
           onClick={toggleGuides}
-          variant={guides.enabled ? 'default' : 'ghost'}
+          variant={guides.enabled ? "default" : "ghost"}
           size="sm"
           title="Toggle Guides"
           className="hover:bg-gray-100"

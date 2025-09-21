@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { subscribeWithSelector } from 'zustand/middleware';
-import { v4 as uuidv4 } from 'uuid';
+import { create } from "zustand";
+import { subscribeWithSelector } from "zustand/middleware";
+import { v4 as uuidv4 } from "uuid";
 import {
   CanvasElement,
   CanvasState,
@@ -9,11 +9,11 @@ import {
   HistoryAction,
   GroupElement,
   ElementType,
-} from '../types/canvas';
+} from "../types/canvas";
 
 interface CanvasStore extends CanvasState {
   // Element management
-  addElement: (element: Omit<CanvasElement, 'id' | 'zIndex'>) => void;
+  addElement: (element: Omit<CanvasElement, "id" | "zIndex">) => void;
   updateElement: (id: string, updates: Partial<CanvasElement>) => void;
   deleteElement: (id: string) => void;
   deleteElements: (ids: string[]) => void;
@@ -106,8 +106,8 @@ const initialState: CanvasState = {
   rulers: {
     enabled: false,
   },
-  tool: 'select',
-  mode: 'design',
+  tool: "select",
+  mode: "design",
 };
 
 export const useCanvasStore = create<CanvasStore>()(
@@ -152,7 +152,7 @@ export const useCanvasStore = create<CanvasStore>()(
         let selectedIds = state.selectedIds;
         if (updates.visible === false && state.selectedIds.includes(id)) {
           selectedIds = state.selectedIds.filter(
-            (selectedId) => selectedId !== id
+            (selectedId) => selectedId !== id,
           );
         }
 
@@ -173,7 +173,7 @@ export const useCanvasStore = create<CanvasStore>()(
       set((state) => {
         const _elements = state.elements.filter((el) => el.id !== id);
         const selectedIds = state.selectedIds.filter(
-          (selectedId) => selectedId !== id
+          (selectedId) => selectedId !== id,
         );
 
         return {
@@ -193,7 +193,7 @@ export const useCanvasStore = create<CanvasStore>()(
       set((state) => {
         const _elements = state.elements.filter((el) => !ids.includes(el.id));
         const selectedIds = state.selectedIds.filter(
-          (selectedId) => !ids.includes(selectedId)
+          (selectedId) => !ids.includes(selectedId),
         );
 
         return {
@@ -337,7 +337,7 @@ export const useCanvasStore = create<CanvasStore>()(
       // Adjust other elements
       set((state) => {
         const _elements = state.elements.map((el) =>
-          el.id !== id ? { ...el, zIndex: el.zIndex + 1 } : el
+          el.id !== id ? { ...el, zIndex: el.zIndex + 1 } : el,
         );
         return { elements: _elements };
       });
@@ -357,7 +357,7 @@ export const useCanvasStore = create<CanvasStore>()(
       const elements = elementIds
         .map((id) => get().getElementById(id))
         .filter(Boolean) as CanvasElement[];
-      if (elements.length < 2) return '';
+      if (elements.length < 2) return "";
 
       // Calculate group bounds
       const bounds = get().getElementsBounds(elementIds);
@@ -365,9 +365,9 @@ export const useCanvasStore = create<CanvasStore>()(
       const centerY = bounds.y + bounds.height / 2;
 
       // Create group element
-      const groupElement: Omit<GroupElement, 'id' | 'zIndex'> = {
+      const groupElement: Omit<GroupElement, "id" | "zIndex"> = {
         type: ElementType.GROUP,
-        name: groupName || 'Group',
+        name: groupName || "Group",
         visible: true,
         locked: false,
         opacity: 1,
@@ -405,7 +405,7 @@ export const useCanvasStore = create<CanvasStore>()(
 
       // Remove child elements from main elements array and add group
       const elementsWithoutChildren = get().elements.filter(
-        (el) => !elementIds.includes(el.id)
+        (el) => !elementIds.includes(el.id),
       );
 
       set((state) => ({
@@ -455,11 +455,11 @@ export const useCanvasStore = create<CanvasStore>()(
 
       // Remove group and update children
       const elementsWithoutGroup = get().elements.filter(
-        (el) => el.id !== groupId
+        (el) => el.id !== groupId,
       );
       const finalElements = elementsWithoutGroup.map((el) => {
         const updatedChild = updatedChildElements.find(
-          (child) => child.id === el.id
+          (child) => child.id === el.id,
         );
         return updatedChild || el;
       });
@@ -529,7 +529,7 @@ export const useCanvasStore = create<CanvasStore>()(
         const previous = state.history.past[state.history.past.length - 1];
         const newPast = state.history.past.slice(
           0,
-          state.history.past.length - 1
+          state.history.past.length - 1,
         );
 
         return {
@@ -656,7 +656,7 @@ export const useCanvasStore = create<CanvasStore>()(
     getElementsBounds: (elementIds) => {
       const { elements } = get();
       const selectedElements = elements.filter((el) =>
-        elementIds.includes(el.id)
+        elementIds.includes(el.id),
       );
 
       if (selectedElements.length === 0) {
@@ -695,7 +695,7 @@ export const useCanvasStore = create<CanvasStore>()(
         height: 50, // Default height - should be calculated based on content
       };
     },
-  }))
+  })),
 );
 
 // Subscribe to store changes for autosave
@@ -703,6 +703,6 @@ useCanvasStore.subscribe(
   (state) => state.elements,
   (elements) => {
     // Autosave to localStorage
-    localStorage.setItem('canvas-autosave', JSON.stringify(elements));
-  }
+    localStorage.setItem("canvas-autosave", JSON.stringify(elements));
+  },
 );

@@ -1,20 +1,27 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Group, Line } from 'react-konva';
-import { useCanvasStore } from '../../store/canvas-store';
+import React from "react";
+import { Group, Line } from "react-konva";
+import { useCanvasStore } from "../../store/canvas-store";
 
 interface GuidesOverlayProps {
   selectedIds: string[];
 }
 
-export const GuidesOverlay: React.FC<GuidesOverlayProps> = ({ selectedIds }) => {
-  const { elements, width: canvasWidth, height: canvasHeight, zoom } = useCanvasStore();
-  
+export const GuidesOverlay: React.FC<GuidesOverlayProps> = ({
+  selectedIds,
+}) => {
+  const {
+    elements,
+    width: canvasWidth,
+    height: canvasHeight,
+    zoom,
+  } = useCanvasStore();
+
   if (selectedIds.length === 0) return null;
 
   const selectedElements = selectedIds
-    .map(id => elements.find(el => el.id === id))
+    .map((id) => elements.find((el) => el.id === id))
     .filter(Boolean);
 
   if (selectedElements.length === 0) return null;
@@ -23,47 +30,50 @@ export const GuidesOverlay: React.FC<GuidesOverlayProps> = ({ selectedIds }) => 
   const snapThreshold = 5;
 
   // Get bounds of selected elements
-  const selectedBounds = selectedElements.reduce((bounds, element) => {
-    if (!element) return bounds;
-    
-    const { x, y } = element.transform;
-    // For simplicity, assuming basic width/height - in real implementation,
-    // you'd calculate actual bounds considering rotation, scale, etc.
-    const width = 100; // Default width
-    const height = 50; // Default height
-    
-    return {
-      left: Math.min(bounds.left, x),
-      right: Math.max(bounds.right, x + width),
-      top: Math.min(bounds.top, y),
-      bottom: Math.max(bounds.bottom, y + height),
-      centerX: x + width / 2,
-      centerY: y + height / 2
-    };
-  }, {
-    left: Infinity,
-    right: -Infinity,
-    top: Infinity,
-    bottom: -Infinity,
-    centerX: 0,
-    centerY: 0
-  });
+  const selectedBounds = selectedElements.reduce(
+    (bounds, element) => {
+      if (!element) return bounds;
+
+      const { x, y } = element.transform;
+      // For simplicity, assuming basic width/height - in real implementation,
+      // you'd calculate actual bounds considering rotation, scale, etc.
+      const width = 100; // Default width
+      const height = 50; // Default height
+
+      return {
+        left: Math.min(bounds.left, x),
+        right: Math.max(bounds.right, x + width),
+        top: Math.min(bounds.top, y),
+        bottom: Math.max(bounds.bottom, y + height),
+        centerX: x + width / 2,
+        centerY: y + height / 2,
+      };
+    },
+    {
+      left: Infinity,
+      right: -Infinity,
+      top: Infinity,
+      bottom: -Infinity,
+      centerX: 0,
+      centerY: 0,
+    },
+  );
 
   // Check for alignment with other elements
-  elements.forEach(element => {
+  elements.forEach((element) => {
     if (selectedIds.includes(element.id)) return;
 
     const { x, y } = element.transform;
     const width = 100; // Default width
     const height = 50; // Default height
-    
+
     const elementBounds = {
       left: x,
       right: x + width,
       top: y,
       bottom: y + height,
       centerX: x + width / 2,
-      centerY: y + height / 2
+      centerY: y + height / 2,
     };
 
     // Vertical alignment guides
@@ -76,7 +86,7 @@ export const GuidesOverlay: React.FC<GuidesOverlayProps> = ({ selectedIds }) => 
           strokeWidth={1 / zoom}
           dash={[5 / zoom, 5 / zoom]}
           listening={false}
-        />
+        />,
       );
     }
 
@@ -89,20 +99,27 @@ export const GuidesOverlay: React.FC<GuidesOverlayProps> = ({ selectedIds }) => 
           strokeWidth={1 / zoom}
           dash={[5 / zoom, 5 / zoom]}
           listening={false}
-        />
+        />,
       );
     }
 
-    if (Math.abs(selectedBounds.centerX - elementBounds.centerX) < snapThreshold) {
+    if (
+      Math.abs(selectedBounds.centerX - elementBounds.centerX) < snapThreshold
+    ) {
       guides.push(
         <Line
           key={`guide-v-center-${element.id}`}
-          points={[elementBounds.centerX, 0, elementBounds.centerX, canvasHeight]}
+          points={[
+            elementBounds.centerX,
+            0,
+            elementBounds.centerX,
+            canvasHeight,
+          ]}
           stroke="#ff6b6b"
           strokeWidth={1 / zoom}
           dash={[5 / zoom, 5 / zoom]}
           listening={false}
-        />
+        />,
       );
     }
 
@@ -116,11 +133,13 @@ export const GuidesOverlay: React.FC<GuidesOverlayProps> = ({ selectedIds }) => 
           strokeWidth={1 / zoom}
           dash={[5 / zoom, 5 / zoom]}
           listening={false}
-        />
+        />,
       );
     }
 
-    if (Math.abs(selectedBounds.bottom - elementBounds.bottom) < snapThreshold) {
+    if (
+      Math.abs(selectedBounds.bottom - elementBounds.bottom) < snapThreshold
+    ) {
       guides.push(
         <Line
           key={`guide-h-bottom-${element.id}`}
@@ -129,20 +148,27 @@ export const GuidesOverlay: React.FC<GuidesOverlayProps> = ({ selectedIds }) => 
           strokeWidth={1 / zoom}
           dash={[5 / zoom, 5 / zoom]}
           listening={false}
-        />
+        />,
       );
     }
 
-    if (Math.abs(selectedBounds.centerY - elementBounds.centerY) < snapThreshold) {
+    if (
+      Math.abs(selectedBounds.centerY - elementBounds.centerY) < snapThreshold
+    ) {
       guides.push(
         <Line
           key={`guide-h-center-${element.id}`}
-          points={[0, elementBounds.centerY, canvasWidth, elementBounds.centerY]}
+          points={[
+            0,
+            elementBounds.centerY,
+            canvasWidth,
+            elementBounds.centerY,
+          ]}
           stroke="#ff6b6b"
           strokeWidth={1 / zoom}
           dash={[5 / zoom, 5 / zoom]}
           listening={false}
-        />
+        />,
       );
     }
   });
@@ -160,7 +186,7 @@ export const GuidesOverlay: React.FC<GuidesOverlayProps> = ({ selectedIds }) => 
         strokeWidth={1 / zoom}
         dash={[5 / zoom, 5 / zoom]}
         listening={false}
-      />
+      />,
     );
   }
 
@@ -173,7 +199,7 @@ export const GuidesOverlay: React.FC<GuidesOverlayProps> = ({ selectedIds }) => 
         strokeWidth={1 / zoom}
         dash={[5 / zoom, 5 / zoom]}
         listening={false}
-      />
+      />,
     );
   }
 

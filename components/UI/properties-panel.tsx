@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useCanvasStore } from '../../store/canvas-store';
+import React, { useState } from "react";
+import { useCanvasStore } from "../../store/canvas-store";
 import {
   TextElement,
   ImageElement,
   ShapeElement,
   CanvasElement,
-} from '../../types/canvas';
-import { Input } from './input';
-import { Label } from './label';
-import { Button } from './button';
-import { Slider } from './slider';
-import { Checkbox } from './checkbox';
-import { Sketch } from '@uiw/react-color';
+} from "../../types/canvas";
+import { Input } from "./input";
+import { Label } from "./label";
+import { Button } from "./button";
+import { Slider } from "./slider";
+import { Checkbox } from "./checkbox";
+import { Sketch } from "@uiw/react-color";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './select';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
+} from "./select";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 export const PropertiesPanel: React.FC = () => {
   const { selectedIds, elements, updateElement } = useCanvasStore();
@@ -124,9 +124,9 @@ export const PropertiesPanel: React.FC = () => {
         </Label>
         <div className="flex items-center gap-2">
           <Popover
-            open={colorPickerOpen === 'text-fill'}
+            open={colorPickerOpen === "text-fill"}
             onOpenChange={(open) =>
-              setColorPickerOpen(open ? 'text-fill' : null)
+              setColorPickerOpen(open ? "text-fill" : null)
             }
           >
             <PopoverTrigger asChild>
@@ -162,10 +162,10 @@ export const PropertiesPanel: React.FC = () => {
       <div className="flex items-center gap-2">
         <Checkbox
           id="bold"
-          checked={textElement.fontWeight === 'bold'}
+          checked={textElement.fontWeight === "bold"}
           onCheckedChange={(checked) =>
             updateElement(textElement.id, {
-              fontWeight: checked ? 'bold' : 'normal',
+              fontWeight: checked ? "bold" : "normal",
             })
           }
         />
@@ -177,10 +177,10 @@ export const PropertiesPanel: React.FC = () => {
       <div className="flex items-center gap-2">
         <Checkbox
           id="italic"
-          checked={textElement.fontStyle === 'italic'}
+          checked={textElement.fontStyle === "italic"}
           onCheckedChange={(checked) =>
             updateElement(textElement.id, {
-              fontStyle: checked ? 'italic' : 'normal',
+              fontStyle: checked ? "italic" : "normal",
             })
           }
         />
@@ -192,10 +192,10 @@ export const PropertiesPanel: React.FC = () => {
       <div className="flex items-center gap-2">
         <Checkbox
           id="underline"
-          checked={textElement.textDecoration === 'underline'}
+          checked={textElement.textDecoration === "underline"}
           onCheckedChange={(checked) =>
             updateElement(textElement.id, {
-              textDecoration: checked ? 'underline' : 'none',
+              textDecoration: checked ? "underline" : "none",
             })
           }
         />
@@ -217,16 +217,16 @@ export const PropertiesPanel: React.FC = () => {
         </Label>
         <div className="flex items-center gap-2">
           <Popover
-            open={colorPickerOpen === 'shape-fill'}
+            open={colorPickerOpen === "shape-fill"}
             onOpenChange={(open) =>
-              setColorPickerOpen(open ? 'shape-fill' : null)
+              setColorPickerOpen(open ? "shape-fill" : null)
             }
           >
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className="w-8 h-8 p-0 border-2"
-                style={{ backgroundColor: shapeElement.fill || '#000000' }}
+                style={{ backgroundColor: shapeElement.fill || "#000000" }}
               />
             </PopoverTrigger>
             <PopoverContent className="w-auto p-3" align="start">
@@ -234,7 +234,7 @@ export const PropertiesPanel: React.FC = () => {
                 <Label className="text-sm font-medium">Choose Fill Color</Label>
               </div>
               <Sketch
-                color={shapeElement.fill || '#000000'}
+                color={shapeElement.fill || "#000000"}
                 onChange={(color) => {
                   handleUpdate({ fill: color.hex });
                 }}
@@ -242,7 +242,7 @@ export const PropertiesPanel: React.FC = () => {
             </PopoverContent>
           </Popover>
           <Input
-            value={shapeElement.fill || '#000000'}
+            value={shapeElement.fill || "#000000"}
             onChange={(e) => handleUpdate({ fill: e.target.value })}
             className="flex-1"
             placeholder="#000000"
@@ -256,16 +256,16 @@ export const PropertiesPanel: React.FC = () => {
         </Label>
         <div className="flex items-center gap-2">
           <Popover
-            open={colorPickerOpen === 'shape-stroke'}
+            open={colorPickerOpen === "shape-stroke"}
             onOpenChange={(open) =>
-              setColorPickerOpen(open ? 'shape-stroke' : null)
+              setColorPickerOpen(open ? "shape-stroke" : null)
             }
           >
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className="w-8 h-8 p-0 border-2"
-                style={{ backgroundColor: shapeElement.stroke || '#000000' }}
+                style={{ backgroundColor: shapeElement.stroke || "#000000" }}
               />
             </PopoverTrigger>
             <PopoverContent className="w-auto p-3" align="start">
@@ -275,7 +275,7 @@ export const PropertiesPanel: React.FC = () => {
                 </Label>
               </div>
               <Sketch
-                color={shapeElement.stroke || '#000000'}
+                color={shapeElement.stroke || "#000000"}
                 onChange={(color) => {
                   handleUpdate({ stroke: color.hex });
                 }}
@@ -283,7 +283,7 @@ export const PropertiesPanel: React.FC = () => {
             </PopoverContent>
           </Popover>
           <Input
-            value={shapeElement.stroke || '#000000'}
+            value={shapeElement.stroke || "#000000"}
             onChange={(e) => handleUpdate({ stroke: e.target.value })}
             className="flex-1"
             placeholder="#000000"
@@ -311,7 +311,7 @@ export const PropertiesPanel: React.FC = () => {
         />
       </div>
 
-      {shapeElement.shapeType === 'rectangle' && (
+      {shapeElement.shapeType === "rectangle" && (
         <div>
           <Label
             htmlFor="corner-radius"
@@ -354,7 +354,7 @@ export const PropertiesPanel: React.FC = () => {
       <div className="grid grid-cols-2 gap-3">
         <Button
           onClick={() => handleUpdate({ flipX: !imageElement.flipX })}
-          variant={imageElement.flipX ? 'default' : 'outline'}
+          variant={imageElement.flipX ? "default" : "outline"}
           size="sm"
         >
           Flip X
@@ -362,7 +362,7 @@ export const PropertiesPanel: React.FC = () => {
 
         <Button
           onClick={() => handleUpdate({ flipY: !imageElement.flipY })}
-          variant={imageElement.flipY ? 'default' : 'outline'}
+          variant={imageElement.flipY ? "default" : "outline"}
           size="sm"
         >
           Flip Y
@@ -518,10 +518,10 @@ export const PropertiesPanel: React.FC = () => {
         </div>
       </div>
 
-      {element.type === 'text' && renderTextProperties(element as TextElement)}
-      {element.type === 'shape' &&
+      {element.type === "text" && renderTextProperties(element as TextElement)}
+      {element.type === "shape" &&
         renderShapeProperties(element as ShapeElement)}
-      {element.type === 'image' &&
+      {element.type === "image" &&
         renderImageProperties(element as ImageElement)}
 
       {renderCommonProperties()}

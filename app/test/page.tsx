@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Canvas } from '../../components/canvas/canvas';
-import { useCanvasStore } from '../../store/canvas-store';
-import { ElementType } from '../../types/canvas';
+import React from "react";
+import { Canvas } from "../../components/canvas/canvas";
+import { useCanvasStore } from "../../store/canvas-store";
+import { ElementType } from "../../types/canvas";
 
 export default function CanvasTest() {
   const { addElement, setCanvasSize } = useCanvasStore();
@@ -15,7 +15,7 @@ export default function CanvasTest() {
     // Add a test text element that extends outside the canvas
     const testTextElement = {
       type: ElementType.TEXT,
-      name: 'Test Text',
+      name: "Test Text",
       visible: true,
       locked: false,
       opacity: 1,
@@ -26,25 +26,25 @@ export default function CanvasTest() {
         scaleY: 1,
         rotation: 0,
       },
-      text: 'Life is an ADVENTURE',
+      text: "Life is an ADVENTURE",
       fontSize: 40,
-      fontFamily: 'Calibri',
-      fontWeight: 'normal' as const,
-      fontStyle: 'normal' as const,
-      textDecoration: 'none' as const,
-      fill: '#000000',
-      align: 'left' as const,
-      verticalAlign: 'top' as const,
+      fontFamily: "Calibri",
+      fontWeight: "normal" as const,
+      fontStyle: "normal" as const,
+      textDecoration: "none" as const,
+      fill: "#000000",
+      align: "left" as const,
+      verticalAlign: "top" as const,
       lineHeight: 1.2,
       letterSpacing: 0,
       padding: 0,
-      wrap: 'word' as const,
+      wrap: "word" as const,
     };
 
     // Add a test shape element
     const testShapeElement = {
       type: ElementType.SHAPE,
-      name: 'Test Rectangle',
+      name: "Test Rectangle",
       visible: true,
       locked: false,
       opacity: 1,
@@ -55,9 +55,9 @@ export default function CanvasTest() {
         scaleY: 1,
         rotation: 0,
       },
-      shapeType: 'rectangle' as const,
-      fill: '#ff6b6b',
-      stroke: '#000000',
+      shapeType: "rectangle" as const,
+      fill: "#ff6b6b",
+      stroke: "#000000",
       strokeWidth: 2,
     };
 

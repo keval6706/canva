@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Stage, Layer, Rect, Line, Text } from 'react-konva';
-import Konva from 'konva';
-import { useCanvasStore } from '../../store/canvas-store';
-import { DualRenderElement } from './dual-render-element';
-import { TransformerOverlay } from './transformer-overlay';
-import { GridOverlay } from './grid-overlay';
-import { GuidesOverlay } from './guides-overlay';
-import { ElementType } from '../../types/canvas';
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { Stage, Layer, Rect, Line, Text } from "react-konva";
+import Konva from "konva";
+import { useCanvasStore } from "../../store/canvas-store";
+import { DualRenderElement } from "./dual-render-element";
+import { TransformerOverlay } from "./transformer-overlay";
+import { GridOverlay } from "./grid-overlay";
+import { GuidesOverlay } from "./guides-overlay";
+import { ElementType } from "../../types/canvas";
 
 interface CanvasProps {
   width: number;
@@ -42,21 +42,21 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
 
   // Handle stage drag (panning)
   const handleStageDragStart = useCallback(() => {
-    if (tool !== 'pan' && tool !== 'select') return;
+    if (tool !== "pan" && tool !== "select") return;
 
     setIsDragging(true);
   }, [tool]);
 
   const handleStageDragMove = useCallback(
     (e: Konva.KonvaEventObject<DragEvent>) => {
-      if (!isDragging || (tool !== 'pan' && tool !== 'select')) return;
+      if (!isDragging || (tool !== "pan" && tool !== "select")) return;
 
       const stage = e.target.getStage();
       if (stage) {
         setPan({ x: stage.x(), y: stage.y() });
       }
     },
-    [isDragging, tool, setPan]
+    [isDragging, tool, setPan],
   );
 
   const handleStageDragEnd = useCallback(() => {
@@ -70,12 +70,12 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
       const target = e.target;
       if (
         target === e.target.getStage() ||
-        target.name() === 'canvas-background'
+        target.name() === "canvas-background"
       ) {
         clearSelection();
       }
     },
-    [clearSelection]
+    [clearSelection],
   );
 
   // Handle element selection with event coordination
@@ -85,7 +85,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
 
       // Check if this is a duplicate event from the other layer
       const target = e.target;
-      const targetId = target.getAttr('id') || target.parent?.getAttr('id');
+      const targetId = target.getAttr("id") || target.parent?.getAttr("id");
 
       if (e.evt.ctrlKey || e.evt.metaKey) {
         // Multi-select
@@ -98,13 +98,13 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
         selectElement(elementId);
       }
     },
-    [selectedIds, selectElement, selectElements]
+    [selectedIds, selectElement, selectElements],
   );
 
   // Handle drawing
   const handleMouseDown = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
-      if (tool !== 'brush') return;
+      if (tool !== "brush") return;
 
       const stage = e.target.getStage();
       if (!stage) return;
@@ -120,12 +120,12 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
       setIsDrawing(true);
       setCurrentPath([position.x, position.y]);
     },
-    [tool, pan, zoom]
+    [tool, pan, zoom],
   );
 
   const handleMouseMove = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
-      if (!isDrawing || tool !== 'brush') return;
+      if (!isDrawing || tool !== "brush") return;
 
       const stage = e.target.getStage();
       if (!stage) return;
@@ -140,17 +140,17 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
 
       setCurrentPath((prev) => [...prev, position.x, position.y]);
     },
-    [isDrawing, tool, pan, zoom]
+    [isDrawing, tool, pan, zoom],
   );
 
   const handleMouseUp = useCallback(() => {
-    if (!isDrawing || tool !== 'brush') return;
+    if (!isDrawing || tool !== "brush") return;
 
     if (currentPath.length >= 4) {
       // Need at least 2 points (4 coordinates)
       const drawingElement = {
         type: ElementType.DRAWING,
-        name: 'Drawing',
+        name: "Drawing",
         visible: true,
         locked: false,
         opacity: 1,
@@ -162,10 +162,10 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
           rotation: 0,
         },
         points: currentPath,
-        stroke: '#000000',
+        stroke: "#000000",
         strokeWidth: 2,
-        lineCap: 'round' as const,
-        lineJoin: 'round' as const,
+        lineCap: "round" as const,
+        lineJoin: "round" as const,
         tension: 0,
       };
 
@@ -179,7 +179,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
   // Create new element based on tool
   const handleStageDoubleClick = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
-      if (tool === 'text') {
+      if (tool === "text") {
         const stage = e.target.getStage();
         if (!stage) return;
 
@@ -193,7 +193,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
 
         const newElement = {
           type: ElementType.TEXT,
-          name: 'Text',
+          name: "Text",
           visible: true,
           locked: false,
           opacity: 1,
@@ -204,25 +204,25 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
             scaleY: 1,
             rotation: 0,
           },
-          text: 'Double click to edit',
+          text: "Double click to edit",
           fontSize: 24,
-          fontFamily: 'Arial',
-          fontWeight: 'normal' as const,
-          fontStyle: 'normal' as const,
-          textDecoration: 'none' as const,
-          fill: '#000000',
-          align: 'left' as const,
-          verticalAlign: 'top' as const,
+          fontFamily: "Arial",
+          fontWeight: "normal" as const,
+          fontStyle: "normal" as const,
+          textDecoration: "none" as const,
+          fill: "#000000",
+          align: "left" as const,
+          verticalAlign: "top" as const,
           lineHeight: 1.2,
           letterSpacing: 0,
           padding: 0,
-          wrap: 'word' as const,
+          wrap: "word" as const,
         };
 
         addElement(newElement);
       }
     },
-    [tool, pan, zoom, addElement]
+    [tool, pan, zoom, addElement],
   );
 
   // Update stage position and scale
@@ -262,7 +262,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        draggable={tool === 'pan' || tool === 'select'}
+        draggable={tool === "pan" || tool === "select"}
       >
         {/* Grid Layer */}
         {grid.enabled && (

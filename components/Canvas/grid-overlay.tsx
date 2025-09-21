@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Group, Line } from 'react-konva';
+import React from "react";
+import { Group, Line } from "react-konva";
 
 interface GridOverlayProps {
   width: number;
@@ -10,15 +10,15 @@ interface GridOverlayProps {
   zoom: number;
 }
 
-export const GridOverlay: React.FC<GridOverlayProps> = ({ 
-  width, 
-  height, 
-  gridSize, 
-  zoom 
+export const GridOverlay: React.FC<GridOverlayProps> = ({
+  width,
+  height,
+  gridSize,
+  zoom,
 }) => {
   const lines: React.ReactElement[] = [];
   const effectiveGridSize = gridSize * zoom;
-  
+
   // Only show grid if it's not too small when zoomed out
   if (effectiveGridSize < 5) return null;
 
@@ -31,7 +31,7 @@ export const GridOverlay: React.FC<GridOverlayProps> = ({
         stroke="rgba(0,0,0,0.1)"
         strokeWidth={1 / zoom}
         listening={false}
-      />
+      />,
     );
   }
 
@@ -44,7 +44,7 @@ export const GridOverlay: React.FC<GridOverlayProps> = ({
         stroke="rgba(0,0,0,0.1)"
         strokeWidth={1 / zoom}
         listening={false}
-      />
+      />,
     );
   }
 

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect } from 'react';
-import Konva from 'konva';
-import { Group } from 'react-konva';
-import { CanvasElement } from '../../types/canvas';
-import { CanvasElementRenderer } from './canvas-element-renderer';
+import React, { useRef, useEffect } from "react";
+import Konva from "konva";
+import { Group } from "react-konva";
+import { CanvasElement } from "../../types/canvas";
+import { CanvasElementRenderer } from "./canvas-element-renderer";
 
 interface UnifiedElementRendererProps {
   element: CanvasElement;

@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useCallback } from 'react';
-import Konva from 'konva';
-import { Group, Layer } from 'react-konva';
-import { CanvasElement } from '../../types/canvas';
-import { CanvasElementRenderer } from './canvas-element-renderer';
-import { useCanvasStore } from '../../store/canvas-store';
+import React, { useRef, useEffect, useCallback } from "react";
+import Konva from "konva";
+import { Group, Layer } from "react-konva";
+import { CanvasElement } from "../../types/canvas";
+import { CanvasElementRenderer } from "./canvas-element-renderer";
+import { useCanvasStore } from "../../store/canvas-store";
 
 interface BoundaryAwareElementProps {
   element: CanvasElement;
@@ -47,7 +47,7 @@ export const BoundaryAwareElement: React.FC<BoundaryAwareElementProps> = ({
         },
       });
     },
-    [element.id, element.transform, updateElement]
+    [element.id, element.transform, updateElement],
   );
 
   // Sync positions when element updates

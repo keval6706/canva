@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Group, Rect } from 'react-konva';
-import { useCanvasStore } from '../../store/canvas-store';
-import { getCombinedBounds } from '../../utils/element-bounds';
+import React from "react";
+import { Group, Rect } from "react-konva";
+import { useCanvasStore } from "../../store/canvas-store";
+import { getCombinedBounds } from "../../utils/element-bounds";
 
 interface SelectionBoxProps {
   selectedIds: string[];
@@ -11,18 +11,21 @@ interface SelectionBoxProps {
 
 export const SelectionBox: React.FC<SelectionBoxProps> = ({ selectedIds }) => {
   const { elements, zoom } = useCanvasStore();
-  
+
   if (selectedIds.length === 0) return null;
 
   const selectedElements = selectedIds
-    .map(id => elements.find(el => el.id === id))
-    .filter((element): element is NonNullable<typeof element> => element !== undefined);
+    .map((id) => elements.find((el) => el.id === id))
+    .filter(
+      (element): element is NonNullable<typeof element> =>
+        element !== undefined,
+    );
 
   if (selectedElements.length === 0) return null;
 
   // Calculate actual bounds for all selected elements
   const bounds = getCombinedBounds(selectedElements);
-  
+
   if (!bounds) return null;
 
   const strokeWidth = 2 / zoom;
@@ -43,7 +46,7 @@ export const SelectionBox: React.FC<SelectionBoxProps> = ({ selectedIds }) => {
         fill="transparent"
         listening={false}
       />
-      
+
       {/* Corner handles */}
       {[
         { x: bounds.x, y: bounds.y }, // top-left
@@ -63,7 +66,7 @@ export const SelectionBox: React.FC<SelectionBoxProps> = ({ selectedIds }) => {
           listening={false}
         />
       ))}
-      
+
       {/* Edge handles */}
       {[
         { x: bounds.x + bounds.width / 2, y: bounds.y }, // top

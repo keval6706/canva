@@ -1,4 +1,10 @@
-import { CanvasElement, TextElement, ShapeElement, ImageElement, StickerElement } from '../types/canvas';
+import {
+  CanvasElement,
+  TextElement,
+  ShapeElement,
+  ImageElement,
+  StickerElement,
+} from "../types/canvas";
 
 export interface ElementBounds {
   x: number;
@@ -8,39 +14,45 @@ export interface ElementBounds {
 }
 
 // Helper function to measure text dimensions more accurately
-const measureText = (text: string, fontSize: number, fontFamily: string, lineHeight: number = 1.2): { width: number; height: number } => {
+const measureText = (
+  text: string,
+  fontSize: number,
+  fontFamily: string,
+  lineHeight: number = 1.2,
+): { width: number; height: number } => {
   // Create a temporary canvas element for text measurement
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
   if (!ctx) {
     // Fallback to estimation if canvas context is not available
-    const lines = text.split('\n');
-    const longestLine = lines.reduce((longest, line) => 
-      line.length > longest.length ? line : longest, ''
+    const lines = text.split("\n");
+    const longestLine = lines.reduce(
+      (longest, line) => (line.length > longest.length ? line : longest),
+      "",
     );
     const avgCharWidth = fontSize * 0.6;
     return {
       width: Math.max(longestLine.length * avgCharWidth, 20),
-      height: Math.max(lines.length * fontSize * lineHeight, fontSize)
+      height: Math.max(lines.length * fontSize * lineHeight, fontSize),
     };
   }
-  
+
   ctx.font = `${fontSize}px ${fontFamily}`;
-  
-  const lines = text.split('\n');
+
+  const lines = text.split("\n");
   let maxWidth = 0;
-  
-  lines.forEach(line => {
+
+  lines.forEach((line) => {
     const metrics = ctx.measureText(line);
     maxWidth = Math.max(maxWidth, metrics.width);
   });
-  
+
   const height = lines.length * fontSize * lineHeight;
-  
+
   return {
     width: Math.max(maxWidth, 20),
-    height: Math.max(height, fontSize)
+    height: Math.max(height, fontSize),
   };
 };
 
@@ -48,29 +60,34 @@ export const getElementBounds = (element: CanvasElement): ElementBounds => {
   const { x, y, scaleX = 1, scaleY = 1 } = element.transform;
 
   switch (element.type) {
-    case 'text': {
+    case "text": {
       const textElement = element as TextElement;
-      
+
       const fontSize = textElement.fontSize * scaleX;
-      const fontFamily = textElement.fontFamily || 'Arial';
+      const fontFamily = textElement.fontFamily || "Arial";
       const lineHeight = textElement.lineHeight || 1.2;
-      
+
       // Use accurate text measurement
-      const textDimensions = measureText(textElement.text, fontSize, fontFamily, lineHeight);
-      
+      const textDimensions = measureText(
+        textElement.text,
+        fontSize,
+        fontFamily,
+        lineHeight,
+      );
+
       // If element has explicit width/height, use those, otherwise use measured dimensions
       const finalWidth = textElement.width || textDimensions.width;
       const finalHeight = textElement.height || textDimensions.height;
-      
+
       return {
         x,
         y,
         width: finalWidth,
-        height: finalHeight
+        height: finalHeight,
       };
     }
 
-    case 'shape': {
+    case "shape": {
       const shapeElement = element as ShapeElement;
       let baseWidth = 100;
       let baseHeight = 100;
@@ -78,33 +95,33 @@ export const getElementBounds = (element: CanvasElement): ElementBounds => {
       let offsetY = 0;
 
       switch (shapeElement.shapeType) {
-        case 'rectangle':
+        case "rectangle":
           // Rectangle uses width=100, height=60, positioned at top-left
           baseWidth = 100;
           baseHeight = 60;
           offsetX = 0;
           offsetY = 0;
           break;
-        case 'circle':
+        case "circle":
           // Circle uses radius=50, centered at (50, 50)
           baseWidth = baseHeight = 100; // 2 * radius
           offsetX = -50; // Adjust for center positioning
           offsetY = -50;
           break;
-        case 'triangle':
-        case 'polygon':
+        case "triangle":
+        case "polygon":
           // Regular polygons use radius=50, centered at (50, 50)
           baseWidth = baseHeight = 100; // 2 * radius
           offsetX = -50; // Adjust for center positioning
           offsetY = -50;
           break;
-        case 'star':
+        case "star":
           // Stars use outer radius=50, centered at (50, 50)
           baseWidth = baseHeight = 100; // 2 * outer radius
           offsetX = -50; // Adjust for center positioning
           offsetY = -50;
           break;
-        case 'line':
+        case "line":
           // Lines use points, default [0, 0, 100, 0]
           if (shapeElement.points && shapeElement.points.length >= 4) {
             const xs = shapeElement.points.filter((_, i) => i % 2 === 0);
@@ -124,7 +141,7 @@ export const getElementBounds = (element: CanvasElement): ElementBounds => {
             offsetY = 0;
           }
           break;
-        case 'arrow':
+        case "arrow":
           // Arrows use points, default [0, 50, 100, 50]
           if (shapeElement.points && shapeElement.points.length >= 4) {
             const xs = shapeElement.points.filter((_, i) => i % 2 === 0);
@@ -144,7 +161,7 @@ export const getElementBounds = (element: CanvasElement): ElementBounds => {
             offsetY = 50 - 10; // Center vertically
           }
           break;
-        case 'path':
+        case "path":
           // For paths, use default size
           baseWidth = baseHeight = 100;
           offsetX = offsetY = 0;
@@ -152,52 +169,52 @@ export const getElementBounds = (element: CanvasElement): ElementBounds => {
       }
 
       return {
-        x: x + (offsetX * scaleX),
-        y: y + (offsetY * scaleY),
+        x: x + offsetX * scaleX,
+        y: y + offsetY * scaleY,
         width: baseWidth * scaleX,
-        height: baseHeight * scaleY
+        height: baseHeight * scaleY,
       };
     }
 
-    case 'image': {
+    case "image": {
       const imageElement = element as ImageElement;
       const width = (imageElement.cropWidth || 200) * scaleX;
       const height = (imageElement.cropHeight || 200) * scaleY;
-      
+
       return {
         x,
         y,
         width,
-        height
+        height,
       };
     }
 
-    case 'sticker': {
+    case "sticker": {
       // For stickers, we need to get the actual image dimensions
       // Since stickers are loaded dynamically, we'll use a reasonable default
       // that gets updated when the image loads
       const stickerElement = element as StickerElement;
-      
+
       // If we have cached dimensions, use them; otherwise use a default
       const defaultSize = 100;
       const width = defaultSize * scaleX * stickerElement.transform.scaleX;
       const height = defaultSize * scaleY * stickerElement.transform.scaleY;
-      
+
       return {
         x,
         y,
         width,
-        height
+        height,
       };
     }
 
-    case 'background': {
+    case "background": {
       // Background should cover the entire canvas
       return {
         x: 0,
         y: 0,
         width: 1000, // This should be canvas width
-        height: 1000  // This should be canvas height
+        height: 1000, // This should be canvas height
       };
     }
 
@@ -206,45 +223,49 @@ export const getElementBounds = (element: CanvasElement): ElementBounds => {
         x,
         y,
         width: 100 * scaleX,
-        height: 100 * scaleY
+        height: 100 * scaleY,
       };
   }
 };
 
-export const getCombinedBounds = (elements: CanvasElement[]): ElementBounds | null => {
+export const getCombinedBounds = (
+  elements: CanvasElement[],
+): ElementBounds | null => {
   if (elements.length === 0) return null;
 
   const bounds = elements.map(getElementBounds);
-  
-  const left = Math.min(...bounds.map(b => b.x));
-  const top = Math.min(...bounds.map(b => b.y));
-  const right = Math.max(...bounds.map(b => b.x + b.width));
-  const bottom = Math.max(...bounds.map(b => b.y + b.height));
+
+  const left = Math.min(...bounds.map((b) => b.x));
+  const top = Math.min(...bounds.map((b) => b.y));
+  const right = Math.max(...bounds.map((b) => b.x + b.width));
+  const bottom = Math.max(...bounds.map((b) => b.y + b.height));
 
   return {
     x: left,
     y: top,
     width: right - left,
-    height: bottom - top
+    height: bottom - top,
   };
 };
 
 export function isElementOutsideCanvas(
-  element: CanvasElement, 
-  canvasWidth: number, 
-  canvasHeight: number
+  element: CanvasElement,
+  canvasWidth: number,
+  canvasHeight: number,
 ): boolean {
   const bounds = getElementBounds(element);
-  return bounds.x < 0 || 
-         bounds.y < 0 || 
-         bounds.x + bounds.width > canvasWidth || 
-         bounds.y + bounds.height > canvasHeight;
+  return (
+    bounds.x < 0 ||
+    bounds.y < 0 ||
+    bounds.x + bounds.width > canvasWidth ||
+    bounds.y + bounds.height > canvasHeight
+  );
 }
 
 export function getElementOverlapWithCanvas(
   element: CanvasElement,
   canvasWidth: number,
-  canvasHeight: number
+  canvasHeight: number,
 ): {
   isFullyInside: boolean;
   isFullyOutside: boolean;
@@ -252,40 +273,44 @@ export function getElementOverlapWithCanvas(
   overlapRatio: number;
 } {
   const bounds = getElementBounds(element);
-  
+
   // Calculate intersection with canvas
   const intersectionLeft = Math.max(0, bounds.x);
   const intersectionTop = Math.max(0, bounds.y);
   const intersectionRight = Math.min(canvasWidth, bounds.x + bounds.width);
   const intersectionBottom = Math.min(canvasHeight, bounds.y + bounds.height);
-  
+
   // Check if there's any intersection
-  const hasIntersection = intersectionLeft < intersectionRight && 
-                          intersectionTop < intersectionBottom;
-  
+  const hasIntersection =
+    intersectionLeft < intersectionRight &&
+    intersectionTop < intersectionBottom;
+
   if (!hasIntersection) {
     return {
       isFullyInside: false,
       isFullyOutside: true,
       isPartiallyOutside: false,
-      overlapRatio: 0
+      overlapRatio: 0,
     };
   }
-  
-  const intersectionArea = (intersectionRight - intersectionLeft) * 
-                          (intersectionBottom - intersectionTop);
+
+  const intersectionArea =
+    (intersectionRight - intersectionLeft) *
+    (intersectionBottom - intersectionTop);
   const elementArea = bounds.width * bounds.height;
   const overlapRatio = elementArea > 0 ? intersectionArea / elementArea : 0;
-  
-  const isFullyInside = bounds.x >= 0 && bounds.y >= 0 && 
-                       bounds.x + bounds.width <= canvasWidth && 
-                       bounds.y + bounds.height <= canvasHeight;
+
+  const isFullyInside =
+    bounds.x >= 0 &&
+    bounds.y >= 0 &&
+    bounds.x + bounds.width <= canvasWidth &&
+    bounds.y + bounds.height <= canvasHeight;
   const isPartiallyOutside = !isFullyInside && hasIntersection;
-  
+
   return {
     isFullyInside,
     isFullyOutside: false,
     isPartiallyOutside,
-    overlapRatio
+    overlapRatio,
   };
 }

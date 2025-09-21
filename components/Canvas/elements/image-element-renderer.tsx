@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Image as KonvaImage, Group } from 'react-konva';
-import Konva from 'konva';
-import { ImageElement } from '../../../types/canvas';
-import { useCanvasStore } from '../../../store/canvas-store';
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { Image as KonvaImage, Group } from "react-konva";
+import Konva from "konva";
+import { ImageElement } from "../../../types/canvas";
+import { useCanvasStore } from "../../../store/canvas-store";
 
 interface ImageElementRendererProps {
   element: ImageElement;
@@ -24,14 +24,14 @@ export const ImageElementRenderer: React.FC<ImageElementRendererProps> = ({
   // Load image
   useEffect(() => {
     const img = new window.Image();
-    img.crossOrigin = 'anonymous';
+    img.crossOrigin = "anonymous";
 
     img.onload = () => {
       setImage(img);
     };
 
     img.onerror = () => {
-      console.error('Failed to load image:', element.src);
+      console.error("Failed to load image:", element.src);
     };
 
     img.src = element.src;

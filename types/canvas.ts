@@ -19,13 +19,13 @@ export interface Transform {
 }
 
 export enum ElementType {
-  TEXT = 'text',
-  IMAGE = 'image',
-  SHAPE = 'shape',
-  BACKGROUND = 'background',
-  STICKER = 'sticker',
-  DRAWING = 'drawing',
-  GROUP = 'group',
+  TEXT = "text",
+  IMAGE = "image",
+  SHAPE = "shape",
+  BACKGROUND = "background",
+  STICKER = "sticker",
+  DRAWING = "drawing",
+  GROUP = "group",
 }
 
 export interface ElementBase {
@@ -47,20 +47,20 @@ export interface TextElement extends ElementBase {
   text: string;
   fontSize: number;
   fontFamily: string;
-  fontWeight: 'normal' | 'bold';
-  fontStyle: 'normal' | 'italic';
-  textDecoration: 'none' | 'underline' | 'line-through';
+  fontWeight: "normal" | "bold";
+  fontStyle: "normal" | "italic";
+  textDecoration: "none" | "underline" | "line-through";
   fill: string;
   stroke?: string;
   strokeWidth?: number;
-  align: 'left' | 'center' | 'right' | 'justify';
-  verticalAlign: 'top' | 'middle' | 'bottom';
+  align: "left" | "center" | "right" | "justify";
+  verticalAlign: "top" | "middle" | "bottom";
   lineHeight: number;
   letterSpacing: number;
   padding: number;
   width?: number;
   height?: number;
-  wrap: 'none' | 'word' | 'char';
+  wrap: "none" | "word" | "char";
   ellipsis?: boolean;
   shadow?: {
     color: string;
@@ -92,7 +92,15 @@ export interface ImageElement extends ElementBase {
 
 export interface ShapeElement extends ElementBase {
   type: ElementType.SHAPE;
-  shapeType: 'rectangle' | 'circle' | 'triangle' | 'line' | 'arrow' | 'polygon' | 'star' | 'path';
+  shapeType:
+    | "rectangle"
+    | "circle"
+    | "triangle"
+    | "line"
+    | "arrow"
+    | "polygon"
+    | "star"
+    | "path";
   fill?: string;
   stroke?: string;
   strokeWidth?: number;
@@ -110,16 +118,16 @@ export interface ShapeElement extends ElementBase {
 
 export interface BackgroundElement extends ElementBase {
   type: ElementType.BACKGROUND;
-  backgroundType: 'color' | 'gradient' | 'image';
+  backgroundType: "color" | "gradient" | "image";
   color?: string;
   gradient?: {
-    type: 'linear' | 'radial';
+    type: "linear" | "radial";
     colorStops: Array<{ color: string; offset: number }>;
     angle?: number; // For linear gradients
   };
   image?: {
     src: string;
-    scale: 'cover' | 'contain' | 'fill' | 'none';
+    scale: "cover" | "contain" | "fill" | "none";
     position: Point;
   };
 }
@@ -136,8 +144,8 @@ export interface DrawingElement extends ElementBase {
   stroke: string;
   strokeWidth: number;
   opacity: number;
-  lineCap?: 'butt' | 'round' | 'square';
-  lineJoin?: 'miter' | 'round' | 'bevel';
+  lineCap?: "butt" | "round" | "square";
+  lineJoin?: "miter" | "round" | "bevel";
   tension?: number; // For smooth curves
   fill?: string; // Optional fill for closed shapes
 }
@@ -154,7 +162,14 @@ export interface GroupElement extends ElementBase {
   groupId?: string; // Groups can be nested
 }
 
-export type CanvasElement = TextElement | ImageElement | ShapeElement | BackgroundElement | StickerElement | DrawingElement | GroupElement;
+export type CanvasElement =
+  | TextElement
+  | ImageElement
+  | ShapeElement
+  | BackgroundElement
+  | StickerElement
+  | DrawingElement
+  | GroupElement;
 
 export interface CanvasState {
   width: number;
@@ -185,23 +200,23 @@ export interface CanvasState {
   mode: EditorMode;
 }
 
-export type Tool = 
-  | 'select' 
-  | 'text' 
-  | 'image' 
-  | 'rectangle' 
-  | 'circle' 
-  | 'triangle' 
-  | 'line' 
-  | 'arrow' 
-  | 'polygon' 
-  | 'star' 
-  | 'brush' 
-  | 'eraser'
-  | 'pan'
-  | 'zoom';
+export type Tool =
+  | "select"
+  | "text"
+  | "image"
+  | "rectangle"
+  | "circle"
+  | "triangle"
+  | "line"
+  | "arrow"
+  | "polygon"
+  | "star"
+  | "brush"
+  | "eraser"
+  | "pan"
+  | "zoom";
 
-export type EditorMode = 'design' | 'preview';
+export type EditorMode = "design" | "preview";
 
 export interface Template {
   id: string;
@@ -221,7 +236,7 @@ export interface AssetLibrary {
 }
 
 export interface ExportOptions {
-  format: 'png' | 'jpg' | 'pdf' | 'svg';
+  format: "png" | "jpg" | "pdf" | "svg";
   quality: number;
   scale: number;
   transparentBackground: boolean;
@@ -229,7 +244,7 @@ export interface ExportOptions {
 }
 
 export interface HistoryAction {
-  type: 'add' | 'update' | 'delete' | 'reorder';
+  type: "add" | "update" | "delete" | "reorder";
   elementIds: string[];
   before?: CanvasElement[];
   after?: CanvasElement[];

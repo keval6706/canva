@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Group } from 'react-konva';
-import Konva from 'konva';
-import { GroupElement, CanvasElement } from '../../../types/canvas';
-import { CanvasElementRenderer } from '../canvas-element-renderer';
-import { useCanvasStore } from '../../../store/canvas-store';
+import React from "react";
+import { Group } from "react-konva";
+import Konva from "konva";
+import { GroupElement, CanvasElement } from "../../../types/canvas";
+import { CanvasElementRenderer } from "../canvas-element-renderer";
+import { useCanvasStore } from "../../../store/canvas-store";
 
 interface GroupElementRendererProps {
   element: GroupElement;

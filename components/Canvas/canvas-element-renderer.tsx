@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Konva from 'konva';
+import React from "react";
+import Konva from "konva";
 import {
   CanvasElement,
   TextElement,
@@ -12,14 +12,14 @@ import {
   DrawingElement,
   GroupElement,
   ElementType,
-} from '../../types/canvas';
-import { TextElementRenderer } from './elements/text-element-renderer';
-import { ImageElementRenderer } from './elements/image-element-renderer';
-import { ShapeElementRenderer } from './elements/shape-element-renderer';
-import { BackgroundElementRenderer } from './elements/background-element-renderer';
-import { StickerElementRenderer } from './elements/sticker-element-renderer';
-import { DrawingElementRenderer } from './elements/drawing-element-renderer';
-import { GroupElementRenderer } from './elements/group-element-renderer';
+} from "../../types/canvas";
+import { TextElementRenderer } from "./elements/text-element-renderer";
+import { ImageElementRenderer } from "./elements/image-element-renderer";
+import { ShapeElementRenderer } from "./elements/shape-element-renderer";
+import { BackgroundElementRenderer } from "./elements/background-element-renderer";
+import { StickerElementRenderer } from "./elements/sticker-element-renderer";
+import { DrawingElementRenderer } from "./elements/drawing-element-renderer";
+import { GroupElementRenderer } from "./elements/group-element-renderer";
 
 interface CanvasElementRendererProps {
   element: CanvasElement;

@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Konva from 'konva';
-import { Group } from 'react-konva';
-import { CanvasElement } from '../../types/canvas';
-import { CanvasElementRenderer } from './canvas-element-renderer';
-import { useCanvasStore } from '../../store/canvas-store';
+import React from "react";
+import Konva from "konva";
+import { Group } from "react-konva";
+import { CanvasElement } from "../../types/canvas";
+import { CanvasElementRenderer } from "./canvas-element-renderer";
+import { useCanvasStore } from "../../store/canvas-store";
 
 interface ClipEffectElementProps {
   element: CanvasElement;
@@ -42,11 +42,11 @@ export const ClipEffectElement: React.FC<ClipEffectElementProps> = ({
     const stage = e.target.getStage();
     if (stage) {
       // Find the outside version and sync position
-      const allGroups = stage.find('Group');
+      const allGroups = stage.find("Group");
       const outsideGroup = allGroups.find(
         (group) =>
-          group.getAttr('elementId') === element.id &&
-          group.getAttr('layerType') === 'outside'
+          group.getAttr("elementId") === element.id &&
+          group.getAttr("layerType") === "outside",
       );
       if (outsideGroup) {
         outsideGroup.position({ x, y });
@@ -68,7 +68,7 @@ export const ClipEffectElement: React.FC<ClipEffectElementProps> = ({
       onDragEnd={isInsideLayer ? handleDragEnd : undefined}
       onDragMove={isInsideLayer ? handleDragMove : undefined}
       elementId={element.id}
-      layerType={isInsideLayer ? 'inside' : 'outside'}
+      layerType={isInsideLayer ? "inside" : "outside"}
     >
       <CanvasElementRenderer
         element={{

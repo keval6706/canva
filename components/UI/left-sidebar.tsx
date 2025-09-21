@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import {
   CursorArrowRaysIcon,
   ChatBubbleBottomCenterTextIcon,
   PhotoIcon,
   Square3Stack3DIcon,
   PencilIcon,
-} from '@heroicons/react/24/outline';
-import { useCanvasStore } from '../../store/canvas-store';
-import { Tool, CanvasElement, Template, ElementType } from '../../types/canvas';
+} from "@heroicons/react/24/outline";
+import { useCanvasStore } from "../../store/canvas-store";
+import { Tool, CanvasElement, Template, ElementType } from "../../types/canvas";
 import {
   sampleTemplates,
   sampleStickers,
   sampleImages,
-} from '../../data/sample-assets';
-import { Button } from './button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
-import { Label } from './label';
+} from "../../data/sample-assets";
+import { Button } from "./button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
+import { Label } from "./label";
 
 interface ToolItem {
   id: Tool;
@@ -26,11 +26,11 @@ interface ToolItem {
 }
 
 const tools: ToolItem[] = [
-  { id: 'select', name: 'Select', icon: CursorArrowRaysIcon },
-  { id: 'brush', name: 'Brush', icon: PencilIcon },
-  { id: 'text', name: 'Text', icon: ChatBubbleBottomCenterTextIcon },
-  { id: 'image', name: 'Images', icon: PhotoIcon },
-  { id: 'rectangle', name: 'Shapes', icon: Square3Stack3DIcon },
+  { id: "select", name: "Select", icon: CursorArrowRaysIcon },
+  { id: "brush", name: "Brush", icon: PencilIcon },
+  { id: "text", name: "Text", icon: ChatBubbleBottomCenterTextIcon },
+  { id: "image", name: "Images", icon: PhotoIcon },
+  { id: "rectangle", name: "Shapes", icon: Square3Stack3DIcon },
 ];
 
 export const LeftSidebar: React.FC = () => {
@@ -64,7 +64,7 @@ export const LeftSidebar: React.FC = () => {
     imageWidth: number,
     imageHeight: number,
     canvasWidth: number,
-    canvasHeight: number
+    canvasHeight: number,
   ) => {
     // Maximum size the image should occupy (80% of canvas to leave some margin)
     const maxWidth = canvasWidth * 0.8;
@@ -166,7 +166,7 @@ export const LeftSidebar: React.FC = () => {
         img.naturalWidth,
         img.naturalHeight,
         canvasWidth,
-        canvasHeight
+        canvasHeight,
       );
 
       const imageElement = {
@@ -209,15 +209,15 @@ export const LeftSidebar: React.FC = () => {
         rotation: 0,
       },
       shapeType: shapeType as
-        | 'rectangle'
-        | 'circle'
-        | 'triangle'
-        | 'hexagon'
-        | 'star'
-        | 'line'
-        | 'arrow',
-      fill: '#3B82F6',
-      stroke: '#1E40AF',
+        | "rectangle"
+        | "circle"
+        | "triangle"
+        | "hexagon"
+        | "star"
+        | "line"
+        | "arrow",
+      fill: "#3B82F6",
+      stroke: "#1E40AF",
       strokeWidth: 2,
     };
 
@@ -226,23 +226,23 @@ export const LeftSidebar: React.FC = () => {
 
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
-    source: 'tools' | 'assets'
+    source: "tools" | "assets",
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     // Set loading state
-    if (source === 'tools') {
+    if (source === "tools") {
       setIsUploadingTools(true);
     } else {
       setIsUploadingAssets(true);
     }
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
-      alert('Please select a valid image file.');
-      event.target.value = '';
-      if (source === 'tools') {
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image file.");
+      event.target.value = "";
+      if (source === "tools") {
         setIsUploadingTools(false);
       } else {
         setIsUploadingAssets(false);
@@ -253,9 +253,9 @@ export const LeftSidebar: React.FC = () => {
     // Validate file size (10MB limit)
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      alert('File size must be less than 10MB.');
-      event.target.value = '';
-      if (source === 'tools') {
+      alert("File size must be less than 10MB.");
+      event.target.value = "";
+      if (source === "tools") {
         setIsUploadingTools(false);
       } else {
         setIsUploadingAssets(false);
@@ -275,7 +275,7 @@ export const LeftSidebar: React.FC = () => {
             img.naturalWidth,
             img.naturalHeight,
             canvasWidth,
-            canvasHeight
+            canvasHeight,
           );
 
           const imageElement = {
@@ -301,8 +301,8 @@ export const LeftSidebar: React.FC = () => {
           addElement(imageElement);
 
           // Reset the input value and update key to allow re-uploading the same file
-          event.target.value = '';
-          if (source === 'tools') {
+          event.target.value = "";
+          if (source === "tools") {
             setToolsUploadKey((prev) => prev + 1);
             setIsUploadingTools(false);
           } else {
@@ -315,9 +315,9 @@ export const LeftSidebar: React.FC = () => {
     };
 
     reader.onerror = () => {
-      alert('Failed to read the image file. Please try again.');
-      event.target.value = '';
-      if (source === 'tools') {
+      alert("Failed to read the image file. Please try again.");
+      event.target.value = "";
+      if (source === "tools") {
         setIsUploadingTools(false);
       } else {
         setIsUploadingAssets(false);
@@ -352,7 +352,7 @@ export const LeftSidebar: React.FC = () => {
                   <Button
                     key={toolItem.id}
                     onClick={() => handleToolSelect(toolItem.id)}
-                    variant={tool === toolItem.id ? 'default' : 'ghost'}
+                    variant={tool === toolItem.id ? "default" : "ghost"}
                     className="w-full justify-start h-10 px-4"
                   >
                     <toolItem.icon className="w-5 h-5 mr-3" />
@@ -362,13 +362,13 @@ export const LeftSidebar: React.FC = () => {
               </div>
             </div>
 
-            {tool === 'rectangle' && (
+            {tool === "rectangle" && (
               <div>
                 <Label className="text-sm font-semibold text-gray-900 mb-3 block">
                   Shapes
                 </Label>
                 <div className="grid grid-cols-2 gap-3">
-                  {['rectangle', 'circle', 'triangle', 'star'].map((shape) => (
+                  {["rectangle", "circle", "triangle", "star"].map((shape) => (
                     <Button
                       key={shape}
                       onClick={() => handleAddShape(shape)}
@@ -382,7 +382,7 @@ export const LeftSidebar: React.FC = () => {
               </div>
             )}
 
-            {tool === 'image' && (
+            {tool === "image" && (
               <div>
                 <Label className="text-sm font-semibold text-gray-900 mb-3 block">
                   Add Image
@@ -393,7 +393,7 @@ export const LeftSidebar: React.FC = () => {
                     key={toolsUploadKey}
                     type="file"
                     accept="image/*"
-                    onChange={(e) => handleImageUpload(e, 'tools')}
+                    onChange={(e) => handleImageUpload(e, "tools")}
                     className="hidden"
                     aria-label="Upload image file"
                     aria-describedby="tools-upload-description"
@@ -542,7 +542,7 @@ export const LeftSidebar: React.FC = () => {
                     key={assetsUploadKey}
                     type="file"
                     accept="image/*"
-                    onChange={(e) => handleImageUpload(e, 'assets')}
+                    onChange={(e) => handleImageUpload(e, "assets")}
                     className="hidden"
                     aria-label="Upload image file"
                     aria-describedby="assets-upload-description"
