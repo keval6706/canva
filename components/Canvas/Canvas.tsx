@@ -5,6 +5,7 @@ import { Stage, Layer, Rect, Line } from 'react-konva';
 import Konva from 'konva';
 import { useCanvasStore } from '../../store/canvas-store';
 import { CanvasElementRenderer } from './canvas-element-renderer';
+import ElementVisibilityWrapper from './element-visibility-wrapper';
 import { TransformerOverlay } from './transformer-overlay';
 import { GridOverlay } from './grid-overlay';
 import { GuidesOverlay } from './guides-overlay';
@@ -284,13 +285,14 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
         {/* Elements Layer */}
         <Layer>
           {sortedElements.map((element) => (
-            <CanvasElementRenderer
-              key={element.id}
-              element={element}
-              onSelect={(e: Konva.KonvaEventObject<MouseEvent>) =>
-                handleElementClick(element.id, e)
-              }
-            />
+            <ElementVisibilityWrapper key={element.id} element={element}>
+              <CanvasElementRenderer
+                element={element}
+                onSelect={(e: Konva.KonvaEventObject<MouseEvent>) =>
+                  handleElementClick(element.id, e)
+                }
+              />
+            </ElementVisibilityWrapper>
           ))}
 
           {/* Current drawing path */}
