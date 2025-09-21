@@ -25,8 +25,6 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
   const groupRef = useRef<Konva.Group>(null);
   const outsideGroupRef = useRef<Konva.Group>(null);
 
-  if (!element.visible) return null;
-
   // Clip function for inside (keeps only the canvas rect)
   const clipInside = (ctx: Konva.Context) => {
     ctx.beginPath();
@@ -125,7 +123,7 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
       stage.off('pointermove', onChange);
       stage.off('dragstart', onChange);
     };
-  }, []);
+  }, [element.id]);
 
   // After mount, rename any descendant node ids within the outside group so
   // transformers / stage.findOne won't accidentally pick the outside copy.
@@ -155,6 +153,8 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
       // ignore
     }
   }, [element.id]);
+
+  if (!element.visible) return null;
 
   // Handler to forward pointerdown from outside faded area to the interactive inside node
   const handleOutsidePointerDown = (
@@ -202,10 +202,11 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
   };
   // Clone child for outside copy so we can avoid duplicate ids/names and disable listening.
   let outsideChild: React.ReactNode = null;
-  let insideChild: React.ReactNode = children;
+  const insideChild: React.ReactNode = children;
 
   if (React.isValidElement(children)) {
-    const childEl = children as React.ReactElement<any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const childEl = children as React.ReactElement<Record<string, any>>;
     // compute new id/name for outside copy
     const baseId = childEl.props.id || `element-${element.id}`;
     const baseName = childEl.props.name || `element-${element.id}`;
