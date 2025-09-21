@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Text, Group } from 'react-konva';
-import Konva from 'konva';
-import { TextElement } from '../../../types/canvas';
-import { useCanvasStore } from '../../../store/canvas-store';
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { Text, Group } from "react-konva";
+import Konva from "konva";
+import { TextElement } from "../../../types/canvas";
+import { useCanvasStore } from "../../../store/canvas-store";
 
 interface TextElementRendererProps {
   element: TextElement;
@@ -42,7 +42,7 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
       const target = e.target as HTMLTextAreaElement;
       updateElement(element.id, { text: target.value });
     },
-    [element.id, updateElement]
+    [element.id, updateElement],
   );
 
   const handleEditingEnd = () => {
@@ -56,7 +56,7 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
       if (!stage) return;
 
       // Create textarea for editing
-      const textarea = document.createElement('textarea');
+      const textarea = document.createElement("textarea");
       const container = stage.container();
       container.appendChild(textarea);
 
@@ -69,42 +69,42 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
       };
 
       textarea.value = element.text;
-      textarea.style.position = 'absolute';
-      textarea.style.top = areaPosition.y + 'px';
-      textarea.style.left = areaPosition.x + 'px';
-      textarea.style.width = Math.max(textNode.width(), 100) + 'px';
-      textarea.style.height = Math.max(textNode.height(), 50) + 'px';
-      textarea.style.fontSize = element.fontSize + 'px';
+      textarea.style.position = "absolute";
+      textarea.style.top = areaPosition.y + "px";
+      textarea.style.left = areaPosition.x + "px";
+      textarea.style.width = Math.max(textNode.width(), 100) + "px";
+      textarea.style.height = Math.max(textNode.height(), 50) + "px";
+      textarea.style.fontSize = element.fontSize + "px";
       textarea.style.fontFamily = element.fontFamily;
       textarea.style.fontWeight = element.fontWeight;
       textarea.style.fontStyle = element.fontStyle;
       textarea.style.color = element.fill;
-      textarea.style.border = '2px solid #007bff';
-      textarea.style.background = 'white';
-      textarea.style.outline = 'none';
-      textarea.style.resize = 'none';
-      textarea.style.zIndex = '1000';
+      textarea.style.border = "2px solid #007bff";
+      textarea.style.background = "white";
+      textarea.style.outline = "none";
+      textarea.style.resize = "none";
+      textarea.style.zIndex = "1000";
 
       textarea.focus();
       textarea.select();
 
       const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
           handleEditingEnd();
-        } else if (e.key === 'Escape') {
+        } else if (e.key === "Escape") {
           handleEditingEnd();
         }
       };
 
-      textarea.addEventListener('keydown', handleKeyDown);
-      textarea.addEventListener('blur', handleEditingEnd);
-      textarea.addEventListener('input', handleTextChange);
+      textarea.addEventListener("keydown", handleKeyDown);
+      textarea.addEventListener("blur", handleEditingEnd);
+      textarea.addEventListener("input", handleTextChange);
 
       const cleanup = () => {
-        textarea.removeEventListener('keydown', handleKeyDown);
-        textarea.removeEventListener('blur', handleEditingEnd);
-        textarea.removeEventListener('input', handleTextChange);
+        textarea.removeEventListener("keydown", handleKeyDown);
+        textarea.removeEventListener("blur", handleEditingEnd);
+        textarea.removeEventListener("input", handleTextChange);
         container.removeChild(textarea);
         setIsEditing(false);
       };
@@ -155,7 +155,7 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
         text={element.text}
         fontSize={element.fontSize}
         fontFamily={element.fontFamily}
-        fontStyle={element.fontWeight === 'bold' ? 'bold' : element.fontStyle}
+        fontStyle={element.fontWeight === "bold" ? "bold" : element.fontStyle}
         textDecoration={element.textDecoration}
         fill={element.fill}
         stroke={element.stroke}

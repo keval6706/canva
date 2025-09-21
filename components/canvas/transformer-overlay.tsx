@@ -76,6 +76,10 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
     setIsProportionalScaling(isShiftPressed);
 
     nodes.forEach((node) => {
+      // Extract element ID from node name
+      const elementId = node.name().replace("element-", "");
+      if (!elementId) return;
+
       let scaleX = node.scaleX();
       let scaleY = node.scaleY();
 
@@ -96,6 +100,23 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
         node.scaleX(scaleX);
         node.scaleY(scaleY);
       }
+
+      // Get current element data
+      const currentElements = useCanvasStore.getState().elements;
+      const element = currentElements.find((el) => el.id === elementId);
+      if (!element) return;
+
+      // Update element with real-time transform values
+      updateElement(elementId, {
+        transform: {
+          ...element.transform,
+          x: node.x(),
+          y: node.y(),
+          scaleX: scaleX,
+          scaleY: scaleY,
+          rotation: node.rotation(),
+        },
+      });
     });
   };
 
@@ -130,17 +151,19 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
         Math.max(0.1, Math.min(10, Math.abs(finalScaleY))) *
         (finalScaleY >= 0 ? 1 : -1);
 
-      // Update element with final transform values
-      updateElement(elementId, {
-        transform: {
-          ...element.transform,
-          x: finalX,
-          y: finalY,
-          scaleX: clampedScaleX,
-          scaleY: clampedScaleY,
-          rotation: finalRotation,
-        },
-      });
+      // Only update if clamping is needed
+      if (clampedScaleX !== finalScaleX || clampedScaleY !== finalScaleY) {
+        updateElement(elementId, {
+          transform: {
+            ...element.transform,
+            x: finalX,
+            y: finalY,
+            scaleX: clampedScaleX,
+            scaleY: clampedScaleY,
+            rotation: finalRotation,
+          },
+        });
+      }
 
       // Reset the node position/rotation to match stored values
       node.x(finalX);
