@@ -1,19 +1,18 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { ExportOptions } from "../../types/canvas";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
-import { Button } from "./button";
-import { Label } from "./label";
-import { Slider } from "./slider";
+import React, { useState } from 'react';
+import { ExportOptions } from '../../types/canvas';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
+import { Button } from './button';
+import { Label } from './label';
+import { Slider } from './slider';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./select";
-import { Checkbox } from "./checkbox";
+} from './select';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -27,11 +26,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   onExport,
 }) => {
   const [options, setOptions] = useState<ExportOptions>({
-    format: "png",
+    format: 'png',
     quality: 1,
     scale: 1,
-    transparentBackground: false,
-    selectedOnly: false,
   });
 
   const handleExport = () => {
@@ -43,39 +40,38 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[425px] p-6">
+        <DialogHeader className="mb-6">
           <DialogTitle>Export Canvas</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-6 py-2">
           {/* Format Selection */}
-          <div>
+          <div className="space-y-4">
             <Label htmlFor="format">Format</Label>
             <Select
               value={options.format}
               onValueChange={(value) =>
                 setOptions({
                   ...options,
-                  format: value as "png" | "jpg" | "pdf" | "svg",
+                  format: value as 'png' | 'jpg' | 'pdf',
                 })
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select format" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="png">PNG</SelectItem>
                 <SelectItem value="jpg">JPG</SelectItem>
                 <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="svg">SVG</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Quality */}
-          {(options.format === "png" || options.format === "jpg") && (
-            <div>
+          {(options.format === 'png' || options.format === 'jpg') && (
+            <div className="space-y-4">
               <Label>Quality: {Math.round(options.quality * 100)}%</Label>
               <Slider
                 value={[options.quality]}
@@ -91,7 +87,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
           )}
 
           {/* Scale */}
-          <div>
+          <div className="space-y-4">
             <Label>Scale: {options.scale}x</Label>
             <Slider
               value={[options.scale]}
@@ -105,36 +101,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             />
           </div>
 
-          {/* Options */}
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="transparent"
-                checked={options.transparentBackground}
-                onCheckedChange={(checked) =>
-                  setOptions({
-                    ...options,
-                    transparentBackground: checked as boolean,
-                  })
-                }
-              />
-              <Label htmlFor="transparent">Transparent background</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="selected-only"
-                checked={options.selectedOnly}
-                onCheckedChange={(checked) =>
-                  setOptions({ ...options, selectedOnly: checked as boolean })
-                }
-              />
-              <Label htmlFor="selected-only">Selected elements only</Label>
-            </div>
-          </div>
-
           {/* Actions */}
-          <div className="flex space-x-3 pt-4">
+          <div className="flex space-x-4 pt-8 mt-4">
             <Button onClick={onClose} variant="outline">
               Cancel
             </Button>

@@ -236,11 +236,9 @@ export interface AssetLibrary {
 }
 
 export interface ExportOptions {
-  format: "png" | "jpg" | "pdf" | "svg";
+  format: "png" | "jpg" | "pdf";
   quality: number;
   scale: number;
-  transparentBackground: boolean;
-  selectedOnly: boolean;
 }
 
 export interface HistoryAction {
