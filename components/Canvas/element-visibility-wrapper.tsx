@@ -28,7 +28,7 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
   if (!element.visible) return null;
 
   // Clip function for inside (keeps only the canvas rect)
-  const clipInside = (ctx: any) => {
+  const clipInside = (ctx: Konva.Context) => {
     ctx.beginPath();
     ctx.rect(0, 0, canvasWidth, canvasHeight);
     ctx.clip();
@@ -37,7 +37,7 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
   // Clip function for outside (keeps everything except the canvas rect)
   // We implement it by drawing four rectangles around the canvas rect (top, left, right, bottom)
   // and then clipping to those areas. This avoids relying on 'evenodd' rules.
-  const clipOutside = (ctx: any) => {
+  const clipOutside = (ctx: Konva.Context) => {
     const big = 10000; // large enough to cover stage
 
     // top
@@ -82,10 +82,8 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
               // copy absolute position
               try {
                 const absPos = insideNode.getAbsolutePosition();
-                if (
-                  typeof (outsideNode as any).setAbsolutePosition === 'function'
-                ) {
-                  (outsideNode as any).setAbsolutePosition(absPos);
+                if (typeof outsideNode.setAbsolutePosition === 'function') {
+                  outsideNode.setAbsolutePosition(absPos);
                 } else {
                   outsideNode.x(absPos.x);
                   outsideNode.y(absPos.y);
@@ -96,9 +94,9 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
 
               // copy rotation and scale
               try {
-                outsideNode.rotation((insideNode as any).rotation());
-                outsideNode.scaleX((insideNode as any).scaleX());
-                outsideNode.scaleY((insideNode as any).scaleY());
+                outsideNode.rotation(insideNode.rotation());
+                outsideNode.scaleX(insideNode.scaleX());
+                outsideNode.scaleY(insideNode.scaleY());
               } catch (err) {
                 // ignore
               }
@@ -159,12 +157,16 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
   }, [element.id]);
 
   // Handler to forward pointerdown from outside faded area to the interactive inside node
-  const handleOutsidePointerDown = (e: any) => {
+  const handleOutsidePointerDown = (
+    e: Konva.KonvaEventObject<PointerEvent>
+  ) => {
     try {
       const stage = groupRef.current?.getStage();
       if (!stage) return;
 
-      const insideNode = stage.findOne(`#element-${element.id}`) as any;
+      const insideNode = stage.findOne(
+        `#element-${element.id}`
+      ) as Konva.Node | null;
       if (!insideNode) return;
 
       // Start drag on the inside node using Konva's API. Pass native event in evt.
@@ -178,7 +180,7 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
   };
 
   // Hit function for the outside group so it receives pointer events across the faded region.
-  const outsideHitFunc = (hitCtx: any, shape: any) => {
+  const outsideHitFunc = (hitCtx: Konva.Context, shape: Konva.Shape) => {
     const big = 10000;
     hitCtx.beginPath();
     // top
@@ -195,7 +197,7 @@ export const ElementVisibilityWrapper: React.FC<Props> = ({
 
   // Outer group must remain listening so Konva hit-testing descends to children.
   // We set a no-op hitFunc so the outer group itself doesn't create a hit area and won't intercept events.
-  const noHit = (hitCtx: any, shape: any) => {
+  const noHit = (hitCtx: Konva.Context, shape: Konva.Shape) => {
     // intentionally empty
   };
   // Clone child for outside copy so we can avoid duplicate ids/names and disable listening.
