@@ -67,8 +67,12 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
   // Handle click on empty area
   const handleStageClick = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
-      // Check if clicked on empty area
-      if (e.target === e.target.getStage()) {
+      // Check if clicked on empty area (stage or canvas background)
+      const target = e.target;
+      if (
+        target === e.target.getStage() ||
+        target.name() === 'canvas-background'
+      ) {
         clearSelection();
       }
     },
@@ -276,6 +280,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
         {/* Canvas Background */}
         <Layer>
           <Rect
+            name="canvas-background"
             x={0}
             y={0}
             width={canvasWidth}
