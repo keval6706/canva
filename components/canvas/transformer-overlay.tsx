@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { Transformer } from "react-konva";
 import Konva from "konva";
 import { useCanvasStore } from "../../store/canvas-store";
-import { ElementType } from "../../types/canvas";
+import { ElementType, TextElement } from "../../types/canvas";
 
 interface TransformerOverlayProps {
   selectedIds: string[];
@@ -25,7 +25,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
 
       // For text elements, include font properties that affect size
       if (element.type === ElementType.TEXT) {
-        const textEl = element as any;
+        const textEl = element as TextElement;
         return `${id}-${textEl.fontSize}-${textEl.fontWeight}-${textEl.fontStyle}-${textEl.text}-${textEl.lineHeight}-${textEl.letterSpacing}`;
       }
 

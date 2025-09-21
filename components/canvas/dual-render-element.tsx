@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import Konva from "konva";
 import { Group } from "react-konva";
 import { CanvasElement } from "../../types/canvas";

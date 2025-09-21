@@ -83,10 +83,6 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     (elementId: string, e: Konva.KonvaEventObject<MouseEvent>) => {
       e.cancelBubble = true;
 
-      // Check if this is a duplicate event from the other layer
-      const target = e.target;
-      const targetId = target.getAttr("id") || target.parent?.getAttr("id");
-
       if (e.evt.ctrlKey || e.evt.metaKey) {
         // Multi-select
         if (selectedIds.includes(elementId)) {

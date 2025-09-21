@@ -17,8 +17,6 @@ interface ClippedCanvasElementProps {
 export const ClippedCanvasElement: React.FC<ClippedCanvasElementProps> = ({
   element,
   onSelect,
-  canvasWidth,
-  canvasHeight,
 }) => {
   const outsideGroupRef = useRef<Konva.Group>(null);
   const insideGroupRef = useRef<Konva.Group>(null);

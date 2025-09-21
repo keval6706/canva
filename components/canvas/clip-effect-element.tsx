@@ -18,8 +18,6 @@ interface ClipEffectElementProps {
 export const ClipEffectElement: React.FC<ClipEffectElementProps> = ({
   element,
   onSelect,
-  canvasWidth,
-  canvasHeight,
   isInsideLayer = false,
 }) => {
   const { updateElement } = useCanvasStore();

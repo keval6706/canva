@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useCallback } from "react";
 import Konva from "konva";
-import { Group, Layer } from "react-konva";
+import { Group } from "react-konva";
 import { CanvasElement } from "../../types/canvas";
 import { CanvasElementRenderer } from "./canvas-element-renderer";
 import { useCanvasStore } from "../../store/canvas-store";
@@ -17,8 +17,6 @@ interface BoundaryAwareElementProps {
 export const BoundaryAwareElement: React.FC<BoundaryAwareElementProps> = ({
   element,
   onSelect,
-  canvasWidth,
-  canvasHeight,
 }) => {
   const outsideGroupRef = useRef<Konva.Group>(null);
   const insideGroupRef = useRef<Konva.Group>(null);

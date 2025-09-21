@@ -6,10 +6,6 @@ import { Group } from "react-konva";
 import { CanvasElement } from "../../types/canvas";
 import { CanvasElementRenderer } from "./canvas-element-renderer";
 import { useCanvasStore } from "../../store/canvas-store";
-import {
-  isElementOutsideCanvas as checkElementOutsideCanvas,
-  getElementBounds,
-} from "../../utils/element-bounds";
 
 interface DualLayerElementRendererProps {
   element: CanvasElement;
@@ -21,7 +17,7 @@ interface DualLayerElementRendererProps {
 
 export const DualLayerElementRenderer: React.FC<
   DualLayerElementRendererProps
-> = ({ element, onSelect, layerType, canvasWidth, canvasHeight }) => {
+> = ({ element, onSelect, layerType }) => {
   const groupRef = useRef<Konva.Group>(null);
   const { updateElement } = useCanvasStore();
 

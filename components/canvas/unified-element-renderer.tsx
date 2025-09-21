@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import Konva from "konva";
 import { Group } from "react-konva";
 import { CanvasElement } from "../../types/canvas";
@@ -24,10 +24,10 @@ export const UnifiedElementRenderer: React.FC<UnifiedElementRendererProps> = ({
   const groupRef = useRef<Konva.Group>(null);
 
   // Calculate if element is outside canvas bounds
-  const isPartiallyOutside = () => {
+  const isPartiallyOutside = useCallback(() => {
     const { x, y } = element.transform;
     return x < 0 || y < 0 || x > canvasWidth || y > canvasHeight;
-  };
+  }, [element.transform, canvasWidth, canvasHeight]);
 
   // Apply opacity based on position
   useEffect(() => {
@@ -45,6 +45,7 @@ export const UnifiedElementRenderer: React.FC<UnifiedElementRendererProps> = ({
     element.opacity,
     canvasWidth,
     canvasHeight,
+    isPartiallyOutside,
   ]);
 
   const handleDragMove = () => {
