@@ -186,18 +186,3 @@ export const sampleStickers = [
     category: "Shapes",
   },
 ];
-
-export const sampleImages = [
-  {
-    id: "img-1",
-    src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0Y3RkFGQyIgc3Ryb2tlPSIjRDFEOUUwIi8+PHRleHQgeD0iMTAwIiB5PSIxMDAiIGZpbGw9IiM2QjczODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTQiPkltYWdlPC90ZXh0Pjwvc3ZnPg==",
-    name: "Sample Image 1",
-    tags: ["sample", "placeholder"],
-  },
-  {
-    id: "img-2",
-    src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0Y5RkJGRiIgc3Ryb2tlPSIjRDFGQUU1Ii8+PHRleHQgeD0iMTAwIiB5PSIxMDAiIGZpbGw9IiMxMDdDNDEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTQiPkxhbmRzY2FwZTwvdGV4dD48L3N2Zz4=",
-    name: "Landscape",
-    tags: ["nature", "landscape"],
-  },
-];
