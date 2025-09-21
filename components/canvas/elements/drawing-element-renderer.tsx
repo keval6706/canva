@@ -45,8 +45,6 @@ export const DrawingElementRenderer: React.FC<DrawingElementRendererProps> = ({
   return (
     <Group
       ref={groupRef}
-      id={`element-${element.id}`}
-      name={`element-${element.id}`}
       x={transform.x}
       y={transform.y}
       scaleX={transform.scaleX}

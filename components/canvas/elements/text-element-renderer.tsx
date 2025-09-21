@@ -139,8 +139,6 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
   return (
     <Group
       ref={groupRef}
-      id={`element-${element.id}`}
-      name={`element-${element.id}`}
       x={transform.x}
       y={transform.y}
       scaleX={transform.scaleX}

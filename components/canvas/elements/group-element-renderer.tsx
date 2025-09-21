@@ -36,8 +36,6 @@ export const GroupElementRenderer: React.FC<GroupElementRendererProps> = ({
 
   return (
     <Group
-      id={`element-${element.id}`}
-      name={`element-${element.id}`}
       x={element.transform.x}
       y={element.transform.y}
       scaleX={element.transform.scaleX}

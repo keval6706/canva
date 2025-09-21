@@ -39,6 +39,8 @@ export const DualRenderElement: React.FC<DualRenderElementProps> = ({
 
     return (
       <Group
+        id={`element-${element.id}`}
+        name={`element-${element.id}`}
         x={element.transform.x}
         y={element.transform.y}
         scaleX={element.transform.scaleX}
@@ -79,6 +81,8 @@ export const DualRenderElement: React.FC<DualRenderElementProps> = ({
   return (
     <Group
       ref={groupRef}
+      id={`element-${element.id}`}
+      name={`element-${element.id}`}
       x={element.transform.x}
       y={element.transform.y}
       scaleX={element.transform.scaleX}

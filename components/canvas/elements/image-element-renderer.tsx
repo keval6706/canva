@@ -119,8 +119,6 @@ export const ImageElementRenderer: React.FC<ImageElementRendererProps> = ({
   return (
     <Group
       ref={groupRef}
-      id={`element-${element.id}`}
-      name={`element-${element.id}`}
       x={transform.x}
       y={transform.y}
       scaleX={transform.scaleX * (element.flipX ? -1 : 1)}
