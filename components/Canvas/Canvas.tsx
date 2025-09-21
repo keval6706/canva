@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Stage, Layer, Rect, Line, Group } from 'react-konva';
+import { Stage, Layer, Rect, Line, Text } from 'react-konva';
 import Konva from 'konva';
 import { useCanvasStore } from '../../store/canvas-store';
-import { CanvasElementRenderer } from './canvas-element-renderer';
 import { DualRenderElement } from './dual-render-element';
 import { TransformerOverlay } from './transformer-overlay';
 import { GridOverlay } from './grid-overlay';
@@ -389,6 +388,26 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
             <GuidesOverlay selectedIds={selectedIds} />
           </Layer>
         )}
+
+        {/* Placeholder Layer - Always visible on top of everything */}
+        <Layer>
+          <Text
+            text="Keval Gangani"
+            x={0}
+            y={0}
+            width={canvasWidth}
+            height={canvasHeight}
+            fontSize={48}
+            fontFamily="Arial"
+            fontWeight="bold"
+            fill="#000000"
+            opacity={0.3}
+            align="center"
+            verticalAlign="middle"
+            listening={false} // Makes it non-interactive
+            draggable={false}
+          />
+        </Layer>
       </Stage>
     </div>
   );
