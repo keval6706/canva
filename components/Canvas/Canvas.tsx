@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Stage, Layer, Rect, Line } from 'react-konva';
+import { Stage, Layer, Rect, Line, Group } from 'react-konva';
 import Konva from 'konva';
 import { useCanvasStore } from '../../store/canvas-store';
 import { CanvasElementRenderer } from './canvas-element-renderer';
-import ElementVisibilityWrapper from './element-visibility-wrapper';
+import { DualRenderElement } from './dual-render-element';
 import { TransformerOverlay } from './transformer-overlay';
 import { GridOverlay } from './grid-overlay';
 import { GuidesOverlay } from './guides-overlay';
@@ -38,6 +38,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     selectElements,
     clearSelection,
     addElement,
+    updateElement,
   } = useCanvasStore();
 
   // Handle stage drag (panning)
@@ -74,10 +75,14 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
     [clearSelection]
   );
 
-  // Handle element selection
+  // Handle element selection with event coordination
   const handleElementClick = useCallback(
     (elementId: string, e: Konva.KonvaEventObject<MouseEvent>) => {
       e.cancelBubble = true;
+
+      // Check if this is a duplicate event from the other layer
+      const target = e.target;
+      const targetId = target.getAttr('id') || target.parent?.getAttr('id');
 
       if (e.evt.ctrlKey || e.evt.metaKey) {
         // Multi-select
@@ -282,17 +287,73 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
           />
         </Layer>
 
-        {/* Elements Layer */}
-        <Layer>
+        {/* Outside Layer - Full elements with reduced opacity */}
+        <Layer opacity={0.3}>
           {sortedElements.map((element) => (
-            <ElementVisibilityWrapper key={element.id} element={element}>
-              <CanvasElementRenderer
-                element={element}
-                onSelect={(e: Konva.KonvaEventObject<MouseEvent>) =>
-                  handleElementClick(element.id, e)
-                }
-              />
-            </ElementVisibilityWrapper>
+            <DualRenderElement
+              key={`outside-${element.id}`}
+              element={element}
+              layerType="outside"
+              onSelect={(e: Konva.KonvaEventObject<MouseEvent>) =>
+                handleElementClick(element.id, e)
+              }
+              onDragMove={(elementId: string, x: number, y: number) => {
+                // Real-time update during drag from outside layer
+                updateElement(elementId, {
+                  transform: {
+                    ...element.transform,
+                    x,
+                    y,
+                  },
+                });
+              }}
+              onDragEnd={(elementId: string, x: number, y: number) => {
+                updateElement(elementId, {
+                  transform: {
+                    ...element.transform,
+                    x,
+                    y,
+                  },
+                });
+              }}
+            />
+          ))}
+        </Layer>
+
+        {/* Inside Layer - Clipped elements with full opacity */}
+        <Layer
+          clipFunc={(ctx) => {
+            ctx.rect(0, 0, canvasWidth, canvasHeight);
+          }}
+        >
+          {sortedElements.map((element) => (
+            <DualRenderElement
+              key={`inside-${element.id}`}
+              element={element}
+              layerType="inside"
+              onSelect={(e: Konva.KonvaEventObject<MouseEvent>) =>
+                handleElementClick(element.id, e)
+              }
+              onDragMove={(elementId: string, x: number, y: number) => {
+                // Real-time update during drag
+                updateElement(elementId, {
+                  transform: {
+                    ...element.transform,
+                    x,
+                    y,
+                  },
+                });
+              }}
+              onDragEnd={(elementId: string, x: number, y: number) => {
+                updateElement(elementId, {
+                  transform: {
+                    ...element.transform,
+                    x,
+                    y,
+                  },
+                });
+              }}
+            />
           ))}
 
           {/* Current drawing path */}

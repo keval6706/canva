@@ -228,3 +228,64 @@ export const getCombinedBounds = (elements: CanvasElement[]): ElementBounds | nu
     height: bottom - top
   };
 };
+
+export function isElementOutsideCanvas(
+  element: CanvasElement, 
+  canvasWidth: number, 
+  canvasHeight: number
+): boolean {
+  const bounds = getElementBounds(element);
+  return bounds.x < 0 || 
+         bounds.y < 0 || 
+         bounds.x + bounds.width > canvasWidth || 
+         bounds.y + bounds.height > canvasHeight;
+}
+
+export function getElementOverlapWithCanvas(
+  element: CanvasElement,
+  canvasWidth: number,
+  canvasHeight: number
+): {
+  isFullyInside: boolean;
+  isFullyOutside: boolean;
+  isPartiallyOutside: boolean;
+  overlapRatio: number;
+} {
+  const bounds = getElementBounds(element);
+  
+  // Calculate intersection with canvas
+  const intersectionLeft = Math.max(0, bounds.x);
+  const intersectionTop = Math.max(0, bounds.y);
+  const intersectionRight = Math.min(canvasWidth, bounds.x + bounds.width);
+  const intersectionBottom = Math.min(canvasHeight, bounds.y + bounds.height);
+  
+  // Check if there's any intersection
+  const hasIntersection = intersectionLeft < intersectionRight && 
+                          intersectionTop < intersectionBottom;
+  
+  if (!hasIntersection) {
+    return {
+      isFullyInside: false,
+      isFullyOutside: true,
+      isPartiallyOutside: false,
+      overlapRatio: 0
+    };
+  }
+  
+  const intersectionArea = (intersectionRight - intersectionLeft) * 
+                          (intersectionBottom - intersectionTop);
+  const elementArea = bounds.width * bounds.height;
+  const overlapRatio = elementArea > 0 ? intersectionArea / elementArea : 0;
+  
+  const isFullyInside = bounds.x >= 0 && bounds.y >= 0 && 
+                       bounds.x + bounds.width <= canvasWidth && 
+                       bounds.y + bounds.height <= canvasHeight;
+  const isPartiallyOutside = !isFullyInside && hasIntersection;
+  
+  return {
+    isFullyInside,
+    isFullyOutside: false,
+    isPartiallyOutside,
+    overlapRatio
+  };
+}
