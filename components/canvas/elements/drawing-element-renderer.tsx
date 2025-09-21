@@ -65,6 +65,7 @@ export const DrawingElementRenderer: React.FC<DrawingElementRendererProps> = ({
         tension={element.tension || 0}
         fill={element.fill}
         globalCompositeOperation="source-over"
+        hitStrokeWidth={10}
       />
     </Group>
   );

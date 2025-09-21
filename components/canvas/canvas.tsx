@@ -294,6 +294,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
               key={`outside-${element.id}`}
               element={element}
               layerType="outside"
+              tool={tool}
               onSelect={(e: Konva.KonvaEventObject<MouseEvent>) =>
                 handleElementClick(element.id, e)
               }
@@ -331,6 +332,7 @@ export const Canvas: React.FC<CanvasProps> = ({ width, height, className }) => {
               key={`inside-${element.id}`}
               element={element}
               layerType="inside"
+              tool={tool}
               onSelect={(e: Konva.KonvaEventObject<MouseEvent>) =>
                 handleElementClick(element.id, e)
               }

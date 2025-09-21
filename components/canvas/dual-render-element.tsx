@@ -12,6 +12,7 @@ interface DualRenderElementProps {
   onDragEnd: (elementId: string, x: number, y: number) => void;
   onDragMove?: (elementId: string, x: number, y: number) => void;
   layerType: "outside" | "inside";
+  tool: string;
 }
 
 export const DualRenderElement: React.FC<DualRenderElementProps> = ({
@@ -20,6 +21,7 @@ export const DualRenderElement: React.FC<DualRenderElementProps> = ({
   onDragEnd,
   onDragMove,
   layerType,
+  tool,
 }) => {
   const groupRef = useRef<Konva.Group>(null);
 
@@ -48,7 +50,7 @@ export const DualRenderElement: React.FC<DualRenderElementProps> = ({
         rotation={element.transform.rotation}
         opacity={element.opacity}
         visible={element.visible}
-        draggable={!element.locked} // Enable dragging for outside layer
+        draggable={!element.locked && tool !== "pan"} // Draggable when not locked and not in pan mode
         onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
       >
@@ -90,7 +92,7 @@ export const DualRenderElement: React.FC<DualRenderElementProps> = ({
       rotation={element.transform.rotation}
       opacity={element.opacity}
       visible={element.visible}
-      draggable={!element.locked}
+      draggable={!element.locked && tool !== "pan"} // Draggable when not locked and not in pan mode
       onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
     >
