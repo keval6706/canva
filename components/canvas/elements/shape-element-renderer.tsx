@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useRef } from "react";
+import React, { useRef } from 'react';
 import {
   Group,
   Rect,
@@ -9,10 +9,10 @@ import {
   Line,
   Arrow,
   Star,
-} from "react-konva";
-import Konva from "konva";
-import { ShapeElement } from "../../../types/canvas";
-import { useCanvasStore } from "../../../store/canvas-store";
+} from 'react-konva';
+import Konva from 'konva';
+import { ShapeElement } from '../../../types/canvas';
+import { useCanvasStore } from '../../../store/canvas-store';
 
 interface ShapeElementRendererProps {
   element: ShapeElement;
@@ -69,7 +69,7 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
     };
 
     switch (element.shapeType) {
-      case "rectangle":
+      case 'rectangle':
         return (
           <Rect
             {...commonProps}
@@ -81,10 +81,10 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
           />
         );
 
-      case "circle":
+      case 'circle':
         return <Circle {...commonProps} x={50} y={50} radius={50} />;
 
-      case "triangle":
+      case 'triangle':
         return (
           <RegularPolygon
             {...commonProps}
@@ -95,7 +95,7 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
           />
         );
 
-      case "polygon":
+      case 'polygon':
         return (
           <RegularPolygon
             {...commonProps}
@@ -106,7 +106,7 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
           />
         );
 
-      case "star":
+      case 'star':
         return (
           <Star
             {...commonProps}
@@ -118,12 +118,12 @@ export const ShapeElementRenderer: React.FC<ShapeElementRendererProps> = ({
           />
         );
 
-      case "line":
+      case 'line':
         return (
           <Line {...commonProps} points={element.points || [0, 0, 100, 0]} />
         );
 
-      case "arrow":
+      case 'arrow':
         return (
           <Arrow
             {...commonProps}

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useRef } from "react";
-import { Line, Group } from "react-konva";
-import Konva from "konva";
-import { DrawingElement } from "../../../types/canvas";
-import { useCanvasStore } from "../../../store/canvas-store";
+import React, { useRef } from 'react';
+import { Line, Group } from 'react-konva';
+import Konva from 'konva';
+import { DrawingElement } from '../../../types/canvas';
+import { useCanvasStore } from '../../../store/canvas-store';
 
 interface DrawingElementRendererProps {
   element: DrawingElement;
@@ -60,8 +60,8 @@ export const DrawingElementRenderer: React.FC<DrawingElementRendererProps> = ({
         stroke={element.stroke}
         strokeWidth={element.strokeWidth}
         opacity={element.opacity}
-        lineCap={element.lineCap || "round"}
-        lineJoin={element.lineJoin || "round"}
+        lineCap={element.lineCap || 'round'}
+        lineJoin={element.lineJoin || 'round'}
         tension={element.tension || 0}
         fill={element.fill}
         globalCompositeOperation="source-over"

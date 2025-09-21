@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useRef, useEffect, useState } from "react";
-import { Image as KonvaImage, Group } from "react-konva";
-import Konva from "konva";
-import { StickerElement } from "../../../types/canvas";
-import { useCanvasStore } from "../../../store/canvas-store";
+import React, { useRef, useEffect, useState } from 'react';
+import { Image as KonvaImage, Group } from 'react-konva';
+import Konva from 'konva';
+import { StickerElement } from '../../../types/canvas';
+import { useCanvasStore } from '../../../store/canvas-store';
 
 interface StickerElementRendererProps {
   element: StickerElement;
@@ -24,14 +24,14 @@ export const StickerElementRenderer: React.FC<StickerElementRendererProps> = ({
   // Load sticker image
   useEffect(() => {
     const img = new window.Image();
-    img.crossOrigin = "anonymous";
+    img.crossOrigin = 'anonymous';
 
     img.onload = () => {
       setImage(img);
     };
 
     img.onerror = () => {
-      console.error("Failed to load sticker:", element.src);
+      console.error('Failed to load sticker:', element.src);
     };
 
     img.src = element.src;
