@@ -1,11 +1,14 @@
-"use client";
+'use client';
 
-import React, { useRef, useEffect, useState, useCallback } from "react";
-import { Text, Group } from "react-konva";
-import Konva from "konva";
-import { TextElement } from "../../../types/canvas";
-import { useCanvasStore } from "../../../store/canvas-store";
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { Text, Group, Transformer } from 'react-konva';
+import Konva from 'konva';
+import { TextElement } from '../../../types/canvas';
+import { useCanvasStore } from '../../../store/canvas-store';
+import { Html } from 'react-konva-utils';
 
+// @ts-ignore
+Konva._fixTextRendering = true;
 interface TextElementRendererProps {
   element: TextElement;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
@@ -15,20 +18,30 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
   element,
   onSelect,
 }) => {
-  const textRef = useRef<Konva.Text>(null);
-  const groupRef = useRef<Konva.Group>(null);
+  const textRef = useRef<Konva.Text | null>(null);
+  const groupRef = useRef<Konva.Group | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [textWidth, setTextWidth] = useState(200);
+  const trRef = useRef<Konva.Transformer | null>(null);
+
+  useEffect(() => {
+    if (trRef.current && textRef.current) {
+      // nodes expects non-null Konva.Node[]; we've guarded above
+      trRef.current.nodes([textRef.current as Konva.Node]);
+    }
+  }, [isEditing]);
 
   const { updateElement } = useCanvasStore();
 
   const handleDragEnd = () => {
-    if (!groupRef.current) return;
+    const g = groupRef.current;
+    if (!g) return;
 
     updateElement(element.id, {
       transform: {
         ...element.transform,
-        x: groupRef.current.x(),
-        y: groupRef.current.y(),
+        x: g.x(),
+        y: g.y(),
       },
     });
   };
@@ -38,89 +51,31 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
   };
 
   const handleTextChange = useCallback(
-    (e: Event) => {
-      const target = e.target as HTMLTextAreaElement;
-      updateElement(element.id, { text: target.value });
+    (text: string) => {
+      updateElement(element.id, { text });
     },
-    [element.id, updateElement],
+    [element.id, updateElement]
   );
 
   const handleEditingEnd = () => {
     setIsEditing(false);
   };
 
-  useEffect(() => {
-    if (isEditing && textRef.current) {
-      const textNode = textRef.current;
-      const stage = textNode.getStage();
-      if (!stage) return;
+  const handleTextDblClick = useCallback(() => {
+    setIsEditing(true);
+  }, []);
 
-      // Create textarea for editing
-      const textarea = document.createElement("textarea");
-      const container = stage.container();
-      container.appendChild(textarea);
-
-      // Position textarea over text
-      const textPosition = textNode.absolutePosition();
-      const stageBox = stage.container().getBoundingClientRect();
-      const areaPosition = {
-        x: stageBox.left + textPosition.x,
-        y: stageBox.top + textPosition.y,
-      };
-
-      textarea.value = element.text;
-      textarea.style.position = "absolute";
-      textarea.style.top = areaPosition.y + "px";
-      textarea.style.left = areaPosition.x + "px";
-      textarea.style.width = Math.max(textNode.width(), 100) + "px";
-      textarea.style.height = Math.max(textNode.height(), 50) + "px";
-      textarea.style.fontSize = element.fontSize + "px";
-      textarea.style.fontFamily = element.fontFamily;
-      textarea.style.fontWeight = element.fontWeight;
-      textarea.style.fontStyle = element.fontStyle;
-      textarea.style.color = element.fill;
-      textarea.style.border = "2px solid #007bff";
-      textarea.style.background = "white";
-      textarea.style.outline = "none";
-      textarea.style.resize = "none";
-      textarea.style.zIndex = "1000";
-
-      textarea.focus();
-      textarea.select();
-
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          handleEditingEnd();
-        } else if (e.key === "Escape") {
-          handleEditingEnd();
-        }
-      };
-
-      textarea.addEventListener("keydown", handleKeyDown);
-      textarea.addEventListener("blur", handleEditingEnd);
-      textarea.addEventListener("input", handleTextChange);
-
-      const cleanup = () => {
-        textarea.removeEventListener("keydown", handleKeyDown);
-        textarea.removeEventListener("blur", handleEditingEnd);
-        textarea.removeEventListener("input", handleTextChange);
-        container.removeChild(textarea);
-        setIsEditing(false);
-      };
-
-      return cleanup;
-    }
-  }, [
-    isEditing,
-    element.text,
-    element.fontSize,
-    element.fontFamily,
-    element.fontWeight,
-    element.fontStyle,
-    element.fill,
-    handleTextChange,
-  ]);
+  const handleTransform = useCallback(() => {
+    const node = textRef.current;
+    if (!node) return;
+    const scaleX = node.scaleX();
+    const newWidth = node.width() * scaleX;
+    setTextWidth(newWidth);
+    node.setAttrs({
+      width: newWidth,
+      scaleX: 1,
+    });
+  }, []);
 
   if (!element.visible) return null;
 
@@ -150,12 +105,12 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
       onClick={onSelect}
       onDblClick={handleDoubleClick}
     >
-      <Text
+      {/* <Text
         ref={textRef}
         text={element.text}
         fontSize={element.fontSize}
         fontFamily={element.fontFamily}
-        fontStyle={element.fontWeight === "bold" ? "bold" : element.fontStyle}
+        fontStyle={element.fontWeight === 'bold' ? 'bold' : element.fontStyle}
         textDecoration={element.textDecoration}
         fill={element.fill}
         stroke={element.stroke}
@@ -174,7 +129,152 @@ export const TextElementRenderer: React.FC<TextElementRendererProps> = ({
         shadowOffsetX={element.shadow?.offset.x}
         shadowOffsetY={element.shadow?.offset.y}
         listening={!isEditing}
+      /> */}
+
+      <Text
+        ref={textRef}
+        text={element.text}
+        x={50}
+        y={80}
+        fontSize={20}
+        draggable
+        width={textWidth}
+        onDblClick={handleTextDblClick}
+        onDblTap={handleTextDblClick}
+        onTransform={handleTransform}
+        visible={!isEditing}
       />
+
+      {isEditing && (
+        <TextEditor
+          textNode={textRef.current}
+          onChange={handleTextChange}
+          onClose={() => setIsEditing(false)}
+        />
+      )}
+      {!isEditing && (
+        <Transformer
+          ref={trRef}
+          enabledAnchors={['middle-left', 'middle-right']}
+          boundBoxFunc={(oldBox, newBox) => ({
+            ...newBox,
+            width: Math.max(30, newBox.width),
+          })}
+        />
+      )}
     </Group>
+  );
+};
+
+const TextEditor = ({
+  textNode,
+  onClose,
+  onChange,
+}: {
+  textNode: Konva.Text | null;
+  onClose: () => void;
+  onChange: (text: string) => void;
+}) => {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (!textareaRef.current || !textNode) return;
+
+    const textarea = textareaRef.current;
+    const textPosition = textNode.position();
+    const areaPosition = {
+      x: textPosition.x,
+      y: textPosition.y,
+    };
+
+    // Match styles with the text node
+    textarea.value = textNode.text();
+    textarea.style.position = 'absolute';
+    textarea.style.top = `${areaPosition.y}px`;
+    textarea.style.left = `${areaPosition.x}px`;
+    textarea.style.width = `${textNode.width() - textNode.padding() * 2}px`;
+    textarea.style.height = `${textNode.height() - textNode.padding() * 2 + 5}px`;
+    textarea.style.fontSize = `${textNode.fontSize()}px`;
+    textarea.style.border = 'none';
+    textarea.style.padding = '0px';
+    textarea.style.margin = '0px';
+    textarea.style.overflow = 'hidden';
+    textarea.style.background = 'none';
+    textarea.style.outline = 'none';
+    textarea.style.resize = 'none';
+    textarea.style.lineHeight = textNode.lineHeight().toString();
+    textarea.style.fontFamily = textNode.fontFamily();
+    textarea.style.transformOrigin = 'left top';
+    textarea.style.textAlign = textNode.align();
+    // coerce fill to string safely
+    textarea.style.color = String(textNode.fill());
+
+    const rotation = textNode.rotation();
+    let transform = '';
+    if (rotation) {
+      transform += `rotateZ(${rotation}deg)`;
+    }
+    textarea.style.transform = transform;
+
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight + 3}px`;
+
+    textarea.focus();
+
+    const handleOutsideClick = (e: MouseEvent) => {
+      // compare EventTarget to textarea reference
+      if (e.target !== textarea) {
+        onChange(textarea.value);
+        onClose();
+      }
+    };
+
+    // Add event listeners
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        (e as KeyboardEvent).key === 'Enter' &&
+        !(e as KeyboardEvent).shiftKey
+      ) {
+        e.preventDefault();
+        onChange(textarea.value);
+        onClose();
+      }
+      if ((e as KeyboardEvent).key === 'Escape') {
+        onClose();
+      }
+    };
+
+    const handleInput = () => {
+      const scale = textNode.getAbsoluteScale().x;
+      textarea.style.width = `${textNode.width() * scale}px`;
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight + textNode.fontSize()}px`;
+    };
+
+    textarea.addEventListener('keydown', handleKeyDown as any);
+    textarea.addEventListener('input', handleInput as any);
+    // delay adding the global click handler so the focus and immediate clicks don't close it
+    const t = setTimeout(() => {
+      window.addEventListener('click', handleOutsideClick);
+    });
+
+    return () => {
+      textarea.removeEventListener('keydown', handleKeyDown as any);
+      textarea.removeEventListener('input', handleInput as any);
+      window.removeEventListener('click', handleOutsideClick);
+      clearTimeout(t);
+    };
+  }, [textNode, onChange, onClose]);
+
+  return (
+    <Html>
+      <textarea
+        ref={textareaRef}
+        style={{
+          minHeight: '1em',
+          position: 'absolute',
+        }}
+      />
+    </Html>
   );
 };
