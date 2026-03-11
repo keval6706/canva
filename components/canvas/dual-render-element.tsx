@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React, { useRef } from "react";
-import Konva from "konva";
-import { Group } from "react-konva";
-import { CanvasElement } from "../../types/canvas";
-import { CanvasElementRenderer } from "./canvas-element-renderer";
+import React, { useRef } from 'react';
+import Konva from 'konva';
+import { Group } from 'react-konva';
+import { CanvasElement } from '../../types/canvas';
+import { CanvasElementRenderer } from './canvas-element-renderer';
 
 interface DualRenderElementProps {
   element: CanvasElement;
   onSelect: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   onDragEnd: (elementId: string, x: number, y: number) => void;
   onDragMove?: (elementId: string, x: number, y: number) => void;
-  layerType: "outside" | "inside";
+  layerType: 'outside' | 'inside';
   tool: string;
 }
 
@@ -26,7 +26,7 @@ export const DualRenderElement: React.FC<DualRenderElementProps> = ({
   const groupRef = useRef<Konva.Group>(null);
 
   // For the outside layer, we need to handle selection AND dragging for elements outside canvas
-  if (layerType === "outside") {
+  if (layerType === 'outside') {
     const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
       const { x, y } = e.target.position();
       if (onDragMove) {
@@ -41,8 +41,6 @@ export const DualRenderElement: React.FC<DualRenderElementProps> = ({
 
     return (
       <Group
-        id={`element-${element.id}`}
-        name={`element-${element.id}`}
         x={element.transform.x}
         y={element.transform.y}
         scaleX={element.transform.scaleX}
@@ -50,7 +48,7 @@ export const DualRenderElement: React.FC<DualRenderElementProps> = ({
         rotation={element.transform.rotation}
         opacity={element.opacity}
         visible={element.visible}
-        draggable={!element.locked && tool !== "pan"} // Draggable when not locked and not in pan mode
+        draggable={!element.locked && tool !== 'pan'} // Draggable when not locked and not in pan mode
         onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
       >
@@ -92,7 +90,7 @@ export const DualRenderElement: React.FC<DualRenderElementProps> = ({
       rotation={element.transform.rotation}
       opacity={element.opacity}
       visible={element.visible}
-      draggable={!element.locked && tool !== "pan"} // Draggable when not locked and not in pan mode
+      draggable={!element.locked && tool !== 'pan'} // Draggable when not locked and not in pan mode
       onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
     >

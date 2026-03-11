@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useRef, useEffect, useState } from "react";
-import { Transformer } from "react-konva";
-import Konva from "konva";
-import { useCanvasStore } from "../../store/canvas-store";
-import { ElementType, TextElement } from "../../types/canvas";
+import React, { useRef, useEffect, useState } from 'react';
+import { Transformer } from 'react-konva';
+import Konva from 'konva';
+import { useCanvasStore } from '../../store/canvas-store';
+import { ElementType, TextElement } from '../../types/canvas';
 
 interface TransformerOverlayProps {
   selectedIds: string[];
@@ -21,7 +21,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
   const selectedElementsKey = selectedIds
     .map((id) => {
       const element = elements.find((el) => el.id === id);
-      if (!element) return "";
+      if (!element) return '';
 
       // For text elements, include font properties that affect size
       if (element.type === ElementType.TEXT) {
@@ -32,7 +32,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
       // For other elements, just include basic size-affecting properties
       return `${id}-${element.transform.scaleX}-${element.transform.scaleY}`;
     })
-    .join("|");
+    .join('|');
 
   useEffect(() => {
     if (!transformerRef.current) return;
@@ -53,6 +53,19 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
       // Find the element node by traversing the stage
       const elementNode = stage.findOne(`#element-${id}`);
       if (elementNode) {
+        // Debug: log which node was found so we can diagnose duplicate ids/layer issues
+        // eslint-disable-next-line no-console
+        const parent = elementNode.getParent();
+        console.debug('TransformerOverlay: found node for id', id, {
+          name: elementNode.name(),
+          id: elementNode.id(),
+          visible: elementNode.visible(),
+          listening:
+            typeof (elementNode as any).listening === 'function'
+              ? elementNode.listening()
+              : undefined,
+          parent: parent ? parent.name() : null,
+        });
         selectedNodes.push(elementNode);
       }
     });
@@ -77,7 +90,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
 
     nodes.forEach((node) => {
       // Extract element ID from node name
-      const elementId = node.name().replace("element-", "");
+      const elementId = node.name().replace('element-', '');
       if (!elementId) return;
 
       let scaleX = node.scaleX();
@@ -128,7 +141,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
 
     nodes.forEach((node) => {
       // Extract element ID from node name
-      const elementId = node.name().replace("element-", "");
+      const elementId = node.name().replace('element-', '');
       if (!elementId) return;
 
       // Get fresh element data to avoid stale state
@@ -208,21 +221,21 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
       keepRatio={false}
       centeredScaling={false}
       enabledAnchors={[
-        "top-left",
-        "top-center",
-        "top-right",
-        "middle-right",
-        "bottom-right",
-        "bottom-center",
-        "bottom-left",
-        "middle-left",
+        'top-left',
+        'top-center',
+        'top-right',
+        'middle-right',
+        'bottom-right',
+        'bottom-center',
+        'bottom-left',
+        'middle-left',
       ]}
       borderEnabled={true}
-      borderStroke={isProportionalScaling ? "#ff6b6b" : "#0066ff"}
+      borderStroke={isProportionalScaling ? '#ff6b6b' : '#0066ff'}
       borderStrokeWidth={isProportionalScaling ? 2 : 1}
       borderDash={isProportionalScaling ? [2, 2] : [3, 3]}
       anchorFill="white"
-      anchorStroke={isProportionalScaling ? "#ff6b6b" : "#0066ff"}
+      anchorStroke={isProportionalScaling ? '#ff6b6b' : '#0066ff'}
       anchorStrokeWidth={1}
       anchorSize={8}
       anchorCornerRadius={2}

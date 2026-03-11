@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ExportOptions } from '../../types/canvas';
+import { useCanvasStore } from '../../store/canvas-store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
 import { Button } from './button';
 import { Label } from './label';
@@ -31,9 +32,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({
     scale: 1,
   });
 
+  const { width, height, elements } = useCanvasStore();
+
   const handleExport = () => {
     onExport(options);
     onClose();
+  };
+
+  const handlePrintJson = () => {
+    const design = { width, height, elements };
+    console.log(JSON.stringify(design, null, 2));
   };
 
   if (!isOpen) return null;
@@ -105,6 +113,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({
           <div className="flex space-x-4 pt-8 mt-4">
             <Button onClick={onClose} variant="outline">
               Cancel
+            </Button>
+            <Button onClick={handlePrintJson} variant="outline">
+              Print JSON
             </Button>
             <Button onClick={handleExport}>Export</Button>
           </div>
